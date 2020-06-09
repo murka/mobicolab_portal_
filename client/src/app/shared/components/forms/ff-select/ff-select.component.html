@@ -1,0 +1,62 @@
+<div *ngIf="!app">
+  <mat-form-field fxFlexFill [formGroup]="form">
+    <mat-label>{{ label }}</mat-label>
+    <div>
+      <mat-select [formControlName]="key" #select>
+        <div *ngFor="let option of optionsList">
+          <mat-option
+            (click)="_open()"
+            appLookUp
+            (onChangeButtonCondition)="buttonCondition($event, option)"
+            [value]="!populate ? option.value : option.key"
+            ><div fxLayout="row">
+              {{ option.value }}
+              <app-edit-button
+                (click)="editOpen(option.key)"
+                *ngIf="option.buttonController && editable"
+              ></app-edit-button>
+              <app-delete-button
+                (click)="deleteItem(option.key)"
+                *ngIf="option.buttonController && deletable"
+              >
+              </app-delete-button>
+            </div>
+          </mat-option>
+        </div>
+        <mat-option (click)="addItem()">Добавить</mat-option>
+      </mat-select>
+    </div>
+  </mat-form-field>
+</div>
+<!-- <div *ngIf="app">
+  <mat-form-field fxFlexFill [formGroup]="form">
+    <mat-label>{{ label }}</mat-label>
+  <div formArrayName="application">
+      <div [formGroup]="fgn">
+        <mat-select [formControlName]="control" #select>
+          <div *ngFor="let option of optionsList">
+            <mat-option
+              (click)="_open()"
+              appLookUp
+              (onChangeButtonCondition)="buttonCondition($event, option)"
+              [value]="!populate ? option.value : option.key"
+              ><div fxLayout="row">
+                {{ option.value }} adfja;shf;ahsf
+                <app-edit-button
+                  (click)="editOpen(option.key)"
+                  *ngIf="option.buttonController && editable"
+                ></app-edit-button>
+                <app-delete-button
+                  (click)="deleteItem(option.key)"
+                  *ngIf="option.buttonController && deletable"
+                >
+                </app-delete-button>
+              </div>
+            </mat-option>
+          </div>
+          <mat-option (click)="addItem()">Добавить</mat-option>
+        </mat-select>
+      </div>
+    </div>
+  </mat-form-field>
+</div> -->

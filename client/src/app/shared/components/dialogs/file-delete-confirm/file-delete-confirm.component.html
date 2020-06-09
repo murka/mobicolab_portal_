@@ -1,0 +1,17 @@
+<div mat-dialog-content>
+  <p>
+    Документ с именем <strong>{{ data.name }}</strong> уже существует. Если вы хотите заменить
+    его, необходимо удалить существующий документ
+  </p>
+</div>
+<div mat-dialog-actions>
+  <button *ngIf="!confirmDelete" mat-raised-button (click)="onNoClick()">Отмена</button>
+  <span *ngIf="confirmDelete">
+    <p>Вы уверены, что хотите удалить документ <strong>{{ data.name }}</strong>?</p>
+    <button mat-raised-button (click)="confirmDelete = false">
+      Отмена
+    </button>
+    <button mat-raised-button (click)="confirmed()">Удалить</button>
+  </span>
+  <button *ngIf="!confirmDelete" mat-raised-button (click)="confirmDelete = true">Удалить</button>
+</div>

@@ -1,0 +1,35 @@
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Doc {
+  id         Int         @default(autoincrement()) @id
+  title      String?
+  ydUrl      String?
+  name       String?
+  events     DocEvents[]
+  createddAt DateTime    @default(now())
+  updetedAt  DateTime    @default(now())
+}
+
+model DocEvents {
+  id    Int          @default(autoincrement()) @id
+  doc   Doc          @relation(fields: [docId], references: [id])
+  docId Int
+  event AllowedEvent
+}
+
+enum AllowedEvent {
+  DROPPED
+  REMOVED
+  UPLOADED
+  DOWNLOADED
+  DELETED
+  TITLED
+  SAVED
+}

@@ -1,0 +1,32 @@
+<mat-form-field fxFlexFill [formGroup]="form">
+    <mat-chip-list #chipList>
+        <mat-chip
+            *ngFor="let item of items"
+            [selectable]="selectable"
+            [removable]="removable"
+            (removed)="remove(item)"
+            (click)="editOpen(item)">
+        {{item}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+    </mat-chip-list>
+    <input
+      [placeholder]="label"
+      matInput
+      #itemInput
+      [formControl]="inputForm"
+      [formControlName]="key"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)"
+    />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <div *ngFor="let option of filteredOptions | async">
+        <mat-option
+          [value]="option.value"
+          > {{option.value}}
+        </mat-option>
+      </div>
+    </mat-autocomplete>
+  </mat-form-field>

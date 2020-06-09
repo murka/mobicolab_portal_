@@ -1,0 +1,32 @@
+<mat-form-field fxFlexFill [formGroup]="form">
+  <mat-label>{{ label }}</mat-label>
+  <div *ngIf="optionsList.length < 1">
+    <mat-select>
+      <mat-option (click)="addItem()">Добавить</mat-option>
+    </mat-select>
+  </div>
+  <div *ngIf="optionsList.length >= 1">
+    <mat-select [formControlName]="key" multiple #select>
+      <div *ngFor="let option of optionsList">
+        <mat-option
+          (click)="_diselect()"
+          appLookUp
+          (onChangeButtonCondition)="buttonCondition($event, option)"
+          [value]="option.value"
+          >{{ option.value }}
+          <app-edit-button
+            (click)="editOpen(option.key)"
+            *ngIf="option.buttonController && editable"
+          ></app-edit-button>
+          <app-delete-button
+            (click)="deleteOpen(option.key)"
+            *ngIf="option.buttonController && deletable"
+          >
+          </app-delete-button
+        ></mat-option>
+      </div>
+
+      <button mat-raised-button (click)="addItem()">Добавить</button>
+    </mat-select>
+  </div>
+</mat-form-field>

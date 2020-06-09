@@ -1,0 +1,12 @@
+<div [formGroup]="form">
+    <div formGroupName="{{controll}}">
+        <mat-form-field fxFlexFill>
+            <input
+              matInput
+              type="time"
+              [formControlName]="key"
+              placeholder="{{ label }}"
+            />
+          </mat-form-field>
+    </div>
+</div>

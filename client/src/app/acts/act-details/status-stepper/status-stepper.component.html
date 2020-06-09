@@ -1,0 +1,246 @@
+<!-- <div *ngIf="act">
+  <mat-vertical-stepper [linear]="true" #stepper>
+    <mat-step
+      [completed]="
+        act.status.uploaded ||
+        act.status.registration ||
+        act.status.protocolCreated ||
+        act.status.remarks ||
+        act.status.noRemarks ||
+        act.status.protocolUploaded
+      "
+    >
+      <ng-template matStepLabel *ngIf="act.status.production"
+        >Редактируется</ng-template
+      >
+      <ng-template
+        matStepLabel
+        *ngIf="
+          act.status.uploaded ||
+          act.status.registration ||
+          act.status.protocolCreated ||
+          act.status.remarks ||
+          act.status.noRemarks ||
+          act.status.protocolUploaded
+        "
+        >Cкачать Акт</ng-template
+      >
+      <div fxLayout="column">
+        <button *ngIf="!uploaded" mat-button matStepperNext (click)="createDoc()">Создать Акт</button>
+        <input
+          type="file"
+          accept=".docx, .doc"
+          (change)="handleFileInput($event.target.files)"
+          [(ngModel)]="docname"
+          name="docAct"
+        />
+        <button
+          fxFlexAlign="start"
+          [disabled]="!file"
+          fxFlexAlign="start"
+          mat-raised-button
+          matStepperNext
+          (click)="selectFile('doc')"
+        >
+          Загрузить документ
+        </button>
+        <button
+          fxFlexAlign="start"
+          *ngIf="
+            act.status.uploaded ||
+            act.status.registration ||
+            act.status.noRemarks ||
+            act.status.protocolUploaded
+          "
+          mat-raised-button
+          (click)="downloadDoc()"
+        >
+          Скачать
+        </button>
+      </div>
+    </mat-step>
+    <mat-step
+      [completed]="
+        act.status.registration ||
+        act.status.protocolCreated ||
+        act.status.noRemarks ||
+        act.status.remarks ||
+        act.status.protocolUploaded
+      "
+    >
+      <ng-template
+        *ngIf="act.status.production || act.status.uploaded"
+        matStepLabel
+        >Акт зарегистрирован</ng-template
+      >
+      <ng-template
+        *ngIf="
+          act.status.registration ||
+          act.status.protocolCreated ||
+          act.status.remarks ||
+          act.status.noRemarks ||
+          act.status.protocolUploaded
+        "
+        matStepLabel
+        >Скачать скан акта</ng-template
+      >
+      <div fxLayout="column">
+        <input
+          type="file"
+          accept=".pdf"
+          (change)="handleFileInput($event.target.files)"
+          [(ngModel)]="scanname"
+          name="scanAct"
+        />
+        <button
+          [disabled]="!file"
+          fxFlexAlign="start"
+          mat-raised-button
+          matStepperNext
+          (click)="selectFile('scan')"
+        >
+          Загрузить скан акта
+        </button>
+        <button
+          fxFlexAlign="start"
+          mat-raised-button
+          *ngIf="!act.status.registration || !act.status.uploaded"
+          (click)="downloadScan()"
+        >
+          Скачать
+        </button>
+      </div>
+    </mat-step>
+    <mat-step [completed]="act.status.noRemarks || act.status.protocolUploaded">
+      <ng-template
+        *ngIf="
+          !act.status.protocolCreated &&
+          !act.status.remarks &&
+          !act.status.noRemarks
+        "
+        matStepLabel
+        >Проба</ng-template
+      >
+      <ng-template *ngIf="act.status.protocolCreated" matStepLabel
+        >Протокол на проверке</ng-template
+      >
+      <ng-template *ngIf="act.status.remarks" matStepLabel
+        >Протокол на исправлении</ng-template
+      >
+      <ng-template
+        *ngIf="act.status.noRemarks || act.status.protocolUploaded"
+        matStepLabel
+        >Протокол проверен</ng-template
+      >
+      <div fxLayout="column">
+        <div fxLayout="column" *ngIf="act.status.registration">
+          <input
+            type="file"
+            accept=".pdf"
+            (change)="handleFileInput($event.target.files)"
+            [(ngModel)]="protocolname"
+            name="scanProtocol"
+          />
+          <button
+            matStepperNext
+            [disabled]="!file"
+            fxFlexAlign="start"
+            mat-raised-button
+            (click)="selectFile('protocol')"
+          >
+            Загрузить протокол
+          </button>
+        </div>
+        <button
+          fxFlexAlign="start"
+          mat-raised-button
+          *ngIf="
+            act.status.protocolCreated ||
+            act.status.remarks ||
+            act.status.noRemarks ||
+            act.status.protocolUploaded
+          "
+          (click)="downloadProtocol()"
+        >
+          Скачать
+        </button>
+        <div>
+          <button
+            *ngIf="act.status.protocolCreated"
+            mat-raised-button
+            (click)="openBottomSheet()"
+          >
+            Замечания
+          </button>
+          <button
+            *ngIf="act.status.remarks"
+            mat-raised-button
+            (click)="openBottomSheet()"
+          >
+            Добавить комментарий
+          </button>
+          <button
+            *ngIf="act.status.protocolCreated"
+            mat-raised-button
+            matStepperNext
+            (click)="changeStatusToNoRemarks()"
+          >
+            Без замечаний
+          </button>
+          <button
+            *ngIf="act.status.remarks"
+            mat-raised-button
+            matStepperNext
+            (click)="changeStatusToNoRemarks()"
+          >
+            Замечания исправлены
+          </button>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step [completed]="act.status.protocolUploaded">
+      <ng-template matStepLabel *ngIf="!act.status.protocolUploaded"
+        >Протокол выдан</ng-template
+      >
+      <ng-template matStepLabel *ngIf="act.status.protocolUploaded"
+        >Протокол загружен</ng-template
+      >
+      <div fxLayout="column">
+        <input
+          type="file"
+          accept=".pdf"
+          (change)="handleFileInput($event.target.files)"
+          [(ngModel)]="finalprotocolname"
+          name="scanFinalProtocol"
+        />
+        <button
+          [disabled]="!file"
+          fxFlexAlign="start"
+          mat-raised-button
+          matStepperNext
+          (click)="selectFile('finalprotocol')"
+        >
+          Загрузить протокол
+        </button>
+        <button
+          mat-raised-button
+          *ngIf="act.status.protocolUploaded"
+          (click)="downloadFinalProtocol()"
+        >
+          Скачать
+        </button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>
+<div fxFlex fxLayoutAlign="center">
+  <div [hidden]="act">
+    <mat-spinner></mat-spinner>
+    <h4>Загрузка . . . Пожалуйста, подождите</h4>
+    filteredAct
+  </div>
+</div> -->
+<!-- <div fxFlex *ngIf="errMess">
+  <h2>Ошибка</h2>
+  <h4>{{errMess}}</h4>
+</div> -->

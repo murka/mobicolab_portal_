@@ -1,0 +1,36 @@
+<div fxFlexFill *ngIf="fields">
+  <div *ngFor="let field of fields" fxFlex="50">
+    <div *ngIf="field.visible" [ngSwitch]="field.controlType">
+      <app-ff-date
+        *ngSwitchCase="'date'"
+        [form]="form"
+        [controll]="controll"
+        [label]="field.label"
+        [key]="field.key"
+      ></app-ff-date>
+      <app-ff-time
+        *ngSwitchCase="'time'"
+        [form]="form"
+        [controll]="controll"
+        [label]="field.label"
+        [key]="field.key"
+      ></app-ff-time>
+    </div>
+  </div>
+</div>
+
+<!-- <mat-form-field>
+  <input
+    matInput
+    type="datetime-local"
+    [formControlName]="key"
+    [matDatepicker]="picker"
+    placeholder="{{ label }}"
+  />
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+<mat-form-field>
+  <input matInput type="time" #timePicker />
+</mat-form-field>
+{{ form.get(key).value | json }} -->

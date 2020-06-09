@@ -1,0 +1,60 @@
+<div [formGroup]="form">
+  <div [formGroupName]="controll">
+    <mat-form-field *ngIf="options" fxFlexFill>
+      <mat-label>{{ label }}</mat-label>
+      <mat-select formControlName="types" #select>
+        <mat-option (click)="addGroup()" *ngIf="options.length < 1"
+          >Добавить Тип Отбираемой Среды</mat-option
+        >
+        <div *ngFor="let group of options">
+          <mat-optgroup [label]="group.label">
+            <app-edit-button (click)="editGroup(group)"></app-edit-button>
+            <button
+              (click)="_open()"
+              *ngIf="group.types.length >= 1"
+              mat-button
+              (click)="addItem(group.key)"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+            <mat-option
+              (click)="_open()"
+              (click)="addItem(group.key)"
+              *ngIf="group.types.length < 1"
+              >Добавить Тип Отбираемой Пробы</mat-option
+            >
+            <mat-option
+              (click)="_open()"
+              *ngFor="let type of group.types"
+              [value]="type"
+              (mouseenter)="_button = !_button"
+              (mouseleave)="_button = !_button"
+            >
+              <div fxLayout="row">
+                <div>{{ type }}</div>
+                <div *ngIf="_button">
+                  <app-edit-button
+                    (click)="editItem(group, group.key, type)"
+                  ></app-edit-button
+                  ><app-delete-button
+                    (click)="deleteItem(group, group.key, type)"
+                  >
+                  </app-delete-button>
+                </div>
+              </div>
+            </mat-option>
+          </mat-optgroup>
+        </div>
+        <button
+          (click)="_open()"
+          *ngIf="options.length >= 1"
+          fxFlexAlign="center center"
+          (click)="addGroup()"
+          mat-button
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>

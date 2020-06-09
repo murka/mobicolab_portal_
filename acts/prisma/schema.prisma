@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_LOCAL")
+}
+
+model act {
+  additions                 String
+  applicationDatetimeDate   DateTime?   @default(now())
+  applicationDatetimeTime   String?
+  applicationPlace          String?
+  climaticEnvironmental     String
+  customerId                String?
+  datetimeDate              DateTime?   @default(now())
+  datetimeTime              String?
+  definedIndicators         String[]
+  environmentalEngineer     String?
+  generalCustomerId         String?
+  goal                      String
+  id                        String      @default(dbgenerated()) @id
+  informationAboutSelection String
+  labId                     String?
+  method                    String
+  name                      String
+  normativeDocument         String[]
+  objectName                String
+  passedSample              String
+  place                     String
+  planning                  String
+  preparation               String[]
+  representative            String
+  sample                    String[]
+  sampleType                String
+  toolType                  String
+  typeOfSampleHabitan       String
+  typeOfSampleTypes         String
+  customer                  customer?   @relation(fields: [customerId], references: [id])
+  g_customer                g_customer? @relation(fields: [generalCustomerId], references: [id])
+  lab                       lab?        @relation(fields: [labId], references: [id])
+}
+
+model customer {
+  id  String @id
+  act act[]
+}
+
+model g_customer {
+  id  String @id
+  act act[]
+}
+
+model lab {
+  id  String @id
+  act act[]
+}
+
+model migrations {
+  id        Int    @default(autoincrement()) @id
+  name      String
+  timestamp Int
+}

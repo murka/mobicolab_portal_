@@ -1,0 +1,5 @@
+<div *ngFor="let year of yearsArray">
+  <h4>{{ year.year }}</h4>
+  <mat-divider></mat-divider>
+  <app-dating-years [acts]="year.acts"></app-dating-years>
+</div>

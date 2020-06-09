@@ -1,0 +1,43 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+model Act {
+  id   String @id
+  docs Doc[]
+}
+
+model Doc {
+  createddAt DateTime    @default(now())
+  id         Int         @default(autoincrement()) @id
+  act        Act         @relation(fields: [actId], references: [id])
+  actId      String
+  name       String?
+  title      String?
+  updetedAt  DateTime    @default(now())
+  ydUrl      String?
+  DocEvents  DocEvents[]
+}
+
+model DocEvents {
+  docId Int
+  event AllowedEvent
+  id    Int          @default(autoincrement()) @id
+  Doc   Doc          @relation(fields: [docId], references: [id])
+}
+
+enum AllowedEvent {
+  DELETED
+  DOWNLOADED
+  DROPPED
+  REMOVED
+  SAVED
+  TITLED
+  UPLOADED
+}

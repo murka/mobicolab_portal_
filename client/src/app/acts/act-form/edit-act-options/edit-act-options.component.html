@@ -1,0 +1,38 @@
+<div fxFlex fxFlexOffset="20px" fxLayout="column" fxLayoutAlign="center">
+  <h5>
+    {{ data.item ? "Редактировать" : "Создать" }}
+  </h5>
+  <h3>
+    {{ data.label }}
+  </h3>
+  <form fxLayout="column" novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div *ngFor="let field of fields" fxFlex>
+      <div *ngIf="field.visible" [ngSwitch]="field.controlType">
+        <app-ff-input
+          *ngSwitchCase="'input'"
+          [form]="form"
+          [label]="field.label"
+          [key]="field.key"
+        ></app-ff-input>
+        <app-address
+          *ngSwitchCase="'address'"
+          [form]="form"
+          [key]="field.key"
+          [item]="address"
+        ></app-address>
+      </div>
+    </div>
+    <mat-action-list fxLayoutGap="5px">
+      <button
+        mat-raised-button
+        type="submit"
+        [disabled]="!form.valid"
+        class="background-primary text-floral-white"
+      >
+        {{ data.item ? "Сохранить Изменения" : "Сохранить" }}
+      </button>
+      <button mat-raised-button (click)="form.reset()">Очистить</button>
+      <button mat-raised-button mat-dialog-close>Отмена</button>
+    </mat-action-list>
+  </form>
+</div>

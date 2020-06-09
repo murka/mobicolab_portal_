@@ -1,0 +1,48 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>Приложение</mat-panel-title>
+  </mat-expansion-panel-header>
+  <div fxFlex fxLayoutGap="5px" fxLayout="column">
+    <mat-action-list>
+      <button
+        mat-button
+        type="button"
+        class="background-primary text-floral-white"
+        (click)="addField()"
+      >
+        Добавить строку
+      </button>
+    </mat-action-list>
+    <fieldset *ngIf="controls">
+      <div fxFlex fxLayout="column" fxLayoutGap="10px" [formGroup]="form">
+        <div
+          formArrayName="application"
+          *ngFor="
+            let app of controls;
+            let i = index
+          "
+        >
+          <div [formGroupName]="i">
+            <div *ngFor="let field of fields" fxFlex>
+              <div [ngSwitch]="field.controlType">
+                <app-ff-select
+                  *ngSwitchCase="'SelectWAdr'"
+                  [form]="app"
+                  [key]="field.key"
+                ></app-ff-select>
+                <app-ff-date-time
+                  *ngSwitchCase="'datetime'"
+                  [form]="app"
+                  [controll]="field.key"
+                  [key]="field.key"
+                  [item]="app.value['datetime']"
+                ></app-ff-date-time>
+              </div>
+            </div>
+            <app-clear-button type="button" (click)="deleteField(i)"></app-clear-button>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</mat-expansion-panel>

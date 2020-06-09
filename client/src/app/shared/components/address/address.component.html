@@ -1,0 +1,22 @@
+<div [formGroup]="form">
+  <div [formGroupName]="key">
+    <fieldset *ngIf="fields">
+      <h4>Адрес</h4>
+      <div fxFlex fxLayout="column">
+        <app-autocomplete
+          (setAddress)="getAddress($event)"
+          adressType="geocode"
+        ></app-autocomplete>
+      </div>
+      <div fxFlex fxLayout="row wrap">
+        <div *ngFor="let field of fields" fxFlex="50">
+          <input
+            matInput
+            [formControlName]="field.key"
+            placeholder="{{ field.label }}"
+          />
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</div>

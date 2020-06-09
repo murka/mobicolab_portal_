@@ -1,0 +1,39 @@
+<div fxFlex fxLayout="column" fxLayoutGap="10px">
+    <mat-toolbar fxLayout="row" fxLayoutGap="10px">
+        <h2><span class="fa fa-list"></span>Акты</h2>
+        <span fxFlex class="flex-spacer"></span>
+        <a class="background-primary text-floral-white" mat-button [routerLink]="['../create']">Новый Акт</a>
+    </mat-toolbar>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Фильтры
+            </mat-panel-title>
+            <mat-panel-description>
+                This is a summary of the content
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+            <mat-label>Статус</mat-label>
+            <mat-select name="statusControll" [(value)]="toggleStatus">
+                <mat-option>Все</mat-option>
+                <mat-option *ngFor="let status of statuses" [value]="status">
+                    {{status.options.label}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </mat-expansion-panel>
+    <!-- <app-customers [acts]="_filteredActs"></app-customers> -->
+    <div *ngIf="customers">
+        <app-customers [customers]="customers" [acts]="_filteredActs"></app-customers>
+    </div>
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Неотфильтрованные акты
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-act-item [acts]="acts" *ngIf="acts">
+        </app-act-item>
+    </mat-expansion-panel>
+</div>

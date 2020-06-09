@@ -1,0 +1,12 @@
+<div fxFlex fxFlexOffset="20px" 
+fxLayoutAlign="center"
+fxLayout="column">
+    <h3>Добавить  {{name}}</h3>
+    <form fxLayout="column"novalidate [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field fxFlex="grow">
+        <input fxFlex matInput placeholder="Название" formControlName="value">
+    </mat-form-field>
+    <button mat-button type="submit" 
+            class="background-primary text-floral-white">Создать</button>
+    </form>
+</div>

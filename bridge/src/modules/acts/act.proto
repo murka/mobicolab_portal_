@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package act;
+
+service ActsService {
+    rpc FindAllActs (Id) returns (stream Act);
+}
+
+message Id {
+    int32 id = 1;
+}
+
+message Act {
+    string id = 1;
+    string name = 2;
+    string customer = 3;
+    string generalCustomer = 4;
+    string lab = 5;
+    TypeOfSample typeOfSample = 6;
+    string objectName = 7;
+    string place = 8;
+    DateTime datetime = 9;
+    string method = 10;
+    string toolType = 11;
+    string climaticEnvironmental = 12;
+    string planning = 13;
+    repeated string normativeDocument = 14;
+    string sampleType = 15;
+    repeated string sample = 16;
+    repeated string preparation = 17;
+    string goal = 18;
+    repeated string definedIndicators = 19;
+    string additions = 20;
+    string informationAboutSelection = 21;
+    string environmentalEngineer = 22;
+    string representative = 23;
+    string passedSample = 24;
+    Application application = 25;
+}
+
+message TypeOfSample {
+    string habitan = 1;
+    string types = 2;
+}
+
+message DateTime {
+    google.protobuf.Timestamp date = 1;
+    string time = 2;
+}
+
+message Application {
+    string place = 1;
+    DateTime datetime = 2;
+}

@@ -1,0 +1,15 @@
+<div fxLayout="column">
+  <mat-form-field>
+    <mat-label>Оставьте комментарий</mat-label>
+    <textarea [(ngModel)]="comment" matInput rows="5"></textarea>
+  </mat-form-field>
+  <div>
+    <button *ngIf="!data.status" mat-raised-button (click)="changeRemarks()">
+      Оставить Замечание
+    </button>
+    <button *ngIf="data.status" mat-raised-button (click)="addComment()">
+      Отправить
+    </button>
+    <button mat-raised-button (click)="openLink($event)">Отмена</button>
+  </div>
+</div>

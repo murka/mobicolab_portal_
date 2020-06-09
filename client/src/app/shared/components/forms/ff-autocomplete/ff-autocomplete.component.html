@@ -1,0 +1,30 @@
+<mat-form-field fxFlexFill [formGroup]="form">
+  <input
+    type="text"
+    [placeholder]="label"
+    matInput
+    [formControlName]="key"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete #auto="matAutocomplete">
+    <div *ngFor="let option of filteredOptions | async">
+      <mat-option
+        appLookUp
+        (onChangeButtonCondition)="buttonCondition($event, option)"
+        [value]="!populate ? option.value : option.key"
+        ><div fxLayout="row">
+          {{ option.value }}
+          <app-edit-button
+            (click)="editOpen(option.key)"
+            *ngIf="option.buttonController && editable"
+          ></app-edit-button>
+          <app-delete-button
+            (click)="deleteItem(option.key)"
+            *ngIf="option.buttonController && deletable"
+          >
+          </app-delete-button>
+        </div>
+      </mat-option>
+    </div>
+  </mat-autocomplete>
+</mat-form-field>

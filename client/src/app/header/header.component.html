@@ -1,0 +1,7 @@
+<mat-toolbar color="primary">
+    <span [routerLink]="['/acts']">MOBICOLAB PORTAL</span>
+    <span class="flex-spacer"></span>
+    <a *ngIf="!username" mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg"></span> Войти</a>
+    <a *ngIf="username">{{username}}</a>
+    <a *ngIf="username" mat-button (click)="logOut()"><span class="fa fa-sign-out fa-lg"></span> Выйти</a>
+</mat-toolbar>

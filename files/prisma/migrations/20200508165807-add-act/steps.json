@@ -1,0 +1,159 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Source",
+        "source": "db"
+      },
+      "argument": "url",
+      "newValue": "env(\"DATABASE_URL_INTROSPECT\")"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "Act"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Act",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Act",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "Act",
+      "field": "docs",
+      "type": "Doc",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Doc",
+      "field": "act",
+      "type": "Act",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Doc",
+          "field": "act"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Doc",
+          "field": "act"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[actId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Doc",
+          "field": "act"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Doc",
+      "field": "actId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Doc",
+      "field": "DocEvents",
+      "type": "DocEvents",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Doc",
+      "field": "events"
+    },
+    {
+      "tag": "CreateField",
+      "model": "DocEvents",
+      "field": "Doc",
+      "type": "Doc",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "DocEvents",
+          "field": "Doc"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "DocEvents",
+          "field": "Doc"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[docId]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "DocEvents",
+          "field": "Doc"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "DocEvents",
+      "field": "doc"
+    }
+  ]
+}

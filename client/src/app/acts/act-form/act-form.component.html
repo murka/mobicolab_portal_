@@ -1,0 +1,103 @@
+<div
+  fxFlex
+  fxFlexOffset="20px"
+  fxLayoutAlign="center"
+  fxLayout="column"
+  fxLayoutGap="10px"
+  [ngStyle]="{ 'padding-bottom': '20px' }"
+>
+  <h3>Новый Акт</h3>
+  <form novalidate [formGroup]="formAct" (ngSubmit)="onSubmit()">
+    <fieldset>
+      <div
+        fxFlex
+        fxLayout="row wrap"
+        fxLayoutGap="10px"
+        *ngIf="formAct && acts"
+      >
+        <div *ngFor="let field of acts" fxFlex="40">
+          <div *ngIf="field.visible" [ngSwitch]="field.controlType">
+            <app-ff-cheap-autocomplete
+              *ngSwitchCase="'cheapAutocomplete'"
+              [control]="field.key"
+              [form]="formAct"
+              [label]="field.label"
+              [key]="field.key"
+              [populate]="field.populate"
+              [editable]="field.editable"
+              [deletable]="field.deletable"
+            >
+            </app-ff-cheap-autocomplete>
+            <app-ff-autocomplete
+              *ngSwitchCase="'autocomplete'"
+              [control]="field.key"
+              [form]="formAct"
+              [label]="field.label"
+              [key]="field.key"
+              [populate]="field.populate"
+              [editable]="field.editable"
+              [deletable]="field.deletable"
+            >
+            </app-ff-autocomplete>
+            <app-ff-group-select
+              *ngSwitchCase="'typeOfSample'"
+              [form]="formAct"
+              [key]="field.key"
+              [controll]="field.key"
+              [label]="field.label"
+              [item]="act"
+            >
+            </app-ff-group-select>
+            <app-ff-date-time
+              *ngSwitchCase="'datetime'"
+              [form]="formAct"
+              [controll]="field.key"
+              [key]="field.key"
+              [item]="act? act.datetime : null"
+            ></app-ff-date-time>
+            <app-ff-input
+              *ngSwitchCase="'input'"
+              [form]="formAct"
+              [label]="field.label"
+              [key]="field.key"
+            ></app-ff-input>
+            <app-ff-many-select
+              *ngSwitchCase="'manySelect'"
+              [form]="formAct"
+              [label]="field.label"
+              [key]="field.key"
+              [editable]="field.editable"
+              [deletable]="field.deletable"
+            ></app-ff-many-select>
+            <app-ff-select
+              *ngSwitchCase="'SelectWAdr'"
+              [control]="field.key"
+              [form]="formAct"
+              [label]="field.label"
+              [key]="field.key"
+              [populate]="field.populate"
+              [editable]="field.editable"
+              [deletable]="field.deletable"
+            ></app-ff-select>
+            <app-ff-textarea
+              *ngSwitchCase="'textField'"
+              [form]="formAct"
+              [label]="field.label"
+              [key]="field.key"
+            ></app-ff-textarea>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <app-act-applitcation [form]="formAct" [item]="act"></app-act-applitcation>
+    <mat-action-list fxLayout="row">
+      <button
+        mat-button
+        type="submit"
+        class="background-primary text-floral-white"
+      >
+        {{ statusControl ? "Обновить" : "Создать" }}
+      </button>
+    </mat-action-list>
+  </form>
+</div>

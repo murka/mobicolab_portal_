@@ -1,0 +1,14 @@
+<div [formGroup]="form">
+  <div [formGroupName]="controll">
+    <mat-form-field fxFlexFill>
+      <input
+        matInput
+        [formControlName]="key"
+        [matDatepicker]="picker"
+        placeholder="{{ label }}"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>

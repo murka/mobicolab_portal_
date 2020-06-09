@@ -1,0 +1,7 @@
+<div *ngIf='months'>
+    <div *ngFor="let month of months">
+        <h5>{{month.month | date : 'MMM'}}</h5>
+        <mat-divider></mat-divider>
+        <app-list-items [acts]="month.acts"></app-list-items>
+    </div>
+</div>
