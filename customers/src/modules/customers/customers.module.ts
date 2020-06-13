@@ -11,6 +11,7 @@ import { CommandsHandlers } from './commands/handlers';
 import { grpcBridgeClientOptions } from 'src/gRPC/grpc-bridge-client.options';
 import { grpcActsClientOptions } from 'src/gRPC/grpc-acts-client.options';
 import { CustomersController } from './customers.controller';
+import { EvnetHandlers } from './events/handlers';
 
 @Module({
   imports: [
@@ -29,10 +30,15 @@ import { CustomersController } from './customers.controller';
       {
         name: 'ACTS_PACKAGE',
         ...grpcActsClientOptions,
-      }
+      },
     ]),
   ],
-  providers: [ActResolver, CustomerResolver, ...CommandsHandlers, ],
+  providers: [
+    ActResolver,
+    CustomerResolver,
+    ...CommandsHandlers,
+    ...EvnetHandlers,
+  ],
   controllers: [CustomersController],
 })
 export class CustomersModule {}

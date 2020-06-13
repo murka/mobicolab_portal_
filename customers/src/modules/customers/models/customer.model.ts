@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 't
 import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { Address } from './address.model';
+import { Event } from './event.model';
 
 // Model of Customer for TypeORM and GraphQl modules
 
@@ -29,6 +30,8 @@ export class Customer {
   @Field(type => Act)
   @OneToMany(type => Act, act => act.customer)
   public acts: [Act];
+  @OneToMany(type => Event, events => events.customer, { nullable: true })
+  events: Event[]
 
   constructor(customer?: Partial<Customer>) {
     Object.assign(this, customer);
