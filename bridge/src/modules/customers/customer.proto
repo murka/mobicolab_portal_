@@ -13,9 +13,11 @@ message Id {
 message Customer {
     string id = 1;
     string fullname = 2;
-    Address address = 3;
-    string tel = 4;
-    string email = 5;
+    string label = 3;
+    Address address = 4;
+    string tel = 5;
+    string email = 6;
+    repeated string acts = 7;
 }
 
 message Address {

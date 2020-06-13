@@ -4,47 +4,64 @@ import {
   CustomerResolver,
   GCustomerResolver,
   LabResolver,
-} from './referens.resolver';
+} from './references.resolver';
+import { ActRepository } from './act.repository';
 import {
-  ActRepository,
   CustomerRepository,
   GCustomerRepository,
-} from './act.repository';
+  LabRepository,
+  EventRepository,
+} from './references.repository';
 import { ClientsModule } from '@nestjs/microservices';
-import { grpcClientOptions } from 'src/grpc-client.options';
+import { grpcClientOptions } from '../../gRPC/grpc-bridge-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Act } from './models/act.model';
 import { Customer } from './models/customer.model';
 import { GCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
 import { ActsService } from './acts.service';
-import { LabRepository } from './lab.repository';
-import { DatabaseModule } from 'src/database/database.module';
+import { CommandHadlers } from './commands/handlers';
+import { EventsHandlers } from './events/handlers';
+import { CqrsModule } from '@nestjs/cqrs';
+import { Event } from './models/act-event.model';
+import { ActsController } from './acts.controller';
+import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option';
 
 @Module({
   imports: [
+    CqrsModule,
     TypeOrmModule.forFeature([
       Act,
       Customer,
       GCustomer,
       Lab,
+      Event,
       ActRepository,
       CustomerRepository,
       GCustomerRepository,
-      LabRepository
+      LabRepository,
+      EventRepository
     ]),
     ClientsModule.register([
       {
         name: 'ACT_PACKAGE',
         ...grpcClientOptions,
       },
+      {
+        name: 'CUSTOMER_PACKAGE',
+        ...grpcCustomerClientOptions
+      }
     ]),
   ],
   providers: [
     ActResolver,
     CustomerResolver,
+    GCustomerResolver,
     LabResolver,
     ActsService,
+    ...CommandHadlers,
+    ...EventsHandlers
   ],
+  controllers: [ActsController],
 })
 export class ActsModule {}

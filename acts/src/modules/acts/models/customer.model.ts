@@ -13,9 +13,8 @@ export class Customer extends BaseEntity {
   public id: string;
 
   @Field(type => [Act])
-  @OneToMany(type => Act, act => act.customer)
+  @OneToMany(type => Act, act => act.customer )
   public acts: Act[];
-
   constructor(act?: Partial<Customer>) {
     super(),
     Object.assign(this, act);

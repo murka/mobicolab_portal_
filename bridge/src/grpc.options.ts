@@ -4,7 +4,7 @@ import { join } from 'path';
 export const grpcOptions: ClientOptions = {
   transport: Transport.GRPC,
   options: {
-    url: '0.0.0.0:5000',
+    url: '0.0.0.0:50050',
     package: ['act', 'customer', 'gcustomer', 'lab'],
     protoPath: [
       join(__dirname, 'modules/acts/act.proto'),

@@ -1,15 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Act } from './models/act.model';
+import { ActRepository } from './act.repository';
 import {
-  ActRepository,
   CustomerRepository,
   GCustomerRepository,
-} from './act.repository';
+  LabRepository,
+} from './references.repository';
 import { MigrationCreateActDto } from './models/dto/migration-create-act.dto';
-import { LabRepository } from './lab.repository';
-import { Repository } from 'typeorm';
-import { Lab } from './models/lab.model';
+import { NewActDto } from './models/dto/new-act.dto';
 
 @Injectable()
 export class ActsService {
@@ -19,41 +18,42 @@ export class ActsService {
     private readonly actRepository: ActRepository,
     private readonly customerRepository: CustomerRepository,
     private readonly gcustomerRepository: GCustomerRepository,
-    @InjectRepository(Lab)
-    private readonly labRepository: Repository<Lab>,
+    private readonly labRepository: LabRepository,
   ) {}
 
-  async findAllActs(): Promise<Act[]> {
-    return await this.actRepository.find();
-  }
-
-  async findActById(id: string): Promise<Act> {
-    return await this.actRepository.findOne(id);
-  }
-
   async createActFromMigration(act: MigrationCreateActDto): Promise<Act> {
-    this.logger.log(act)
-    const newAct = this.actRepository.findOne(act.id)
-    // const lab = this.labRepository.findLab(act.lab)
-    const lab = this.labRepository.findOne(act.id)
-    // const customer = this.customerRepository.findCustomer(act.customer)
-    const gcustomer = this.gcustomerRepository.findGcustomer(act.generalCustomer)
-    // this.labRepository.migrationCreate(act.lab)
-    this.customerRepository.migrationCreate(act.customer)
-    this.gcustomerRepository.migrationCreate(act.generalCustomer)
-    return await this.actRepository.migrationCreateAct(act);
+    this.logger.verbose('inside migration method of `ActsService`');
+    const lab = await this.labRepository.findOne(act.lab);
+    const customer = await this.customerRepository.findOne(act.customer);
+    const gcustomer = await this.gcustomerRepository.findOne(act.generalCustomer);
+    this.logger.log(`lab, customer, gc: ${lab}, ${customer}, ${gcustomer} `)
+    if (!lab) {
+      const newLab = this.labRepository.create({ id: act.lab });
+      this.logger.log(`newlab: ${newLab}`)
+      await this.labRepository.save(newLab);
+    }
+    if (!customer) {
+      const newCustomer = this.customerRepository.create({ id: act.customer });
+      this.logger.log(`newcustomer: ${newCustomer}`)
+      await this.customerRepository.save(newCustomer);
+    }
+    if (!gcustomer) {
+      const newGC = this.gcustomerRepository.create({
+        id: act.generalCustomer,
+      });
+      this.logger.log(`newgc: ${newGC}`)
+      await this.gcustomerRepository.save(newGC);
+    }
+    const newAct = await this.actRepository.migrationCreateAct(act);
+
+    return await this.addReferencesToAct(newAct, act)
   }
 
-  async getActsOfCustomer(customerId: string): Promise<Act[]> {
-      return await this.customerRepository.getActsOfCustomer(customerId)
-  }
-
-  async getActsOfGCustomer(gcustomerId: string): Promise<Act[]> {
-      return await this.gcustomerRepository.getActsOfGCustomer(gcustomerId)
-  }
-
-  async getActsOfLabs(labId: string): Promise<Act[]> {
-      // return await this.labRepository.getActsOfLabs(labId)
-      return (await this.labRepository.findOne(labId)).acts
+  async addReferencesToAct(newAct: Act, act: MigrationCreateActDto): Promise<Act> {
+    newAct.customer = await this.customerRepository.findOne(act.customer)
+    newAct.general_customer = await this.gcustomerRepository.findOne(act.generalCustomer)
+    newAct.lab = await this.labRepository.findOne(act.lab)
+    this.logger.log(`after references ${JSON.stringify(newAct, null, 2)}`)
+    return await newAct.save()
   }
 }

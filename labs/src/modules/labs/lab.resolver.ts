@@ -4,8 +4,8 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Lab } from './models/lab.model';
-import { InjectRepository } from '@nestjs/typeorm';
 import { LabRepository } from './lab.repository';
+import { CommandBus } from '@nestjs/cqrs'
 
 interface LabService {
   findAllLabs(data: number): Observable<Lab>;
@@ -18,28 +18,31 @@ export class LabResolver implements OnModuleInit {
   private labService: LabService;
 
   constructor(
-    @InjectRepository(LabRepository)
     private readonly labRepository: LabRepository,
     @Inject('LAB_PACKAGE') private readonly client: ClientGrpc,
+    private readonly commandBus: CommandBus
   ) {}
+
+  onModuleInit() {
+    this.labService = this.client.getService<LabService>('LabSevice');
+  }
 
   @Query(returns => [Lab])
   async customers(): Promise<Lab[]> {
-    return await this.labRepository.findAll()
+    return await this.labRepository.find();
   }
 
   @Query(returns => Lab)
   async customer(@Args('id') id: string): Promise<Lab> {
-    return await this.labRepository.findLab(id)
+    return await this.labRepository.findOne(id);
   }
 
   @Query(returns => Lab)
-  transformLabs(): Observable<Lab> {
+  transformLabs(): Observable<Promise<Lab>> {
     return this.labService.findAllLabs(1).pipe(
-      map(lab => {
-        const newLab = this.labRepository.createLab(
-          lab,
-        );
+      map(async lab => {
+        const newLab = await this.labRepository.migrationCreateLab(lab);
+        await this.commandBus.execute(new ChangeLabIdCommand(newLab.id, lab.id))
         this.logger.verbose(newLab);
         return newLab;
       }),
@@ -48,10 +51,6 @@ export class LabResolver implements OnModuleInit {
 
   @ResolveReference()
   async resolverReference(reference: { __typename: string; id: string }) {
-    return await this.labRepository.findLab(reference.id);
-  }
-
-  onModuleInit() {
-    this.labService = this.client.getService<LabService>('LabSevice');
+    return await this.labRepository.findOne(reference.id);
   }
 }

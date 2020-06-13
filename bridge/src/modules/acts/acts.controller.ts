@@ -18,7 +18,6 @@ export class ActsController {
       .then(async acts => {
         for await (let act of acts) {
           this.logger.verbose(`add next: ${act}`);
-          this.logger.verbose(`application: ${act.application}`)
           acts$.next(act);
         }
         this.logger.verbose('complete next');
