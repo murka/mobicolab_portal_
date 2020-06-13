@@ -27,7 +27,7 @@ export class Event {
   )
   public act: Act;
   @Column({ type: 'enum', enum: AllowEvents, nullable: true })
-  public allow_event?: string;
+  public event?: string;
   @CreateDateColumn()
   createdAt?: string;
   @UpdateDateColumn()

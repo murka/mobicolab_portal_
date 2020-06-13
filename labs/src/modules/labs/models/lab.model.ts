@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { Address } from './address.model';
+import { Event } from './event.model';
 
 //Model of Lab for TypeORM and GraphQl modules
 
@@ -29,9 +30,17 @@ export class Lab {
   @Column({ nullable: true })
   public email?: string;
   //define an actModel for apollo federation
-  @OneToMany(type => Act, act => act.lab)
+  @OneToMany(
+    type => Act,
+    act => act.lab,
+  )
   public acts: [Act];
-
+  @OneToMany(
+    type => Event,
+    events => events.lab,
+  )
+  events: Event[];
+  
   constructor(act: Partial<Act>) {
     Object.assign(this, act);
   }

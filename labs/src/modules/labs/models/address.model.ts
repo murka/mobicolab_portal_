@@ -4,7 +4,7 @@ import { ObjectType, Field,} from '@nestjs/graphql';
 @Entity()
 @ObjectType('Address')
 export class Address {
-    @Field(()=> String)
+    @Field()
     @Column({ nullable: true })
     zip?: string;
     @Column({ nullable: true })
