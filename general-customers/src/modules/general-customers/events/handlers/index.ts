@@ -1,7 +1,7 @@
-import { LabUpdatedEvent } from "../impl/lab-updated.event";
-import { LabCretedHandler } from "./lab-created.handler";
+import { GeneralCustomerCretedHandler } from "./gcustomer-created.handler";
+import { GeneralCustomerUpdatedHandler } from "./gcustomer-updated.handler";
 
 export const EvnetHandlers = [
-    LabUpdatedEvent,
-    LabCretedHandler
+    GeneralCustomerCretedHandler,
+    GeneralCustomerUpdatedHandler
 ]

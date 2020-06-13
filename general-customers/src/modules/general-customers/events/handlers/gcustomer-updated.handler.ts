@@ -4,7 +4,7 @@ import { CeneralCustomerUpdatedEvent } from '../impl/gcustomer-updated.event';
 import { EventRepository } from '../../general-customer.repository';
 
 @EventsHandler(CeneralCustomerUpdatedEvent)
-export class LabUpdatedHandler
+export class GeneralCustomerUpdatedHandler
   implements IEventHandler<CeneralCustomerUpdatedEvent> {
   logger = new Logger(this.constructor.name);
 

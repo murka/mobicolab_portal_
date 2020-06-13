@@ -14,6 +14,7 @@ import { Act } from './models/act.model';
 import { GeneralCustomersController } from './general-customers.controller';
 import { CommandHandlers } from './commands/handlers';
 import { CqrsModule } from '@nestjs/cqrs';
+import { EvnetHandlers } from './events/handlers';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { CqrsModule } from '@nestjs/cqrs';
   providers: [
     ActResolver,
     GeneralCustomerResolver,
-    ...CommandHandlers
+    ...CommandHandlers,
+    ...EvnetHandlers
   ],
   controllers: [GeneralCustomersController],
 })
