@@ -1,25 +1,31 @@
-import { EntityRepository, AbstractRepository } from "typeorm";
-import { Lab } from "./models/lab.model";
-import { Act } from "./models/act.model";
+import { EntityRepository, Repository } from 'typeorm';
+import { Lab } from './models/lab.model';
+import { Act } from './models/act.model';
+import { Logger } from '@nestjs/common';
+import { MigrationLabDto } from './models/dto/migration-lab.dto';
 
 @EntityRepository(Lab)
-export class LabRepository extends AbstractRepository<Lab> {
-    public async findAll(): Promise<Lab[]> {
-        return await this.repository.find()
-    }
+export class LabRepository extends Repository<Lab> {
+  logger = new Logger(this.constructor.name);
 
-    public async findLab(id: string): Promise<Lab> {
-        return await this.repository.findOne(id)
-    }
+  async migrationCreateLab(lab: MigrationLabDto): Promise<Lab> {
+    this.logger.verbose('migration-create-lab.method inside `LabRepository`');
 
-    createLab(lab: Lab): Lab {
-        return this.repository.create(lab);
-    }
+    const newLab = this.create({
+      fullname: lab.fullname,
+      label: lab.label,
+      address: lab.address,
+      email: lab.email,
+      tel: lab.tel,
+    });
+
+    await this.save(newLab);
+
+    this.logger.log(newLab);
+
+    return newLab;
+  }
 }
 
 @EntityRepository(Act)
-export class ActRepository extends AbstractRepository<Act> {
-    public async getLab(id): Promise<Lab> {
-        return (await this.repository.findOne(id)).lab
-    }
-}
+export class ActRepository extends Repository<Act> {}

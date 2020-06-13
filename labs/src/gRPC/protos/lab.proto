@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package lab;
+
+service LabService {
+    rpc FindAllLabs (Id) returns (stream Lab);
+    rpc AddNewActToLab(stream AddActDto) returns (Null);
+}
+
+message Id {
+    int32 id = 1;
+}
+
+message Lab {
+    string id = 1;
+    string fullname = 2;
+    string label = 3;
+    Address address = 4;
+    string tel = 5;
+    string email = 6;
+    repeated string acts = 7;
+}
+
+message Address {
+    string zip = 1;
+    string country = 2;
+    string region = 3;
+    string city = 4;
+    string street = 5;
+    string building = 6;
+    string room = 7;
+}
+
+message AddActDto {
+    string actId = 1;
+    string customerId = 2;
+}
+
+message Null {}

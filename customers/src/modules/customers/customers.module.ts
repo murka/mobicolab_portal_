@@ -3,17 +3,36 @@ import { ActResolver } from './act.resolver';
 import { CustomerResolver } from './customer.resolver';
 import { ActRepository, CustomerRepository } from './customer.repository';
 import { ClientsModule } from '@nestjs/microservices';
-import { grpcClientOptions } from '../../grpc-client.options';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Customer } from './models/customer.model';
+import { Act } from './models/act.model';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CommandsHandlers } from './commands/handlers';
+import { grpcBridgeClientOptions } from 'src/gRPC/grpc-bridge-client.options';
+import { grpcActsClientOptions } from 'src/gRPC/grpc-acts-client.options';
+import { CustomersController } from './customers.controller';
 
 @Module({
   imports: [
+    CqrsModule,
+    TypeOrmModule.forFeature([
+      Customer,
+      Act,
+      CustomerRepository,
+      ActRepository,
+    ]),
     ClientsModule.register([
       {
-        name: 'CUSTOMER_PACKAGE',
-        ...grpcClientOptions
+        name: 'BRIDGE_PACKAGE',
+        ...grpcBridgeClientOptions,
       },
+      {
+        name: 'ACTS_PACKAGE',
+        ...grpcActsClientOptions,
+      }
     ]),
   ],
-  providers: [ActResolver, CustomerResolver, ActRepository, CustomerRepository],
+  providers: [ActResolver, CustomerResolver, ...CommandsHandlers, ],
+  controllers: [CustomersController],
 })
 export class CustomersModule {}

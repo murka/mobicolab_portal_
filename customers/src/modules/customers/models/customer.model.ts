@@ -19,8 +19,8 @@ export class Customer {
   public fullname: string;
   @Column()
   public label: string;
-  @Column({ nullable: true })
-  public address?: Address;
+  @Column(type => Address)
+  public address: Address;
   @Column({ nullable: true })
   public tel?: string;
   @Column({ nullable: true })
@@ -30,7 +30,7 @@ export class Customer {
   @OneToMany(type => Act, act => act.customer)
   public acts: [Act];
 
-  constructor(customer: Partial<Customer>) {
+  constructor(customer?: Partial<Customer>) {
     Object.assign(this, customer);
   }
 }

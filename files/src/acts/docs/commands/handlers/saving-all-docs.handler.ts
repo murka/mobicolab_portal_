@@ -18,9 +18,9 @@ export class SavingAllDocsHandler
   ) {}
 
   async execute(command: SavingAllDocsCommand): Promise<Doc[]> {
-    const { docs, actId } = command;
-
     this.logger.verbose('saving-all-docs.command')
+    
+    const { docs, actId } = command;
 
     try {
       const updatedDocs: any[] = [];

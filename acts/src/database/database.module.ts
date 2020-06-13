@@ -4,11 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLFederationModule } from '@nestjs/graphql';
 import { Customer } from '../modules/acts/models/customer.model';
-import { ActsModule } from 'src/modules/acts/acts.module';
 
 @Module({
   imports: [
-    // ActsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

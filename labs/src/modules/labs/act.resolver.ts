@@ -12,6 +12,6 @@ export class ActResolver {
 
   @ResolveField(of => Lab)
   public async customer(@Parent() act: Act): Promise<Lab> {
-    return await this.actRepository.getLab(act.id)
+    return (await this.actRepository.findOne(act.id)).lab
   }
 }

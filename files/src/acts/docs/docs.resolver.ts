@@ -10,7 +10,6 @@ import {
 import { PrismaService } from '../../services/prisma.service';
 import { PubSub } from 'graphql-subscriptions';
 
-import { getManager } from 'typeorm';
 import { CommandBus } from '@nestjs/cqrs';
 import { Doc } from './models/doc.model';
 import { TitlingDocInput } from './models/dto/titling-doc.input';
