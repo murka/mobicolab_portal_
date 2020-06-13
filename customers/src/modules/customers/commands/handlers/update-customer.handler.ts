@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
-import { UpdateCustomerCommand } from '../impl/update-lab.command';
+import { UpdateCustomerCommand } from '../impl/update-customer.command';
 import { Logger } from '@nestjs/common';
 import { CustomerRepository } from '../../customer.repository';
 import { Customer } from '../../models/customer.model';

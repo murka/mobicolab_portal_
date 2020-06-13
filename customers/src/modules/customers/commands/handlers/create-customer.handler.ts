@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import { CustomerRepository } from '../../customer.repository';
 import { Customer } from '../../models/customer.model';
 import { CustomerCreatedEvent } from '../../events/impl/customer-created.event';
-import { CreateCustomerCommand } from '../impl/create-lab.command';
+import { CreateCustomerCommand } from '../impl/create-customer.command';
 
 @CommandHandler(CreateCustomerCommand)
 export class CreateCustomerHandler implements ICommandHandler<CreateCustomerCommand> {
