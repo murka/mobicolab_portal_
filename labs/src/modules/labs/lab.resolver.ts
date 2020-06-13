@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { Lab } from './models/lab.model';
 import { LabRepository } from './lab.repository';
 import { CommandBus } from '@nestjs/cqrs'
+import { ChangeLabIdCommand } from './commands/impl/change-lab-id.command';
 
 interface LabService {
   findAllLabs(data: number): Observable<Lab>;
