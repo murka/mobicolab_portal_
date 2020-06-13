@@ -15,7 +15,7 @@ export class Act {
   public id: string;
 
   @Field(type => Lab)
-  @ManyToOne(type => Lab, lab => lab.acts)
+  @ManyToOne(type => Lab, lab => lab.acts, { cascade: true })
   public lab: Lab;
 
   constructor(lab: Partial<Lab>) {

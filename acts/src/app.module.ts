@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ActsModule } from './modules/acts/acts.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Lab } from './modules/acts/models/lab.model';
+
 
 @Module({
   imports: [
@@ -13,6 +12,5 @@ import { Lab } from './modules/acts/models/lab.model';
     DatabaseModule,
     ActsModule,
   ],
-  // exports: [DatabaseModule]
 })
 export class AppModule {}

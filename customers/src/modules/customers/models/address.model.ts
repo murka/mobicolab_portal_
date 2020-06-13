@@ -1,14 +1,13 @@
-import { Entity, Column } from 'typeorm';
+import { Column } from 'typeorm';
 import { ObjectType, Field,} from '@nestjs/graphql';
 
-@Entity()
 @ObjectType('Address')
 export class Address {
     @Field(()=> String)
     @Column({ nullable: true })
     zip?: string;
     @Column({ nullable: true })
-    county?: string;
+    country?: string;
     @Column({ nullable: true })
     region?: string;
     @Column({ nullable: true })
