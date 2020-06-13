@@ -11,16 +11,12 @@ import { Act } from './models/act.model';
 import { Lab } from './models/lab.model';
 import { LabsController } from './labs.controller';
 import { CommandHandlers } from './commands/handlers';
+import { EvnetHandlers } from './events/handlers';
 
 @Module({
   imports: [
     CqrsModule,
-    TypeOrmModule.forFeature([
-      Act,
-      Lab,
-      ActRepository,
-      LabRepository,
-    ]),
+    TypeOrmModule.forFeature([Act, Lab, ActRepository, LabRepository]),
     ClientsModule.register([
       {
         name: 'BRIDGE_PACKAGE',
@@ -28,11 +24,11 @@ import { CommandHandlers } from './commands/handlers';
       },
       {
         name: 'ACTS_PACKAGE',
-        ...grpcActsClientOptions
-      }
+        ...grpcActsClientOptions,
+      },
     ]),
   ],
-  providers: [ActResolver, LabResolver, ...CommandHandlers],
+  providers: [ActResolver, LabResolver, ...CommandHandlers, ...EvnetHandlers],
   controllers: [LabsController],
 })
 export class LabsModule {}

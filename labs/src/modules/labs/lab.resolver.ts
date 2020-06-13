@@ -1,5 +1,5 @@
 import { OnModuleInit, Inject, Logger } from '@nestjs/common';
-import { Resolver, Query, Args, ResolveReference } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveReference, Mutation } from '@nestjs/graphql';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,6 +7,9 @@ import { Lab } from './models/lab.model';
 import { LabRepository } from './lab.repository';
 import { CommandBus } from '@nestjs/cqrs'
 import { ChangeLabIdCommand } from './commands/impl/change-lab-id.command';
+import { InsertLabDto } from './models/dto/insert-lab.dto';
+import { CreateLabCommand } from './commands/impl/create-lab.command';
+import { CreateLabDto } from './models/dto/create-lab.dto';
 
 interface LabService {
   findAllLabs(data: number): Observable<Lab>;
@@ -49,6 +52,13 @@ export class LabResolver implements OnModuleInit {
       }),
     );
   }
+
+  @Mutation(returns => Lab)
+  async createLab(@Args('createLabData') createLabData: CreateLabDto): Promise<Lab> {
+    return await this.commandBus.execute(new CreateLabCommand(createLabData))
+  }
+
+  @Mutation(returns => Lab)
 
   @ResolveReference()
   async resolverReference(reference: { __typename: string; id: string }) {
