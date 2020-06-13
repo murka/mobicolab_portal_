@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, ResolveReference } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveReference, Mutation } from '@nestjs/graphql';
 import { GeneralCustomer } from './models/general-customer.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,6 +7,10 @@ import { GeneralCustomerRepository } from './general-customer.repository';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CommandBus } from '@nestjs/cqrs';
 import { ChangeGCustomerIdCommand } from './commands/impl/change-gcustomer-id.command';
+import { CreateGeneralCustomerDto } from './models/dto/create-gcustomer.dto';
+import { InsertGeneralCustomerDto } from './models/dto/insert-gcustomer.dto';
+import { CreateGeneralCustomerCommand } from './commands/impl/create-lab.command';
+import { UpdateGeneralCustomerCommand } from './commands/impl/update-lab.command';
 
 interface GCustomerService {
   findAllGeneralCustomers(data: number): Observable<GeneralCustomer>;
@@ -54,6 +58,20 @@ export class GeneralCustomerResolver implements OnModuleInit {
         return newGCustomer;
       }),
     );
+  }
+
+  @Mutation(returns => GeneralCustomer)
+  async createLab(
+    @Args('createLabData') createLabData: CreateGeneralCustomerDto,
+  ): Promise<GeneralCustomer> {
+    return await this.commandBus.execute(new CreateGeneralCustomerCommand(createLabData));
+  }
+
+  @Mutation(returns => GeneralCustomer)
+  async updateLab(
+    @Args('insertLabData') insertLabData: InsertGeneralCustomerDto,
+  ): Promise<GeneralCustomer> {
+    return await this.commandBus.execute(new UpdateGeneralCustomerCommand(insertLabData));
   }
 
   @ResolveReference()

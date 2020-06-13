@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 't
 import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { Address } from './address.model';
+import { Event } from './event.model';
 
 //Model of General customer for TypeORM and GraphQl modules
 
@@ -17,21 +18,23 @@ export class GeneralCustomer {
   //directive to define id field for apollo federation
   @Directive('@external')
   @PrimaryGeneratedColumn('uuid')
-  public id: string;
+  id: string;
   @Column()
-  public fullname: string;
+  fullname: string;
   @Column()
-  public label: string;
+  label: string;
   @Column({ nullable: true })
-  public address?: Address;
+  address?: Address;
   @Column({ nullable: true })
-  public tel?: string;
+  tel?: string;
   @Column({ nullable: true })
-  public email?: string;
+  email?: string;
   //define an actModel for apollo federation
   @Field(type => Act)
   @OneToMany(type => Act, act => act.general_customer)
-  public acts: [Act];
+  acts: [Act];
+  @OneToMany(type => Event, events => events.general_customer, { nullable: true })
+  evnets: Event[]
 
   constructor(act: Partial<Act>) {
     Object.assign(this, act);
