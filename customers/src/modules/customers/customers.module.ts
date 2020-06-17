@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ActResolver } from './act.resolver';
+// import { ActResolver } from './act.resolver';
 import { CustomerResolver } from './customer.resolver';
-import { ActRepository, CustomerRepository } from './customer.repository';
+import { ActRepository, CustomerRepository, EventRepository } from './customer.repository';
 import { ClientsModule } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './models/customer.model';
@@ -12,6 +12,7 @@ import { grpcBridgeClientOptions } from 'src/gRPC/grpc-bridge-client.options';
 import { grpcActsClientOptions } from 'src/gRPC/grpc-acts-client.options';
 import { CustomersController } from './customers.controller';
 import { EvnetHandlers } from './events/handlers';
+import { CustomerEvent } from './models/customer-event.model';
 
 @Module({
   imports: [
@@ -19,8 +20,10 @@ import { EvnetHandlers } from './events/handlers';
     TypeOrmModule.forFeature([
       Customer,
       Act,
+      CustomerEvent,
       CustomerRepository,
       ActRepository,
+      EventRepository,
     ]),
     ClientsModule.register([
       {
@@ -34,7 +37,7 @@ import { EvnetHandlers } from './events/handlers';
     ]),
   ],
   providers: [
-    ActResolver,
+    // ActResolver,
     CustomerResolver,
     ...CommandsHandlers,
     ...EvnetHandlers,

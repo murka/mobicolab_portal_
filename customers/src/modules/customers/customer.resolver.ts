@@ -14,6 +14,10 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { MigrationCustomerDto } from './models/dto/migration-customer.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { ChangeCustomerIdCommand } from './commands/impl/change-customer-id.command';
+import { CreateCustomerDto } from './models/dto/create-customer.dto';
+import { CreateCustomerCommand } from './commands/impl/create-customer.command';
+import { PatchCustomerDto } from './models/dto/patch-customer.dto';
+import { UpdateCustomerCommand } from './commands/impl/update-customer.command';
 
 interface CustomerService {
   findAllCustomers(data: number): Observable<MigrationCustomerDto>;
@@ -38,7 +42,7 @@ export class CustomerResolver implements OnModuleInit {
   }
 
   @Query(returns => [Customer])
-  async customers(): Promise<Customer[]> {
+  async getCustomers(): Promise<Customer[]> {
     return await this.customerRepository.find();
   }
 
@@ -63,8 +67,19 @@ export class CustomerResolver implements OnModuleInit {
       )
   }
 
+  @Mutation(returns => Customer)
+  async createCustomer(@Args('createCustomerData') createCustomerData: CreateCustomerDto): Promise<Customer> {
+    return await this.commandBus.execute(new CreateCustomerCommand(createCustomerData))
+  }
+
+  @Mutation(returns => Customer)
+  async updateCustomer(@Args('updateCustomerData') updateCustomerData: PatchCustomerDto): Promise<Customer> {
+    return await this.commandBus.execute(new UpdateCustomerCommand(updateCustomerData))
+  }
+
   @ResolveReference()
-  async resolveReference(reference: { __typename: string; id: string }) {
+  async resolveReference(reference: { __typename: string, id: string }) {
+    this.logger.verbose('resolve referense inside `Customer resolver`')
     return await this.customerRepository.findOne(reference.id);
   }
 

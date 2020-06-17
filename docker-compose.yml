@@ -11,6 +11,8 @@ services:
     networks:
       - acts
       - customers
+      - gcustomers
+      - labs
 
     
   # db_files:
@@ -76,8 +78,7 @@ services:
       - "3002:3002"
     depends_on:
       - db_acts
-      - api_bridge
-      - db
+      - api_customers
     command: npm run start:dev
 
 
@@ -113,72 +114,77 @@ services:
       - "3003:3003"
     depends_on:
       - db_customers
-      - api_acts
+      - api_general_customers
     command: npm run start:dev
 
-  # db_general_customers:
-  #   image: postgres
-  #   volumes:
-  #     - ./mobicolab_portal_db/db_general_customers:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_PASSWORD: mobicolab
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_DB: general_customers
-  #   ports:
-  #     - "6004:5432"
-  #   networks:
-  #     - test
-  # api_general_customers:
-  #   image: mark600/mobicolab_portal_api_general-customers
-  #   restart: always
-  #   volumes:
-  #     - "./mobicolab-portal-api/apps/general-customers:/usr/share/app"
-  #     - 'usr/share/app/node_modules'
-  #   networks:
-  #     - test
-  #   environment:
-  #     TYPEORM_HOST_DOCKER: db_customers
-  #     TYPEORM_USERNAME: postgres
-  #     TYPEORM_PASSWORD: mobicolab
-  #     TYPEORM_DATABASE: general_customers
-  #   ports:
-  #     - "3004:3004"
-  #   depends_on:
-  #     - db_general_customers
-  #     - api_customers
-  #   command: yarn start:dev
+  db_general_customers:
+    image: postgres
+    volumes:
+      - ./db_data/db_general_customers:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6004:5432"
+    networks:
+      - gcustomers
+  api_general_customers:
+    build:  
+      context: './general-customers'
+    restart: always
+    volumes:
+      - "./general-customers:/usr/share/app"
+      - 'usr/share/app/node_modules'
+    networks:
+      - test
+      - gcustomers
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_general_customers
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+    ports:
+      - "3004:3004"
+    depends_on:
+      - db_general_customers
+      - api_labs
+    command: yarn start:dev
 
-  # db_labs:
-  #   image: postgres
-  #   volumes:
-  #     - ./mobicolab_portal_db/db_labs:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_PASSWORD: mobicolab
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_DB: labs
-  #   ports:
-  #     - "6005:5432"
-  #   networks:
-  #     - test
-  # api_labs:
-  #   image: mark600/mobicolab_portal_api_labs
-  #   restart: always
-  #   volumes:
-  #     - "./mobicolab-portal-api/apps/labs:/usr/share/app"
-  #     - 'usr/share/app/node_modules'
-  #   networks:
-  #     - test
-  #   environment:
-  #     TYPEORM_HOST_DOCKER: db_customers
-  #     TYPEORM_USERNAME: postgres
-  #     TYPEORM_PASSWORD: mobicolab
-  #     TYPEORM_DATABASE: labs
-  #   ports:
-  #     - "3005:3005"
-  #   depends_on:
-  #     - db_labs
-  #     - api_general_customers
-  #   command: yarn start:dev
+  db_labs:
+    image: postgres
+    volumes:
+      - ./db_data/db_labs:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6005:5432"
+    networks:
+      - labs
+  api_labs:
+    build:  
+      context: './labs'
+    restart: always
+    volumes:
+      - "./labs:/usr/share/app"
+      - 'usr/share/app/node_modules'
+    networks:
+      - labs
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_labs
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+    ports:
+      - "3005:3005"
+    depends_on:
+      - db_labs
+    command: yarn start:dev
 
 
 
@@ -217,19 +223,22 @@ services:
   #   depends_on:
   #     - server
       
-  # api_gateway:
-  #     image: mark600/mobicolab_portal_api_gateway
-  #     restart: always
-  #     volumes:
-  #       - "./mobicolab-portal-api/apps/api-gateway:/usr/share/app"
-  #     networks:
-  #       - test
-  #     ports:
-  #       - "2000:2000"
-  #     command: yarn start:dev 
-  #     depends_on:
-  #         - api_acts
-  #         - api_customers
+  api_gateway:
+    build:  
+      context: './labs'
+    restart: always
+    volumes:
+      - "./api-gateway:/usr/share/app"
+    networks:
+      - test
+    ports:
+      - "2000:2000"
+    command: yarn start:dev 
+    depends_on:
+        - api_acts
+        - api_customers
+        - api_general_customers
+        - api_labs
 
   api_bridge:
     build:  
@@ -242,6 +251,7 @@ services:
       - test
     depends_on:
         - db
+        - api_acts
     # ports:
     #   - "5000:5000"
     command: npm run start:dev
@@ -252,3 +262,5 @@ networks:
   test:
   acts:
   customers:
+  gcustomers:
+  labs:
