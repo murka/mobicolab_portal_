@@ -1,11 +1,12 @@
-import { InputType, Field } from "@nestjs/graphql";
 import { TypeOfSample } from "../type-of-sample.model";
 import { DateAndTime } from "../date-time.model";
 import { Application } from "../application.model";
+import { InputType, Field } from "@nestjs/graphql";
 
 @InputType()
-export class NewActDto {
+export class PatchActDto {
   @Field()
+  id: string;
   name: string;
   customer: string;
   general_customer: string;

@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { Customer } from './models/customer.model';
-import { GCustomer } from './models/general-customer.model';
+import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
-import { Event } from './models/act-event.model';
+import { ActEvent } from './models/act-event.model';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
@@ -20,8 +20,8 @@ export class CustomerRepository extends Repository<Customer> {
   }
 }
 
-@EntityRepository(GCustomer)
-export class GCustomerRepository extends Repository<GCustomer> {
+@EntityRepository(GeneralCustomer)
+export class GCustomerRepository extends Repository<GeneralCustomer> {
   logger = new Logger(this.constructor.name);
 
   async changeId(newId: string, oldId: string): Promise<void> {
@@ -50,5 +50,5 @@ export class LabRepository extends Repository<Lab> {
   }
 }
 
-@EntityRepository(Event)
-export class EventRepository extends Repository<Event> {}
+@EntityRepository(ActEvent)
+export class EventRepository extends Repository<ActEvent> {}

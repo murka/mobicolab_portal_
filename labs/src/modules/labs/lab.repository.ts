@@ -3,7 +3,7 @@ import { Lab } from './models/lab.model';
 import { Act } from './models/act.model';
 import { Logger } from '@nestjs/common';
 import { MigrationLabDto } from './models/dto/migration-lab.dto';
-import { Event } from './models/event.model';
+import { LabEvent } from './models/lab-event.model';
 
 @EntityRepository(Lab)
 export class LabRepository extends Repository<Lab> {
@@ -31,5 +31,5 @@ export class LabRepository extends Repository<Lab> {
 @EntityRepository(Act)
 export class ActRepository extends Repository<Act> {}
 
-@EntityRepository(Event)
-export class EventRepository extends Repository<Event> {}
+@EntityRepository(LabEvent)
+export class EventRepository extends Repository<LabEvent> {}

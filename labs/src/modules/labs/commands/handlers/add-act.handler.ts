@@ -7,8 +7,11 @@ import { LabRepository, ActRepository } from '../../lab.repository';
 export class AddActHandler implements ICommandHandler<AddActCommand> {
     logger = new Logger(this.constructor.name)
 
-    constructor(private readonly labRepository: LabRepository,
-        private readonly actRepository: ActRepository) {}
+    constructor(
+        private readonly labRepository: LabRepository,
+        // private readonly actRepository: ActRepository
+        ) 
+        {}
 
     async execute(command: AddActCommand) {
         this.logger.verbose('add-act.command')
@@ -16,13 +19,13 @@ export class AddActHandler implements ICommandHandler<AddActCommand> {
         const { data } = command
 
         try{
-            const newAct = this.actRepository.create({ id: data.actId })
+            // const newAct = this.actRepository.create({ id: data.actId })
 
-            const lab = await this.labRepository.findOne(data.labId)
+            // const lab = await this.labRepository.findOne(data.labId)
 
-            newAct.lab = lab
+            // newAct.lab = lab
 
-            await this.actRepository.save(newAct)
+            // await this.actRepository.save(newAct)
         } catch(e) {
             this.logger.error(e)
         }

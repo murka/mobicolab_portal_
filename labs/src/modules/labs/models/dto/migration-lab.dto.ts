@@ -1,10 +1,10 @@
-import { Address } from "../address.model";
+import { LabAddress } from "../lab-address.model";
 
 export class MigrationLabDto {
     id: string;
     fullname: string;
     label: string;
-    address?: Address;
+    address?: LabAddress;
     tel?: string;
     email?: string;
 }

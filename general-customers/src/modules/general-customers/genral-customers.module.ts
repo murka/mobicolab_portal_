@@ -3,6 +3,7 @@ import { ActResolver } from './act.resolver';
 import {
   GeneralCustomerRepository,
   ActRepository,
+  EventRepository,
 } from './general-customer.repository';
 import { GeneralCustomerResolver } from './general-customer.resolver';
 import { ClientsModule } from '@nestjs/microservices';
@@ -15,32 +16,35 @@ import { GeneralCustomersController } from './general-customers.controller';
 import { CommandHandlers } from './commands/handlers';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EvnetHandlers } from './events/handlers';
+import { GSEvent } from './models/gc-event.model';
 
 @Module({
   imports: [
-      CqrsModule,
-      TypeOrmModule.forFeature([
-          GeneralCustomer,
-          Act,
-          GeneralCustomerRepository,
-          ActRepository,
-      ]),
+    CqrsModule,
+    TypeOrmModule.forFeature([
+      GeneralCustomer,
+      // Act,
+      GSEvent,
+      GeneralCustomerRepository,
+      // ActRepository,
+      EventRepository,
+    ]),
     ClientsModule.register([
       {
         name: 'BRIDGE_PACKAGE',
         ...grpcClientOptions,
       },
       {
-          name: 'ACTS_PACKAGE',
-          ...grpcActsClientOptions
-      }
+        name: 'ACTS_PACKAGE',
+        ...grpcActsClientOptions,
+      },
     ]),
   ],
   providers: [
-    ActResolver,
+    // ActResolver,
     GeneralCustomerResolver,
     ...CommandHandlers,
-    ...EvnetHandlers
+    ...EvnetHandlers,
   ],
   controllers: [GeneralCustomersController],
 })

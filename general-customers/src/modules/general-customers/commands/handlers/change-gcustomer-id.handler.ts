@@ -6,7 +6,7 @@ import { Inject, Logger, OnModuleInit } from "@nestjs/common";
 import { ClientGrpc } from "@nestjs/microservices";
 
 interface GCustomerGrpcService {
-    migrationGCusomer(data: ChangeGCustomerIdDto): Observable<any>
+    migrationGeneralCustomer(data: ChangeGCustomerIdDto): Observable<any>
 }
 
 @CommandHandler(ChangeGCustomerIdCommand)
@@ -27,7 +27,7 @@ export class ChangeGCustomerIdHandler implements ICommandHandler<ChangeGCustomer
         const { newId, oldId } = command
 
         try {
-            this.gcustomerGrpcService.migrationGCusomer({ newId, oldId }).subscribe(r => this.logger.log(r))
+            this.gcustomerGrpcService.migrationGeneralCustomer({ newId, oldId }).subscribe(r => this.logger.log(r))
         } catch(e) {
             this.logger.error(e)
         }

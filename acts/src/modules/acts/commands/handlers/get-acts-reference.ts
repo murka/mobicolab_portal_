@@ -17,7 +17,7 @@ export class GetActsOfCustomerHadler
     const { customerId } = command;
 
     try {
-      return (await this.customerRepository.findOne(customerId)).acts;
+      return (await this.customerRepository.findOne(customerId, { relations: ['acts'] })).acts;
     } catch (e) {
       this.logger.error(e);
     }

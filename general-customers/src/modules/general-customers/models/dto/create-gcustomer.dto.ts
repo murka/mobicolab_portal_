@@ -1,4 +1,4 @@
-import { Address } from "../address.model"
+import { GCAddress } from "../gc-address.model"
 import { InputType, Field } from "@nestjs/graphql"
 
 @InputType()
@@ -6,7 +6,7 @@ export class CreateGeneralCustomerDto {
     @Field()
     fullname: string
     label: string
-    address: Address
+    address: GCAddress
     tel?: string
     email?: string
 }

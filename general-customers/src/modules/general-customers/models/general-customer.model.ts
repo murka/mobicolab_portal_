@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
-import { Address } from './address.model';
-import { Event } from './event.model';
+import { GCAddress } from './gc-address.model';
+import { GSEvent } from './gc-event.model';
 
 //Model of General customer for TypeORM and GraphQl modules
 
@@ -10,33 +10,30 @@ import { Event } from './event.model';
 @Entity()
 // Object type decorator to define it as type of graphql
 @ObjectType('GeneralCustomer')
-//Both directive to define class as useble in apollo federation
-@Directive('@extends')
+//directive to define class as useble in apollo federation
 @Directive('@key(fields: "id")')
 export class GeneralCustomer {
   @Field(() => ID)
-  //directive to define id field for apollo federation
-  @Directive('@external')
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  public id: string;
   @Column()
-  fullname: string;
+  public fullname: string;
   @Column()
-  label: string;
+  public label: string;
+  @Column(type => GCAddress)
+  public address: GCAddress;
   @Column({ nullable: true })
-  address?: Address;
+  public tel?: string;
   @Column({ nullable: true })
-  tel?: string;
-  @Column({ nullable: true })
-  email?: string;
+  public email?: string;
   //define an actModel for apollo federation
-  @Field(type => Act)
-  @OneToMany(type => Act, act => act.general_customer)
-  acts: [Act];
-  @OneToMany(type => Event, events => events.general_customer, { nullable: true })
-  evnets: Event[]
+  // @Field(type => [Act])
+  // @OneToMany(type => Act, act => act.general_customer)
+  // public acts: Act[];
+  @OneToMany(type => GSEvent, events => events.general_customer, { nullable: true })
+  public evnets: GSEvent[]
 
-  constructor(act: Partial<Act>) {
-    Object.assign(this, act);
+  constructor(general_cusomer: Partial<GeneralCustomer>) {
+    Object.assign(this, general_cusomer);
   }
 }

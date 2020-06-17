@@ -1,13 +1,13 @@
-import { Address } from "../address.model"
+import { CustomerAddress } from "../customer-address.model"
 import { InputType, Field } from "@nestjs/graphql"
 
 @InputType()
-export class InsertCustomerDto {
+export class PatchCustomerDto {
     @Field()
     id: string
     fullname?: string
     label?: string
-    address: Address
+    address: CustomerAddress
     tel?: string
     email?: string
 }

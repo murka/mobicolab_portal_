@@ -14,11 +14,11 @@ export class Act {
   @PrimaryColumn()
   public id: string;
 
-  @Field(type => Lab)
-  @ManyToOne(type => Lab, lab => lab.acts, { cascade: true })
-  public lab: Lab;
+  // @Field(type => Lab)
+  // @ManyToOne(type => Lab, lab => lab.acts, { cascade: true })
+  // public lab: Lab;
 
-  constructor(lab: Partial<Lab>) {
-    Object.assign(this, lab);
+  constructor(partial: Partial<Lab>) {
+    Object.assign(this, partial);
   }
 }

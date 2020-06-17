@@ -1,8 +1,8 @@
 import { Column } from 'typeorm';
 import { ObjectType, Field,} from '@nestjs/graphql';
 
-@ObjectType('Address')
-export class Address {
+@ObjectType()
+export class CustomerAddress {
     @Field(()=> String)
     @Column({ nullable: true })
     zip?: string;

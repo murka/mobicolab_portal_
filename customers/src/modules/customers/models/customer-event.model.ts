@@ -6,8 +6,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { registerEnumType } from '@nestjs/graphql';
-import { Customer } from '../customer.model';
+import { registerEnumType, ObjectType, Field, ID } from '@nestjs/graphql';
+import { Customer } from './customer.model';
 
 export enum AllowEvent {
   CREATED = 'CREATED',
@@ -16,7 +16,9 @@ export enum AllowEvent {
 }
 
 @Entity()
-export class Event {
+@ObjectType()
+export class CustomerEvent {
+  @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({ type: 'enum', enum: AllowEvent, nullable: true })
