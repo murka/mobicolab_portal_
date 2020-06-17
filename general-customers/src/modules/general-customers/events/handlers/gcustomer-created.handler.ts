@@ -6,6 +6,7 @@ import { EventRepository } from '../../general-customer.repository';
 @EventsHandler(GeneralCustomerCreatedEvent)
 export class GeneralCustomerCretedHandler
   implements IEventHandler<GeneralCustomerCreatedEvent> {
+    
   logger = new Logger(this.constructor.name);
 
   constructor(private readonly eventRepository: EventRepository) {}
