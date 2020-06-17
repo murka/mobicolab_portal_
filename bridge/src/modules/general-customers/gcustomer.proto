@@ -1,21 +1,22 @@
 syntax = "proto3";
 
-package gcustomer;
+package general_customer;
 
-service GCustomerService {
-    rpc FindAllCustomers (Id) returns (stream GCustomer);
+service GeneralCustomerService {
+    rpc FindAllGeneralCustomers (Id) returns (stream GeneralCustomer);
 }
 
 message Id {
     int32 id = 1;
 }
 
-message GCustomer {
+message GeneralCustomer {
     string id = 1;
     string fullname = 2;
-    Address address = 3;
-    string tel = 4;
-    string email = 5;
+    string label = 3;
+    Address address = 4;
+    string tel = 5;
+    string email = 6;
 }
 
 message Address {

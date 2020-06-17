@@ -10,8 +10,8 @@ export class GeneralCustomerController {
 
   constructor(private readonly gcService: GeneralCustomersService) {}
 
-  @GrpcMethod('GCustomerService')
-  findAllCustomers(): Observable<any[]> {
+  @GrpcMethod('GeneralCustomerService')
+  findAllGeneralCustomers(): Observable<any[]> {
     let gs$ = new ReplaySubject<any>();
     this.gcService
       .findAllGCustomers()
