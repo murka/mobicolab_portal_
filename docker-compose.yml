@@ -15,35 +15,38 @@ services:
       - labs
 
     
-  # db_files:
-  #   image: postgres
-  #   volumes:
-  #     - ./mobicolab_portal_db/db_files:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_PASSWORD: mobicolab
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_DB: files
-  #   ports:
-  #     - "6001:5432"
-  #   networks:
-  #     - test
-  # api_files:
-  #   image: mark600/mobicolab_portal_api_files
-  #   restart: always
-  #   volumes:
-  #     - "./mobicolab-portal-api/apps/files:/usr/share/app"
-  #   networks:
-  #     - test
-  #   environment:
-  #     TYPEORM_HOST_DOCKER: db_files
-  #     TYPEORM_USERNAME: postgres
-  #     TYPEORM_PASSWORD: mobicolab
-  #     TYPEORM_DATABASE: files
-  #   ports:
-  #     - "3001:3001"
-  #   depends_on:
-  #     - db_files
-  #   command: yarn start:dev
+  db_files:
+    image: postgres
+    volumes:
+      - ./db_data/db_files2:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6001:5432"
+    networks:
+      - files
+  api_files:
+    build:  
+      context: './files'
+    restart: always
+    volumes:
+      - "./files:/usr/share/app"
+    networks:
+      - files
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_files
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db_files
+    command: yarn start:dev
   
 
   db_acts:
@@ -198,30 +201,30 @@ services:
     networks:
       - test
 
-  # server:
-  #   image: mark600/mobicolab_portal_server:latest
-  #   restart: always
-  #   volumes:
-  #     - "./server:/usr/share/app"
-  #   networks:
-  #     - test
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - db
-  #   command: npm run dev
+  server:
+    image: mark600/mobicolab_portal_server:latest
+    restart: always
+    volumes:
+      - "./server:/usr/share/app"
+    networks:
+      - test
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: npm run dev
 
-  # web:
-  #   image: mark600/mobicolab_portal_ui:latest
-  #   volumes:
-  #     - "./client:/app"
-  #   # - '/app/node_modules'
-  #   ports:
-  #     - "4200:4200"
-  #   networks:
-  #     - test
-  #   depends_on:
-  #     - server
+  web:
+    image: mark600/mobicolab_portal_ui:latest
+    volumes:
+      - "./client:/app"
+    # - '/app/node_modules'
+    ports:
+      - "4200:4200"
+    networks:
+      - test
+    depends_on:
+      - server
       
   api_gateway:
     build:  
@@ -264,3 +267,4 @@ networks:
   customers:
   gcustomers:
   labs:
+  files:

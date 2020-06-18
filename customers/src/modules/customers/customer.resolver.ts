@@ -82,9 +82,4 @@ export class CustomerResolver implements OnModuleInit {
     this.logger.verbose('resolve referense inside `Customer resolver`')
     return await this.customerRepository.findOne(reference.id);
   }
-
-  // @ResolveField(of => [Act])
-  // public acts(@Parent() customer: Customer) {
-  //     return customer.acts.map(act => { __typename: "Act"; act.id })
-  // }
 }

@@ -22,9 +22,9 @@ export class Act {
   @Field(type => Customer)
   @ManyToOne(type => Customer, coustomer => coustomer.acts, { cascade: true, onUpdate: 'CASCADE', eager: true})
   public customer: Customer;
-  @ManyToOne(type => GeneralCustomer, general_customer => general_customer.acts, { cascade: true, onUpdate: 'CASCADE' })
+  @ManyToOne(type => GeneralCustomer, general_customer => general_customer.acts, { cascade: true, onUpdate: 'CASCADE', eager: true })
   public general_customer: GeneralCustomer;
-  @ManyToOne(type => Lab, lab => lab.acts, { cascade: true, onUpdate: 'CASCADE' })
+  @ManyToOne(type => Lab, lab => lab.acts, { cascade: true, onUpdate: 'CASCADE', eager: true })
   public lab: Lab;
   @Column(type => TypeOfSample)
   public typeOfSample: TypeOfSample;

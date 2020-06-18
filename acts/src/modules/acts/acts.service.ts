@@ -192,4 +192,10 @@ export class ActsService implements OnModuleInit {
       this.logger.error(e);
     }
   }
+
+  async getActByIdOfCustomer(cusomerId: string, actId: string): Promise<Act> {
+    this.logger.verbose('get-act-by-id-of-customer.method');
+
+    return await this.actRepository.findOne(actId)
+  }
 }

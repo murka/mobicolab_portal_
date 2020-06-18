@@ -21,6 +21,8 @@ import { AddActsReferencesCommand } from './commands/impl/add-acts-references.co
 import { ActsService } from './acts.service';
 import { UpdateActCommand } from './commands/impl/update-act.command';
 import { PatchActDto } from './models/dto/patch-act.dto';
+import { GeneralCustomer } from './models/general-customer.model';
+import { Lab } from './models/lab.model';
 
 interface ActsGRPCService {
   findAllActs(data: number): Observable<MigrationCreateActDto>;
@@ -87,5 +89,16 @@ export class ActResolver implements OnModuleInit {
   public customer(@Parent() act: Act) {
     this.logger.verbose(`customer resolverField ${JSON.stringify(act.customer, null, 2)}`)
     return { __typename: 'Customer', id: act.customer.id };
+  }
+
+  @ResolveField(of => GeneralCustomer)
+  general_customer(@Parent() act: Act) {
+    this.logger.verbose(`gcustomer resolverField ${JSON.stringify(act.general_customer, null, 2)}`)
+    return { __typename: 'GeneralCustomer', id: act.general_customer.id }
+  }
+
+  @ResolveField(of => Lab)
+  lab(@Parent() act: Act) {
+    return { __typename: 'Lab', id: act.lab.id }
   }
 }

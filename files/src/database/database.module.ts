@@ -1,6 +1,5 @@
-import { Module, Logger } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -28,7 +27,7 @@ import { DocsModule } from 'src/acts/docs/docs.module';
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       uploads: false,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: true,
       debug: true,
       playground: true,
       include: [DocsModule],
