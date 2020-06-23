@@ -5,6 +5,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from 'src/services/prisma.service';
 import { SavedDocEvent } from '../../events/impl/saved-doc.event';
 import { Doc } from '../../models/doc.model';
+import { DocsService } from '../../docs.service';
 
 @CommandHandler(SavingAllDocsCommand)
 export class SavingAllDocsHandler
@@ -13,7 +14,7 @@ export class SavingAllDocsHandler
 
   constructor(
     private eventBus: EventBus,
-    @Inject('PUB_SUB') private readonly pubsub: PubSub,
+    private readonly ds: DocsService,
     private prisma: PrismaService,
   ) {}
 
@@ -23,21 +24,23 @@ export class SavingAllDocsHandler
     const { docs, actId } = command;
 
     try {
-      const updatedDocs: any[] = [];
+      const updatedDocs: Doc[] = [];
+
       for await (let docId of docs) {
         try {
           this.eventBus.publish(new SavedDocEvent(docId));
 
           const doc = await this.prisma.doc.findOne({ where: { id: docId } });
-
-          this.pubsub.publish(`Act_${actId}_added`, {
-            changeDocs: { mutation: 'UPDATED', data: doc },
-          });
+ 
           updatedDocs.push(doc);
         } catch (e) {
           this.logger.error(e);
         }
       }
+      const docsId = updatedDocs.map(doc => doc.id)
+
+      await this.ds.publishDocs(docsId, actId, 'UPDATED')
+
       return updatedDocs
     } catch (e) {
       this.logger.error(e);

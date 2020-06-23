@@ -4,6 +4,7 @@ import { Logger, Inject } from '@nestjs/common';
 import { SavedDocEvent } from '../../events/impl/saved-doc.event';
 import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from 'src/services/prisma.service';
+import { DocsService } from '../../docs.service';
 
 @CommandHandler(SavingDocCommand)
 export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
@@ -13,6 +14,7 @@ export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
     private eventBus: EventBus,
     @Inject('PUB_SUB') private readonly pubsub: PubSub,
     private prisma: PrismaService,
+    private readonly ds: DocsService,
   ) {}
 
   async execute(command: SavingDocCommand) {
@@ -27,6 +29,8 @@ export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
       this.pubsub.publish(`Act_${actId}_added`, {
         changeDocs: { mutation: 'UPDATED', data: doc },
       });
+
+      await this.ds.publishDoc(doc.id, actId, 'UPDATED')
 
       return doc;
     } catch (e) {
