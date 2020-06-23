@@ -5,6 +5,7 @@ package migration;
 service MigrationService{
     rpc MigrationGeneralCustomer(ChangeIdDto) returns (Respon);
     rpc AddActsGeneralCusromerReference (stream AddActDto) returns (Null);
+    rpc GetGCustomersLabel (Id) returns (ContractorsLabel);
 }
 
 message ChangeIdDto {
@@ -19,6 +20,14 @@ message Respon {
 message AddActDto {
     string actId = 1;
     string customerId = 2;
+}
+
+message ContractorsLabel {
+    string label = 1;
+}
+
+message Id {
+    string id = 1;
 }
 
 message Null {}

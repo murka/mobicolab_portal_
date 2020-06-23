@@ -17,6 +17,7 @@ import { CommandHandlers } from './commands/handlers';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EvnetHandlers } from './events/handlers';
 import { GSEvent } from './models/gc-event.model';
+import { GeneralCustomersService } from './general-customers.service';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { GSEvent } from './models/gc-event.model';
     GeneralCustomerResolver,
     ...CommandHandlers,
     ...EvnetHandlers,
+    GeneralCustomersService,
   ],
   controllers: [GeneralCustomersController],
 })

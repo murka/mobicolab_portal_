@@ -6,7 +6,7 @@ import { Entity, PrimaryColumn, OneToMany, BaseEntity } from 'typeorm';
 @ObjectType()
 @Directive('@extends')
 @Directive('@key(fields: "id")')
-export class Customer extends BaseEntity {
+export class Customer {
   @Field(type => ID)
   @Directive('@external')
   @PrimaryColumn()
@@ -16,7 +16,6 @@ export class Customer extends BaseEntity {
   @OneToMany(type => Act, act => act.customer )
   public acts: Act[];
   constructor(partial?: Partial<Customer>) {
-    super(),
     Object.assign(this, partial);
   }
 }

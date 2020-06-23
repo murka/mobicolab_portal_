@@ -17,6 +17,7 @@ import { LabEvent } from './models/lab-event.model';
 import { LabsController } from './labs.controller';
 import { CommandHandlers } from './commands/handlers';
 import { EvnetHandlers } from './events/handlers';
+import { LabsService } from './labs.service';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { EvnetHandlers } from './events/handlers';
     // ActResolver, 
     LabResolver, 
     ...CommandHandlers, 
-    ...EvnetHandlers],
+    ...EvnetHandlers, LabsService],
   controllers: [LabsController],
 })
 export class LabsModule {}

@@ -2,6 +2,8 @@ import { Controller, Logger } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CommandBus } from '@nestjs/cqrs';
 import { ChangeCustomerIdCommand, ChangeGeneralCustomerIdCommand, ChangeLabIdCommand } from './commands/impl/migrations.commands';
+import { GetActForFilesCommand } from './commands/impl/get-act-for-files.command';
+import { ActForFilesDto } from './models/dto/act-for-files.dto';
 
 export interface ChangeIdDto {
   newId: string;
@@ -12,7 +14,7 @@ export interface ChangeIdDto {
 export class ActsController {
   logger = new Logger(this.constructor.name);
 
-  constructor(private commandBus: CommandBus) {}
+  constructor(private commandBus: CommandBus,) {}
 
   @GrpcMethod('MigrationService', 'MigrationCustomer')
   async migrationCustomer(data: ChangeIdDto): Promise<any> {
@@ -39,5 +41,11 @@ export class ActsController {
       new ChangeLabIdCommand(data),
     )
     return { respon: 'success' }
+  }
+
+  @GrpcMethod('ActDocService')
+  async findLabels(data: { id: string }): Promise<ActForFilesDto> {
+    this.logger.verbose('find-act-by-id.grpc-method')
+    return await this.commandBus.execute(new GetActForFilesCommand(data.id))
   }
 }

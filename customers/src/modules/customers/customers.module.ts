@@ -13,6 +13,7 @@ import { grpcActsClientOptions } from 'src/gRPC/grpc-acts-client.options';
 import { CustomersController } from './customers.controller';
 import { EvnetHandlers } from './events/handlers';
 import { CustomerEvent } from './models/customer-event.model';
+import { CustomersService } from './customers.service';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CustomerEvent } from './models/customer-event.model';
     CustomerResolver,
     ...CommandsHandlers,
     ...EvnetHandlers,
+    CustomersService,
   ],
   controllers: [CustomersController],
 })

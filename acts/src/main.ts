@@ -19,7 +19,9 @@ async function bootstrap() {
   await app.startAllMicroservicesAsync();
 
   const port = configService.get('PORT')
+
   await app.listen(port);
+  
   logger.log(`Application listening on port ${port}`)
 }
 bootstrap();
