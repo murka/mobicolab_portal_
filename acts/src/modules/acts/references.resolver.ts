@@ -3,25 +3,21 @@ import { Customer } from './models/customer.model';
 import { Act } from './models/act.model';
 import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetActsOfCustomerCommand, GetActsOfGCustomerCommand, GetActsOfLabCommand } from './commands/impl/get-acts-reference';
-import { ActsService } from './acts.service';
+import { Doc } from './models/doc.model';
+import { Logger } from '@nestjs/common';
 
 @Resolver(of => Customer)
 export class CustomerResolver {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly as: ActsService,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @ResolveField(of => [Act])
   public async acts(@Parent() customer: Customer): Promise<Act[]> {
     return await this.commandBus.execute(new GetActsOfCustomerCommand(customer.id))
-  }
-
-  @ResolveField(of => Act)
-  public async act(@Parent() customer: Customer, @Args('actId') actId: string): Promise<Act> {
-    return await this.as.getActByIdOfCustomer(customer.id, actId)
   }
 }
 
@@ -47,4 +43,11 @@ export class LabResolver {
   public async acts(@Parent() lab: Lab): Promise<Act[]> {
     return await this.commandBus.execute(new GetActsOfLabCommand(lab.id))
   }
+}
+
+@Resolver(of => Doc)
+export class DocResolver {
+  logger = new Logger(this.constructor.name)
+
+  // constructor(private readonly) {}
 }

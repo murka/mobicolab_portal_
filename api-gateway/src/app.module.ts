@@ -26,6 +26,7 @@ import { GraphQLGatewayModule } from '@nestjs/graphql';
           { name: 'customers', url: 'http://api_customers:3003/graphql' },
           { name: 'gcustomers', url: 'http://api_general_customers:3004/graphql' },
           { name: 'labs', url: 'http://api_labs:3005/graphql' },
+          { name: 'files', url: 'http://api_files:3001/graphql' },
         ],
       },
     }),

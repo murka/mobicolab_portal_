@@ -33,6 +33,7 @@ services:
     restart: always
     volumes:
       - "./files:/usr/share/app"
+      - '/usr/share/app/node_modules'
     networks:
       - files
       - test
@@ -46,6 +47,30 @@ services:
       - "3001:3001"
     depends_on:
       - db_files
+      - api_acts
+    command: yarn start:dev
+
+  api_subscriptions:
+    build:  
+      context: './api-subscriptions'
+    restart: always
+    volumes:
+      - "./api-subscriptions:/usr/share/app"
+      - '/usr/share/app/node_modules'
+    networks:
+      - files
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_files
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+    ports:
+      - "3006:3006"
+    depends_on:
+      - db_files
+      - api_bridge
     command: yarn start:dev
   
 
@@ -212,6 +237,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - api_bridge
     command: npm run dev
 
   web:
@@ -225,6 +251,7 @@ services:
       - test
     depends_on:
       - server
+      - api_bridge
       
   api_gateway:
     build:  
@@ -238,7 +265,7 @@ services:
       - "2000:2000"
     command: yarn start:dev 
     depends_on:
-        - api_acts
+        - api_files
         - api_customers
         - api_general_customers
         - api_labs
@@ -254,7 +281,7 @@ services:
       - test
     depends_on:
         - db
-        - api_acts
+        - api_files
     # ports:
     #   - "5000:5000"
     command: npm run start:dev

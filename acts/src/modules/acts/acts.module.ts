@@ -28,6 +28,7 @@ import { ActsController } from './acts.controller';
 import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option';
 import { grpcGCustomerClientOptions } from 'src/gRPC/grpc-gcustomer-client.option';
 import { grpcLabClientOptions } from 'src/gRPC/grpc-lab-client.option';
+import { Doc } from './models/doc.model';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { grpcLabClientOptions } from 'src/gRPC/grpc-lab-client.option';
       Customer,
       GeneralCustomer,
       Lab,
+      Doc,
       ActEvent,
       ActRepository,
       CustomerRepository,

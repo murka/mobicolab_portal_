@@ -23,6 +23,7 @@ import { UpdateActCommand } from './commands/impl/update-act.command';
 import { PatchActDto } from './models/dto/patch-act.dto';
 import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
+import { Doc } from './models/doc.model';
 
 interface ActsGRPCService {
   findAllActs(data: number): Observable<MigrationCreateActDto>;
@@ -100,5 +101,10 @@ export class ActResolver implements OnModuleInit {
   @ResolveField(of => Lab)
   lab(@Parent() act: Act) {
     return { __typename: 'Lab', id: act.lab.id }
+  }
+
+  @ResolveField(of => Doc)
+  docs(@Parent() act: Act) {
+    return { __typename: 'Doc', ids: act.docs.map(doc => doc.id) }
   }
 }

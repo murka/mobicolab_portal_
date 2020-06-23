@@ -2,25 +2,15 @@ import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
 
-import { PubSub } from 'graphql-subscriptions';
-
-import { ActsModule } from './acts/acts.module';
+import { DocsModule } from './modules/docs/docs.module'
 import { DatabaseModule } from './database/database.module';
 
 
 @Module({
   imports: [
-    ActsModule,
+    DocsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
-  ],
-  // exports: [DatabaseModule],
-  controllers: [],
-  providers: [
-    {
-      provide: 'PUB_SUB',
-      useValue: new PubSub(),
-    },
   ],
 })
 export class AppModule {}
