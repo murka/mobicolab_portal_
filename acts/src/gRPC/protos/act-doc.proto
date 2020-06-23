@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package act_doc;
+
+service ActDocService {
+    rpc FindLabels (Id) returns (Labels);
+}
+
+message Labels {
+    string id = 1;
+    string name = 2;
+    Customer customer = 3;
+    GCusomer general_customer = 4;
+    Lab lab = 5;
+    DateTime datetime = 6;
+}
+
+message Customer {
+    string label = 1;
+}
+
+message GCusomer {
+    string label = 1;
+}
+
+message Lab {
+    string label = 1;
+}
+
+
+message DateTime {
+    google.protobuf.Timestamp date = 1;
+    string time = 2;
+}

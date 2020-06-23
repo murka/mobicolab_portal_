@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package act_doc;
+
+service ActDocService {
+    rpc FindActById (Id) returns (Act);
+}
+
+message Id {
+    string id = 1;
+}
+
+message Act {
+    Id id = 1;
+    Customer customer = 2;
+    GCusomer general_customer = 3;
+    Lab lab = 4;
+}
+
+message Customer {
+    Id id = 1;
+}
+
+message GCusomer {
+    Id id = 1;
+}
+
+message Lab {
+    Id id = 1;
+}

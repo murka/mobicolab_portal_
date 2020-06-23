@@ -1,10 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeletingDocCommand } from '../impl/deleting-doc.command';
-import { Logger, Inject } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma.service';
 import { DocsService } from '../../docs.service';
-import { PubSub } from 'graphql-subscriptions';
-import { Doc } from 'src/acts/docs/models/doc.model';
 
 @CommandHandler(DeletingDocCommand)
 export class DeletingDocHandler implements ICommandHandler<DeletingDocCommand> {
@@ -13,7 +11,6 @@ export class DeletingDocHandler implements ICommandHandler<DeletingDocCommand> {
   constructor(
     private prisma: PrismaService,
     private ds: DocsService,
-    @Inject('PUB_SUB') private readonly pubsub: PubSub,
   ) {}
 
   async execute(command: DeletingDocCommand): Promise<any> {
@@ -30,9 +27,7 @@ export class DeletingDocHandler implements ICommandHandler<DeletingDocCommand> {
 
       const doc = await this.prisma.doc.delete({ where: { id: docId, } });
 
-      this.pubsub.publish(`Act_${actId}_added`, {
-        changeDocs: { mutation: 'DELETED', data: doc },
-      });
+      await this.ds.publishDoc(doc.id, actId, 'DELETED')
 
       return doc;
     } catch (err) {

@@ -9,6 +9,9 @@ service MigrationService{
     rpc AddActsCusromerReference (stream AddActDto) returns (Null);
     rpc AddActsGeneralCusromerReference (stream AddActDto) returns (Null);
     rpc AddActsLabReference (stream AddActDto) returns (Null);
+    rpc GetCustomersLabel (Id) returns (ContractorsLabel);
+    rpc GetGCustomersLabel (Id) returns (ContractorsLabel);
+    rpc GetLabsLabes (Id) returns (ContractorsLabel);
 }
 
 message ChangeIdDto {
@@ -23,6 +26,14 @@ message Respon {
 message AddActDto {
     string actId = 1;
     string contractorId = 2;
+}
+
+message ContractorsLabel {
+    string label = 1;
+}
+
+message Id {
+    string id = 1;
 }
 
 message Null {}

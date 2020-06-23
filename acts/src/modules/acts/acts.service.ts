@@ -20,11 +20,13 @@ import { Lab } from './models/lab.model';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
+
 interface CustomerGrpcClient {
   addActsCusromerReference(data: {
     actId: string;
     contractorId: string;
   }): Observable<void>;
+  getCustomersLabel({ id: string }): Observable<{ label: string }>;
 }
 
 interface GCustomerGrpcClient {
@@ -32,6 +34,7 @@ interface GCustomerGrpcClient {
     actId: string;
     contractorId: string;
   }): Observable<void>;
+  getGCustomersLabel({ id: string }): Observable<{ label: string }>
 }
 
 interface LabGrpcClient {
@@ -39,6 +42,7 @@ interface LabGrpcClient {
     actId: string;
     contractorId: string;
   }): Observable<void>;
+  getLabsLabes({id: string}): Promise<{ label: string }>
 }
 
 @Injectable()
@@ -114,6 +118,10 @@ export class ActsService implements OnModuleInit {
     return await this.actRepository.save(newAct);
   }
 
+  async findAct(id: string): Promise<Act> {
+    return await this.actRepository.findOne(id);
+  }
+
   async findCustomer(id: string): Promise<Customer> {
     return await this.customerRepository.findOne(id);
   }
@@ -130,32 +138,26 @@ export class ActsService implements OnModuleInit {
     this.logger.verbose('get-contractors.method');
 
     try {
-      const customer = await this.findCustomer(customerId);
+      let customer = await this.findCustomer(customerId);
 
-      if (!customer)
-        throw new HttpException(
-          { status: HttpStatus.NOT_FOUND, error: 'Customer doesn`t find' },
-          HttpStatus.NOT_FOUND,
-        );
+      if (!customer) {
+        customer = this.customerRepository.create({ id: customerId })
+        await this.customerRepository.save(customer)
+      }
 
-      const gcustomer = await this.findGCustomer(gcustomerId);
+      let gcustomer = await this.findGCustomer(gcustomerId);
 
-      if (!gcustomer)
-        throw new HttpException(
-          {
-            status: HttpStatus.NOT_FOUND,
-            error: 'General cusomer doesn`t find',
-          },
-          HttpStatus.NOT_FOUND,
-        );
+      if (!gcustomer) {
+        gcustomer = this.gcustomerRepository.create({ id: gcustomerId })
+        await this.gcustomerRepository.save(gcustomer)
+      }
 
-      const lab = await this.findLab(labId);
+      let lab = await this.findLab(labId);
 
-      if (!lab)
-        throw new HttpException(
-          { status: HttpStatus.NOT_FOUND, error: 'Lab doesn`t find' },
-          HttpStatus.NOT_FOUND,
-        );
+      if (!lab) {
+        lab = this.labRepository.create({ id: labId })
+        await this.labRepository.save(lab)
+      }
 
       return { customer, gcustomer, lab };
     } catch (e) {
@@ -193,9 +195,30 @@ export class ActsService implements OnModuleInit {
     }
   }
 
-  async getActByIdOfCustomer(cusomerId: string, actId: string): Promise<Act> {
-    this.logger.verbose('get-act-by-id-of-customer.method');
+  async getCusomersLabel(id: string): Promise<{ label: string }> {
+    this.logger.verbose('get-customer`s label.method');
+    try {
+      return await this.customerGrpcClient.getCustomersLabel({ id }).toPromise()
+    } catch (e) {
+      this.logger.error(e);
+    }
+  }
 
-    return await this.actRepository.findOne(actId)
+  async getGCustomersLabel(id: string): Promise<{ label: string }> {
+    this.logger.verbose('get-gcusomer`s label.method')
+    try {
+      return await this.gcustomerGrpcClient.getGCustomersLabel({id}).toPromise()
+    } catch(e) {
+      this.logger.error(e)
+    }
+  }
+
+  async getLabsLabel(id: string): Promise<{ label: string }> {
+    this.logger.verbose('get-lab`s label.method')
+    try {
+      return await this.labGrpcClient.getLabsLabes({id})
+    } catch(e) {
+      this.logger.error(e)
+    }
   }
 }
