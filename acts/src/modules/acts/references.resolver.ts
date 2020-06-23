@@ -8,6 +8,7 @@ import { GetActsOfCustomerCommand, GetActsOfGCustomerCommand, GetActsOfLabComman
 import { Doc } from './models/doc.model';
 import { Logger } from '@nestjs/common';
 
+
 @Resolver(of => Customer)
 export class CustomerResolver {
   constructor(

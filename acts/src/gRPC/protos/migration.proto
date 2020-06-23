@@ -26,6 +26,7 @@ message Respon {
 message AddActDto {
     string actId = 1;
     string contractorId = 2;
+
 }
 
 message ContractorsLabel {
@@ -34,6 +35,7 @@ message ContractorsLabel {
 
 message Id {
     string id = 1;
+
 }
 
 message Null {}

@@ -1,0 +1,17 @@
+syntax = 'proto3';
+
+package subscriptions;
+
+service SubscriptionsService {
+    rpc PushDoc (Data) returns (Null);
+    rpc PushDocs (stream Data) returns (Null);
+}
+
+message Id {
+    string docId = 1;
+    string actId = 2;
+    string mutation = 3;
+}
+
+message Null {
+}

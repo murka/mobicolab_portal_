@@ -15,6 +15,7 @@ export class GeneralCustomersController {
     private readonly gcs: GeneralCustomersService,
   ) {}
 
+
   @GrpcStreamMethod('MigrationService')
   async addActsGeneralCusromerReference(
     data$: Observable<AddActDto>,

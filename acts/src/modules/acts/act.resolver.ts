@@ -25,6 +25,7 @@ import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
 import { Doc } from './models/doc.model';
 
+
 interface ActsGRPCService {
   findAllActs(data: number): Observable<MigrationCreateActDto>;
 }
@@ -107,4 +108,5 @@ export class ActResolver implements OnModuleInit {
   docs(@Parent() act: Act) {
     return { __typename: 'Doc', ids: act.docs.map(doc => doc.id) }
   }
+
 }

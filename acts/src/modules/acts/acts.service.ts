@@ -20,7 +20,6 @@ import { Lab } from './models/lab.model';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
-
 interface CustomerGrpcClient {
   addActsCusromerReference(data: {
     actId: string;
@@ -204,6 +203,7 @@ export class ActsService implements OnModuleInit {
     }
   }
 
+
   async getGCustomersLabel(id: string): Promise<{ label: string }> {
     this.logger.verbose('get-gcusomer`s label.method')
     try {
@@ -220,5 +220,40 @@ export class ActsService implements OnModuleInit {
     } catch(e) {
       this.logger.error(e)
     }
+
+  async sendContractors(
+    actId: string,
+    customerId: string,
+    gcustomerId: string,
+    labId: string,
+  ): Promise<void> {
+    this.logger.verbose('send-contractors.method');
+
+    try {
+      this.customerGrpcClient
+        .addActsCusromerReference({ actId: actId, contractorId: customerId })
+        .subscribe(() => this.logger.log('reference was send to a customer'));
+
+      this.gcustomerGrpcClient
+        .addActsGeneralCusromerReference({
+          actId: actId,
+          contractorId: gcustomerId,
+        })
+        .subscribe(() =>
+          this.logger.log('referece was sent to a general customer'),
+        );
+
+      this.labGrpcClient
+        .addActsLabReference({ actId: actId, contractorId: labId })
+        .subscribe(() => this.logger.log('referece was send to lab'));
+    } catch (e) {
+      this.logger.error(e);
+    }
+  }
+
+  async getActByIdOfCustomer(cusomerId: string, actId: string): Promise<Act> {
+    this.logger.verbose('get-act-by-id-of-customer.method');
+
+    return await this.actRepository.findOne(actId)
   }
 }

@@ -71,6 +71,7 @@ services:
     depends_on:
       - db_files
       - api_bridge
+
     command: yarn start:dev
   
 
@@ -265,6 +266,7 @@ services:
       - "2000:2000"
     command: yarn start:dev 
     depends_on:
+
         - api_files
         - api_customers
         - api_general_customers
@@ -282,6 +284,7 @@ services:
     depends_on:
         - db
         - api_files
+
     # ports:
     #   - "5000:5000"
     command: npm run start:dev
