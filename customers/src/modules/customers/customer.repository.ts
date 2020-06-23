@@ -3,7 +3,7 @@ import { Act } from './models/act.model';
 import { Customer } from './models/customer.model';
 import { MigrationCustomerDto } from './models/dto/migration-customer.dto';
 import { Logger } from '@nestjs/common';
-import { Event } from './models/event.model';
+import { CustomerEvent } from './models/customer-event.model';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
@@ -35,5 +35,5 @@ export class CustomerRepository extends Repository<Customer> {
 @EntityRepository(Act)
 export class ActRepository extends Repository<Act> {}
 
-@EntityRepository(Event)
-export class EventRepository extends Repository<Event> {}
+@EntityRepository(CustomerEvent)
+export class EventRepository extends Repository<CustomerEvent> {}

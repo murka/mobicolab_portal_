@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   baseURL: "http://localhost:3000/api/",
-  API_URI: "http://localhost:3333/nestapi/",
-  GQL_URI: "http://localhost:3333/graphql/",
-  WS_URI: "ws://localhost:3333/graphql",
+  API_URI: "http://localhost:3001/nestapi/",
+  GQL_URI_FILES: "http://localhost:3001/graphql/",
+  WS_URI_FILES: "ws://localhost:3001/graphql",
 };
 
 /*

@@ -12,7 +12,7 @@ export class GeneralCustomersController {
     constructor(private readonly commandBus: CommandBus) {}
 
     @GrpcStreamMethod('MigrationService')
-    async addActsGeneralCustomerReference(data$: Observable<AddActDto>): Promise<void> {
+    async addActsGeneralCusromerReference(data$: Observable<AddActDto>): Promise<void> {
         this.logger.verbose(`add-new-act-to-gcustomer.controller with addActDto: ${data$}`)
 
         data$.subscribe(data => {

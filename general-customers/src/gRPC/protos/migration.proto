@@ -4,7 +4,7 @@ package migration;
 
 service MigrationService{
     rpc MigrationGeneralCustomer(ChangeIdDto) returns (Respon);
-    rpc AddActsCusromerReference (stream AddActDto) returns (Null);
+    rpc AddActsGeneralCusromerReference (stream AddActDto) returns (Null);
 }
 
 message ChangeIdDto {

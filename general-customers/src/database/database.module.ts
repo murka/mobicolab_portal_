@@ -1,9 +1,9 @@
-import { Module, Logger } from '@nestjs/common';
+import { Module, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GraphQLModule } from '@nestjs/graphql';
+import { GraphQLModule, GraphQLFederationModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
@@ -23,12 +23,18 @@ import { GraphQLModule } from '@nestjs/graphql';
         synchronize: false,
       }),
     }),
-    GraphQLModule.forRoot({
-      installSubscriptionHandlers: true,
+     GraphQLFederationModule.forRoot({
+      installSubscriptionHandlers: false,
       uploads: false,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: true,
       debug: true,
       playground: true,
+      formatError: (e) => {
+        return new HttpException(
+          { status: e.name, error: e.message },
+          HttpStatus.BAD_GATEWAY,
+        );
+      }
     }),
   ],
 })

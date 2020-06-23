@@ -9,8 +9,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { ChangeGCustomerIdCommand } from './commands/impl/change-gcustomer-id.command';
 import { CreateGeneralCustomerDto } from './models/dto/create-gcustomer.dto';
 import { InsertGeneralCustomerDto } from './models/dto/insert-gcustomer.dto';
-import { CreateGeneralCustomerCommand } from './commands/impl/create-lab.command';
-import { UpdateGeneralCustomerCommand } from './commands/impl/update-lab.command';
+import { CreateGeneralCustomerCommand } from './commands/impl/create-gcustomer.command';
+import { UpdateGeneralCustomerCommand } from './commands/impl/update-gcustomer.command';
 
 interface GCustomerService {
   findAllGeneralCustomers(data: number): Observable<GeneralCustomer>;
@@ -35,12 +35,12 @@ export class GeneralCustomerResolver implements OnModuleInit {
   }
 
   @Query(returns => [GeneralCustomer])
-  async customers(): Promise<GeneralCustomer[]> {
+  async getGeneralCustomers(): Promise<GeneralCustomer[]> {
     return await this.gcustomerRepository.find();
   }
 
   @Query(returns => GeneralCustomer)
-  async customer(@Args('id') id: string): Promise<GeneralCustomer> {
+  async getGeneralCustomer(@Args('id') id: string): Promise<GeneralCustomer> {
     return await this.gcustomerRepository.findOne(id);
   }
 
@@ -61,21 +61,21 @@ export class GeneralCustomerResolver implements OnModuleInit {
   }
 
   @Mutation(returns => GeneralCustomer)
-  async createLab(
-    @Args('createLabData') createLabData: CreateGeneralCustomerDto,
+  async createGeneralCustomer(
+    @Args('createGeneralCustomerData') createGeneralCustomerData: CreateGeneralCustomerDto,
   ): Promise<GeneralCustomer> {
-    return await this.commandBus.execute(new CreateGeneralCustomerCommand(createLabData));
+    return await this.commandBus.execute(new CreateGeneralCustomerCommand(createGeneralCustomerData));
   }
 
   @Mutation(returns => GeneralCustomer)
-  async updateLab(
-    @Args('insertLabData') insertLabData: InsertGeneralCustomerDto,
+  async updateGeneralCustomer(
+    @Args('insertGeneralCustomerData') insertGeneralCustomerData: InsertGeneralCustomerDto,
   ): Promise<GeneralCustomer> {
-    return await this.commandBus.execute(new UpdateGeneralCustomerCommand(insertLabData));
+    return await this.commandBus.execute(new UpdateGeneralCustomerCommand(insertGeneralCustomerData));
   }
 
   @ResolveReference()
-  async resolverReference(reference: { __typename: string; id: string }) {
+  async resolveReference(reference: { __typename: string; id: string }) {
     return await this.gcustomerRepository.findOne(reference.id);
   }
 }

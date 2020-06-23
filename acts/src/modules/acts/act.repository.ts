@@ -36,6 +36,6 @@ export class ActRepository extends Repository<Act> {
     newAct.passedSample = act.passedSample
     newAct.application = act.application
   
-    return await newAct.save()
+    return await this.save(newAct)
   }
 }

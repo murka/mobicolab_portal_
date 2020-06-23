@@ -17,15 +17,17 @@ import { grpcClientOptions } from '../../gRPC/grpc-bridge-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Act } from './models/act.model';
 import { Customer } from './models/customer.model';
-import { GCustomer } from './models/general-customer.model';
+import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
 import { ActsService } from './acts.service';
 import { CommandHadlers } from './commands/handlers';
 import { EventsHandlers } from './events/handlers';
 import { CqrsModule } from '@nestjs/cqrs';
-import { Event } from './models/act-event.model';
+import { ActEvent } from './models/act-event.model';
 import { ActsController } from './acts.controller';
 import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option';
+import { grpcGCustomerClientOptions } from 'src/gRPC/grpc-gcustomer-client.option';
+import { grpcLabClientOptions } from 'src/gRPC/grpc-lab-client.option';
 
 @Module({
   imports: [
@@ -33,9 +35,9 @@ import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option'
     TypeOrmModule.forFeature([
       Act,
       Customer,
-      GCustomer,
+      GeneralCustomer,
       Lab,
-      Event,
+      ActEvent,
       ActRepository,
       CustomerRepository,
       GCustomerRepository,
@@ -50,6 +52,14 @@ import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option'
       {
         name: 'CUSTOMER_PACKAGE',
         ...grpcCustomerClientOptions
+      },
+      {
+        name: 'GCUSTOMER_PACKAGE',
+        ...grpcGCustomerClientOptions
+      },
+      {
+        name: 'LAB_PACKAGE',
+        ...grpcLabClientOptions
       }
     ]),
   ],

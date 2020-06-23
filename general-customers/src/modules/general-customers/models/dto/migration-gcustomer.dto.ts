@@ -1,10 +1,10 @@
-import { Address } from "../address.model";
+import { GCAddress } from "../gc-address.model";
 
 export class MigrationGCustomerDto {
     id: string;
     fullname: string;
     label: string;
-    address?: Address;
+    address?: GCAddress;
     tel?: string;
     email?: string;
 }

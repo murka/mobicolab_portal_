@@ -1,4 +1,4 @@
-import { Address } from "../address.model"
+import { LabAddress } from "../lab-address.model"
 import { InputType, Field } from "@nestjs/graphql"
 
 @InputType()
@@ -7,7 +7,7 @@ export class InsertLabDto {
     id: string
     fullname?: string
     label?: string
-    address: Address
+    address: LabAddress
     tel?: string
     email?: string
 }

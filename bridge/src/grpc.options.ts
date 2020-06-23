@@ -5,7 +5,7 @@ export const grpcOptions: ClientOptions = {
   transport: Transport.GRPC,
   options: {
     url: '0.0.0.0:50050',
-    package: ['act', 'customer', 'gcustomer', 'lab'],
+    package: ['act', 'customer', 'general_customer', 'lab'],
     protoPath: [
       join(__dirname, 'modules/acts/act.proto'),
       join(__dirname, 'modules/customers/customer.proto'),

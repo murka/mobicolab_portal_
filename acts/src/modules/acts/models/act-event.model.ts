@@ -17,7 +17,7 @@ export enum AllowEvents {
 
 @Entity()
 @ObjectType()
-export class Event {
+export class ActEvent {
   @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   public id: string;

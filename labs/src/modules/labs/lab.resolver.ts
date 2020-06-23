@@ -30,21 +30,21 @@ export class LabResolver implements OnModuleInit {
 
   constructor(
     private readonly labRepository: LabRepository,
-    @Inject('LAB_PACKAGE') private readonly client: ClientGrpc,
+    @Inject('BRIDGE_PACKAGE') private readonly client: ClientGrpc,
     private readonly commandBus: CommandBus,
   ) {}
 
   onModuleInit() {
-    this.labService = this.client.getService<LabService>('LabSevice');
+    this.labService = this.client.getService<LabService>('LabService');
   }
 
   @Query(returns => [Lab])
-  async customers(): Promise<Lab[]> {
+  async getLabs(): Promise<Lab[]> {
     return await this.labRepository.find();
   }
 
   @Query(returns => Lab)
-  async customer(@Args('id') id: string): Promise<Lab> {
+  async getLab(@Args('id') id: string): Promise<Lab> {
     return await this.labRepository.findOne(id);
   }
 
@@ -77,7 +77,7 @@ export class LabResolver implements OnModuleInit {
   }
 
   @ResolveReference()
-  async resolverReference(reference: { __typename: string; id: string }) {
+  async resolveReference(reference: { __typename: string; id: string }) {
     return await this.labRepository.findOne(reference.id);
   }
 }

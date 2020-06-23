@@ -66,6 +66,7 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   docs$: Observable<Doc[]>;
   docsQuery: QueryRef<any>;
+  docsQuerySub: QueryRef<any>;
   status: StatusModel;
   form: FormArray;
 
@@ -104,10 +105,14 @@ export class DocsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._options = this.options;
     this.form = this.fb.array([]);
-    this.docsQuery = this.apollo.watchQuery({
+    this.docsQuery = this.apollo.use('filesWS').watchQuery({
       query: this.getAllDocs.document,
       variables: { actId: this.act._id },
     });
+    // this.docsQuerySub = this.apollo.use('filesWS').watchQuery({
+    //   query: this.getAllDocs.document,
+    //   variables: { actId: this.act._id },
+    // })
     this.subscriptions$.add(
       this.form.valueChanges
         .pipe(map((value: GroupItem[]) => value.map((val) => val.status)))

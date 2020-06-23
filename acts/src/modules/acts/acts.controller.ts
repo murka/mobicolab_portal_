@@ -38,5 +38,6 @@ export class ActsController {
     await this.commandBus.execute(
       new ChangeLabIdCommand(data),
     )
+    return { respon: 'success' }
   }
 }

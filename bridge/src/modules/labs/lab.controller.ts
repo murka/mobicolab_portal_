@@ -11,13 +11,13 @@ export class LabController {
   constructor(private readonly labService: LabsService) {}
 
   @GrpcMethod('LabService')
-  findAllLab(): Observable<any[]> {
+  findAllLabs(): Observable<any[]> {
     let labs$ = new ReplaySubject<any>();
     this.labService
       .findAllLabs()
       .then(async labs => {
         for await (let lab of labs) {
-          this.logger.verbose('add next');
+          this.logger.verbose(`add next ${lab}`);
           labs$.next(lab);
         }
         this.logger.verbose('complete next');

@@ -3,7 +3,7 @@ syntax = "proto3";
 package lab;
 
 service LabService {
-    rpc FindAllLab (Id) returns (stream Lab);
+    rpc FindAllLabs (Id) returns (stream Lab);
 }
 
 message Id {
@@ -13,9 +13,10 @@ message Id {
 message Lab {
     string id = 1;
     string fullname = 2;
-    Address address = 3;
-    string tel = 4;
-    string email = 5;
+    string label = 3;
+    Address address = 4;
+    string tel = 5;
+    string email = 6;
 }
 
 message Address {

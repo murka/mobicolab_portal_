@@ -15,12 +15,10 @@ export class ActCreatedHandler implements IEventHandler<ActCreatedEvent> {
 
         const { actId } = event;
 
-        const newEvent = this.actEventRepository.create({ allow_event: 'CREATED' })
-
         const act = await this.actRepository.findOne(actId)
 
-        act.events.push(newEvent)
+        const newEvent = this.actEventRepository.create({ event: 'CREATED', act: act })
 
-        await act.save()
+        await this.actEventRepository.save(newEvent)
     }
 }
