@@ -1,17 +1,16 @@
-import { ObjectType, Field, registerEnumType, ID } from '@nestjs/graphql';
+import { ObjectType, Field, registerEnumType, ID, Directive } from '@nestjs/graphql';
 import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne, CreateDateColumn, UpdateDateColumn, BaseEntity, JoinColumn } from 'typeorm';
-import { Act } from 'src/acts/models/act.model';
+import { Act } from 'src/modules/docs/models/act.model';
 
 @Entity()
 @ObjectType("Doc")
+@Directive('@key(fields: "id")')
 export class Doc {
-
+  // @ManyToOne(type => Act, act => act.docs, { cascade: true, })
+  // act?: Act
   @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Field(type => Act, { nullable: true })
-  @ManyToOne(type => Act, act => act.docs, { eager: false, cascade: true, })
-  act?: Act
   @Column({ nullable: true })
   title?: string;
   @Column({ nullable: true })
@@ -24,9 +23,9 @@ export class Doc {
   @OneToMany(type => DocEvent, event => event.doc, { nullable: true, onDelete: 'CASCADE' })
   events?: DocEvent[];
   @CreateDateColumn()
-  createdAt?: string
+  createdAt?: Date
   @UpdateDateColumn()
-  updatedAt?: string;
+  updatedAt?: Date;
 
 }
 

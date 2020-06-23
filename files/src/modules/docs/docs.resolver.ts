@@ -3,27 +3,25 @@ import {
   Query,
   Mutation,
   Args,
-  Int,
-  Subscription,
+  ResolveReference,
 } from '@nestjs/graphql';
 
 import { PrismaService } from '../../services/prisma.service';
-import { PubSub } from 'graphql-subscriptions';
 
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Doc } from './models/doc.model';
 import { TitlingDocInput } from './models/dto/titling-doc.input';
 import { DroppingDocCommand } from './commands/impl/dropping-doc.command';
 import { TitlingDocCommand } from './commands/impl/titling-doc.command';
 import { SavingDocInput } from './models/dto/saving-doc.input';
 import { RemoveDocCommand } from './commands/impl/remove-doc.command';
-import { Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { SavingDocCommand } from './commands/impl/saving-doc.command';
 import { DeletingDocCommand } from './commands/impl/deleting-doc.command';
-import { DocSubscriptionsPayload } from './models/doc-subscription-payload.model';
 import { SavingAllDocsCommand } from './commands/impl/saving-all-docs.command';
 import { SavingAllDocsInput } from './models/dto/saving-all-docs.input';
+import { GetAllDocsOfActQuery } from './queries/impl/get-all-docs-of-act.query';
 
 @Resolver(of => Doc)
 export class DocsResolver {
@@ -31,8 +29,8 @@ export class DocsResolver {
 
   constructor(
     private commandBus: CommandBus,
+    private readonly queyBus: QueryBus,
     private prisma: PrismaService,
-    @Inject('PUB_SUB') private readonly pubsub: PubSub,
   ) {}
 
   @Query(returns => [Doc])
@@ -115,9 +113,10 @@ export class DocsResolver {
     return this.commandBus.execute(new DeletingDocCommand(docId, actId));
   }
 
-  @Subscription(returns => DocSubscriptionsPayload)
-  async changeDocs(@Args({ name: 'actId', type: () => String }) actId: string) {
-    this.logger.verbose('subscription addDoc');
-    return this.pubsub.asyncIterator(`Act_${actId}_added`);
+  @ResolveReference()
+  async resolveReference(reference: { __typename: string, ids: string[] }) {
+    this.logger.verbose('resolve reference of docs')
+
+    return await this.queyBus.execute(new GetAllDocsOfActQuery(reference.ids))
   }
 }

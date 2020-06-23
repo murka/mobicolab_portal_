@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GraphQLModule } from '@nestjs/graphql';
-import { MongooseModule } from '@nestjs/mongoose';
-import { DocsModule } from 'src/acts/docs/docs.module';
+import { GraphQLFederationModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
@@ -24,23 +22,15 @@ import { DocsModule } from 'src/acts/docs/docs.module';
         synchronize: false,
       }),
     }),
-    GraphQLModule.forRoot({
-      installSubscriptionHandlers: true,
+    GraphQLFederationModule.forRoot({
+      installSubscriptionHandlers: false,
       uploads: false,
       autoSchemaFile: true,
       debug: true,
       playground: true,
-      include: [DocsModule],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-      }),
-      inject: [ConfigService],
+      introspection: true, 
     }),
   ],
 })
 export class DatabaseModule {
-  
 }

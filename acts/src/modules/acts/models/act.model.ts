@@ -7,6 +7,7 @@ import { TypeOfSample } from './type-of-sample.model';
 import { DateAndTime } from './date-time.model';
 import { Application } from './application.model';
 import { ActEvent } from './act-event.model';
+import { Doc } from './doc.model';
 
 
 @Entity()
@@ -26,6 +27,8 @@ export class Act {
   public general_customer: GeneralCustomer;
   @ManyToOne(type => Lab, lab => lab.acts, { cascade: true, onUpdate: 'CASCADE', eager: true })
   public lab: Lab;
+  @OneToMany(type => Doc, docs => docs.act)
+  docs: Doc[]
   @Column(type => TypeOfSample)
   public typeOfSample: TypeOfSample;
   @Column({ nullable: true })

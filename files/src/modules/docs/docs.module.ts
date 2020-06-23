@@ -2,21 +2,38 @@ import { Module } from '@nestjs/common';
 import { DocsService } from './docs.service';
 import { DocsResolver } from './docs.resolver';
 import { PrismaService } from 'src/services/prisma.service';
-import { PubSub } from 'graphql-subscriptions';
 import { CommandHandlers } from './commands/handlers';
 import { EventHandlers } from './events/handlers';
 import { DocSagas } from './sagas/doc.sagas';
 import { CqrsModule } from '@nestjs/cqrs';
 import { WebDAVModule } from 'nestjs-webdav';
-import { MongooseModule } from '@nestjs/mongoose';
-import { actSchema } from '../models/act.schema';
-import { customerSchema } from '../customer/customer.schema';
-import { gcustomerSchema } from '../general-customer/gcustomer.schema';
-import { labSchema } from '../lab/lab.schema';
 import { DocsController } from './docs.controller';
+import { ClientsModule } from '@nestjs/microservices';
+import { grpcClientOptions } from 'src/gRPC/grpc-client.options';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DocRepository } from './doc.repository';
+import { Doc, DocEvent } from './models/doc.model';
+import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-client.options';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([
+      Doc,
+      // Act,
+      DocRepository,
+      // ActRepository,
+      DocEvent,
+    ]),
+    ClientsModule.register([
+      {
+        name: 'ACT_PACKAGE',
+        ...grpcClientOptions,
+      },
+      {
+        name: 'SUBSCRIPTIONS_PACKAGE',
+        ...grpcSubscriptionsClientOptions,
+      }
+    ]),
     CqrsModule,
     WebDAVModule.forRoot({
       config: {
@@ -25,22 +42,12 @@ import { DocsController } from './docs.controller';
         password: 'Tick4952',
       },
     }),
-    MongooseModule.forFeature([{ name: 'act', schema: actSchema }]),
-    MongooseModule.forFeature([{ name: 'customer', schema: customerSchema }]),
-    MongooseModule.forFeature([{ name: 'gcustomer', schema: gcustomerSchema }]),
-    MongooseModule.forFeature([{ name: 'lab', schema: labSchema }]),
   ],
-  controllers: [
-    DocsController,
-  ],
+  controllers: [DocsController],
   providers: [
     DocsService,
     DocsResolver,
     PrismaService,
-    {
-      provide: 'PUB_SUB',
-      useValue: new PubSub(),
-    },
     ...CommandHandlers,
     ...EventHandlers,
     DocSagas,
