@@ -1,0 +1,8 @@
+export enum ActStatus {
+    CREATED = 'CREATED',
+    GENERATED = 'GENETATED',
+    REGISTERED = 'REGISTERED',
+    REMARKED = 'REMARKED',
+    CORRECTED = 'CORRECTED',
+    FULL = 'FULL'
+}

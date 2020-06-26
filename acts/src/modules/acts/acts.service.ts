@@ -12,6 +12,7 @@ import {
   CustomerRepository,
   GCustomerRepository,
   LabRepository,
+  DocRepository,
 } from './references.repository';
 import { MigrationCreateActDto } from './models/dto/migration-create-act.dto';
 import { Customer } from './models/customer.model';
@@ -57,6 +58,7 @@ export class ActsService implements OnModuleInit {
     private readonly customerRepository: CustomerRepository,
     private readonly gcustomerRepository: GCustomerRepository,
     private readonly labRepository: LabRepository,
+    private readonly docRepositroy: DocRepository,
     @Inject('CUSTOMER_PACKAGE') private readonly customerClient: ClientGrpc,
     @Inject('GCUSTOMER_PACKAGE') private readonly gCustomerClient: ClientGrpc,
     @Inject('LAB_PACKAGE') private readonly labClient: ClientGrpc,
@@ -220,40 +222,56 @@ export class ActsService implements OnModuleInit {
     } catch(e) {
       this.logger.error(e)
     }
-
-  async sendContractors(
-    actId: string,
-    customerId: string,
-    gcustomerId: string,
-    labId: string,
-  ): Promise<void> {
-    this.logger.verbose('send-contractors.method');
-
-    try {
-      this.customerGrpcClient
-        .addActsCusromerReference({ actId: actId, contractorId: customerId })
-        .subscribe(() => this.logger.log('reference was send to a customer'));
-
-      this.gcustomerGrpcClient
-        .addActsGeneralCusromerReference({
-          actId: actId,
-          contractorId: gcustomerId,
-        })
-        .subscribe(() =>
-          this.logger.log('referece was sent to a general customer'),
-        );
-
-      this.labGrpcClient
-        .addActsLabReference({ actId: actId, contractorId: labId })
-        .subscribe(() => this.logger.log('referece was send to lab'));
-    } catch (e) {
-      this.logger.error(e);
-    }
   }
+
+  // async sendContractors(
+  //   actId: string,
+  //   customerId: string,
+  //   gcustomerId: string,
+  //   labId: string,
+  // ): Promise<void> {
+  //   this.logger.verbose('send-contractors.method');
+
+  //   try {
+  //     this.customerGrpcClient
+  //       .addActsCusromerReference({ actId: actId, contractorId: customerId })
+  //       .subscribe(() => this.logger.log('reference was send to a customer'));
+
+  //     this.gcustomerGrpcClient
+  //       .addActsGeneralCusromerReference({
+  //         actId: actId,
+  //         contractorId: gcustomerId,
+  //       })
+  //       .subscribe(() =>
+  //         this.logger.log('referece was sent to a general customer'),
+  //       );
+
+  //     this.labGrpcClient
+  //       .addActsLabReference({ actId: actId, contractorId: labId })
+  //       .subscribe(() => this.logger.log('referece was send to lab'));
+  //   } catch (e) {
+  //     this.logger.error(e);
+  //   }
+  // }
 
   async getActByIdOfCustomer(cusomerId: string, actId: string): Promise<Act> {
     this.logger.verbose('get-act-by-id-of-customer.method');
 
     return await this.actRepository.findOne(actId)
+  }
+
+  async addDocToAct(actId: string, docId: string): Promise<void> {
+    this.logger.verbose('add-doc-to-act.method')
+
+    try{
+      const act = await this.actRepository.findOne(actId)
+
+      const doc = this.docRepositroy.create({ id: docId, act: act })
+
+      await this.docRepositroy.save(doc)
+
+    } catch(e) {
+      this.logger.error(e)
+    }
   }
 }

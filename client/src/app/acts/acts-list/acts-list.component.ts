@@ -35,10 +35,11 @@ export class ActsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.acs.getActs().subscribe(acts => {
+    this.acs.getActsForItem().subscribe(acts => {
+      console.log(acts)
       this.acts = acts;
       this._filteredActs = acts;
-    });
+    })
     this.afds
       .getActiveCustomer()
       .subscribe(customers => this.customers = customers) 

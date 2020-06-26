@@ -41,6 +41,7 @@
     "@prisma/client": "^2.0.0-beta.3",
     "apollo-graphql": "^0.4.4",
     "apollo-server-express": "^2.12.0",
+    "body-parser": "^1.19.0",
     "graphql": "^15.0.0",
     "graphql-subscriptions": "^1.1.0",
     "graphql-tools": "^5.0.0",

@@ -7,13 +7,15 @@ import { UploadDocCommand } from '../impl/upload-doc.command';
 import { DocsService } from '../../docs.service';
 import { PrismaService } from 'src/services/prisma.service';
 import { Logger } from '@nestjs/common';
+import { DocRepository, DocEventRepository } from '../../doc.repository';
 
 @CommandHandler(UploadDocCommand)
 export class UploadDocHandler implements ICommandHandler<UploadDocCommand> {
   logger = new Logger(this.constructor.name);
 
   constructor(
-    private prisma: PrismaService,
+    private docRepository: DocRepository,
+    private evetRepositroy: DocEventRepository,
     private ds: DocsService,
   ) {}
 
@@ -24,17 +26,17 @@ export class UploadDocHandler implements ICommandHandler<UploadDocCommand> {
 
       const path = await this.ds.createFilePath(actId);
 
-      await this.prisma.doc.update({
-        where: { id: docId },
-        data: { ydUrl: path },
-      });
+      const doc = await this.docRepository.findOne(docId)
+
+      doc.ydUrl = path
 
       await this.ds.uploadFileToYd(docId, file);
 
-      await this.prisma.doc.update({
-        where: { id: docId },
-        data: {downloadable: true, doc_event: { create: { event: 'UPLOADED' } } },
-      });
+      doc.downloadable = true
+      const docEvent = this.evetRepositroy.create({ event: 'UPLOADED', doc: doc })
+
+      await this.evetRepositroy.save(docEvent)
+
     } catch (error) {
       this.logger.error(error);
     }

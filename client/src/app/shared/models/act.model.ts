@@ -2,12 +2,14 @@ import { CustomerModel } from "./customer.model";
 import { GCustomerModel } from "./gcustomer.model";
 import { StatusModel } from './status.model';
 import { ApplicationModel } from './application.model';
+import { LabModel } from './lab.model';
 
 export class ActModel {
   public _id: string;
   public name: string;
   public customer: CustomerModel;
   public generalCustomer: GCustomerModel['_id'];
+  public lab: LabModel;
   public typeOfSample: {
     habitan?: string;
     types?: string[];
@@ -43,13 +45,15 @@ export class ActModel {
       path?: string,
     }
   >;
-  public status: StatusModel;
+  public status: string;
   public application: ApplicationModel[];
 
   constructor(options: {
+    _id?: string;
     name?: string;
     customer?: CustomerModel;
     generalCustomer?: GCustomerModel['_id'];
+    lab?: LabModel;
     typeOfSample?: {
       habitan?: string;
       types?: string[];
@@ -85,12 +89,14 @@ export class ActModel {
         path?: string,
       }
     ];
-    status?: StatusModel;
+    status?: string;
     application?: ApplicationModel[];
   }) {
+    this._id = options._id;
     this.name = options.name;
     this.customer = options.customer;
     this.generalCustomer = options.generalCustomer;
+    this.lab = options.lab
     this.typeOfSample = options.typeOfSample;
     this.objectName = options.objectName;
     this.place = options.place;
@@ -99,7 +105,7 @@ export class ActModel {
     this.toolType = options.toolType;
     this.climaticEnvironmental = options.climaticEnvironmental;
     this.planning = options.planning;
-    this. normativeDocument = options.normativeDocument;
+    this.normativeDocument = options.normativeDocument;
     this.sampleType = options.sampleType;
     this.volumeSample = options.volumeSample;
     this.container = options.container;

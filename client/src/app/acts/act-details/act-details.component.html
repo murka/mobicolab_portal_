@@ -13,45 +13,6 @@
         <mat-card-title>
           <h1>АКТ {{ act.name }}</h1>
         </mat-card-title>
-        <mat-card-subtitle>
-          <h2>Заказчик: {{ act.customer }}</h2>
-          <h2>Генеральный заказчик: {{ act.generalCustomer }}</h2>
-        </mat-card-subtitle>
-        <mat-card-content>
-          <!-- <h3>Тип отбираемой воды: {{ act.typeOfWater }}</h3> -->
-          <h3>Наименование объекта: {{ act.objectName }}</h3>
-          <h3>Место отбора пробы: {{ act.place }}</h3>
-          <h3>Дата, время отбора: {{ act.datetime.date | date }}</h3>
-          <h4>Метод отбора пробы: {{ act.method }}</h4>
-          <h4>Tип пробоотборного устройства: {{ act.toolType }}</h4>
-          <h4>
-            Климатические условия окружающей среды при отборе проб:
-            {{ act.climaticEnvironmental }}
-          </h4>
-          <h4>План (программа) отбора: {{ act.planning }}</h4>
-          <h4>НД на метод отбора: {{ act.normativeDocument }}</h4>
-          <h4>Тип пробы: {{ act.sampleType }}</h4>
-          <h4>
-            Объем отобранной пробы, материал тары: {{ act.volumeSample }}
-            {{ act.container }}
-          </h4>
-          <h4>Подготовка пробы к хранению: {{ act.preparation }}</h4>
-          <h4>Цель исследования воды: {{ act.goal }}</h4>
-          <h4>Определяемые показатели: {{ act.definedIndicators }}</h4>
-          <h4>Дополнительные сведения: {{ act.additions }}</h4>
-          <h4>
-            Сведения о проведенных при отборе измерениях:
-            {{ act.informationAboutSelection }}
-          </h4>
-          <h3>
-            Должность, Ф.И.О., подпись лица, отбирающего пробу:
-            {{ act.environmentalEngineer }}
-          </h3>
-          <h3>
-            Должность, Ф.И.О., подпись представителя: {{ act.representative }}
-          </h3>
-          <h3>Пробу сдал: {{ act.passedSample }}</h3>
-        </mat-card-content>
         <mat-card-footer>
           <mat-card-actions>
             <button mat-button mat-raised-button (click)="goBack()">

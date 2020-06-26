@@ -14,7 +14,7 @@ export class DroppedDocHandler implements IEventHandler<DroppedDocEvent> {
 
     const { docId } = event;
 
-    this.prisma.doc.update({
+    await this.prisma.doc.update({
       where: { id: docId },
       data: { doc_event: { create: [{ event: 'DROPPED' }] } },
     });

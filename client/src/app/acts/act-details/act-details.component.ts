@@ -33,11 +33,10 @@ export class ActDetailsComponent implements OnInit {
   ngOnInit() {
     this.acs.getActIds().subscribe((actIds) => (this.actIds = actIds));
     this.route.params
-      .pipe(switchMap((params: Params) => this.acs.getAct(params["id"])))
+      .pipe(switchMap((params: Params) => this.acs.getActForDetails(params["id"])))
       .subscribe(
         (act) => {
           this.act = act;
-          this.status = this.act.status;
           this.setPrevNex(act._id);
         },
         (errmess) => (this.errMess = <any>errmess)

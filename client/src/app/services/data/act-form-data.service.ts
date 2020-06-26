@@ -24,7 +24,7 @@ export class ActFormDataService {
     private AFCS: ActFormControlService,
     private dialog: MatDialog,
     private gcustomerControl: GeneralCustomerControlService,
-    private customerControl: CustomerControlService
+    private customerControl: CustomerControlService,
   ) {}
 
   getItemOptions(path: string): Observable<OptionsBaseModel[]> {

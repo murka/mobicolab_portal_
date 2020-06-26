@@ -2,7 +2,7 @@ import { GetAllDocsOfActQuery } from "../impl/get-all-docs-of-act.query";
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { Logger } from "@nestjs/common";
 import { Doc } from "../../models/doc.model";
-import { ActRepository, DocRepository } from "../../doc.repository";
+import { DocRepository } from "../../doc.repository";
 
 @QueryHandler(GetAllDocsOfActQuery)
 export class GetAllDocsOfActHandler implements IQueryHandler<GetAllDocsOfActQuery> {

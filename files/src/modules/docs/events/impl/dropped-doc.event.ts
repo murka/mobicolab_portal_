@@ -5,6 +5,6 @@ export class DroppedDocEvent {
   constructor(
     public readonly docId: string,
     public readonly actId: string,
-    public readonly file: ReadStream,
+    public readonly file: File,
   ) {}
 }

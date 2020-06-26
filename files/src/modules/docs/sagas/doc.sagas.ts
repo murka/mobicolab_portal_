@@ -14,7 +14,7 @@ export class DocSagas {
     return events$.pipe(
       ofType(DroppedDocEvent),
       map((event) => {
-        logger.verbose(`executig create-path.command by event: ${DroppedDocEvent}`)
+        logger.verbose(`executig create-path.command by event: ${DroppedDocEvent.name}`)
         return new UploadDocCommand(event.actId, event.file, event.docId);
       }),
     );

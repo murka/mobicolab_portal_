@@ -105,8 +105,16 @@ export class ActResolver implements OnModuleInit {
   }
 
   @ResolveField(of => Doc)
-  docs(@Parent() act: Act) {
-    return { __typename: 'Doc', ids: act.docs.map(doc => doc.id) }
+  async docs(@Parent() act: Act) {
+    this.logger.verbose('resolve-doc-reference.method')
+
+    if(act.docs.length < 1) return []
+    
+    const docs = act.docs.map(doc => doc.id)
+
+    this.logger.log(`docs: ${JSON.stringify(docs)}`)
+
+    return { __typename: 'Doc', ids: docs }
   }
 
 }

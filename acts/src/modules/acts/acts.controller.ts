@@ -1,9 +1,14 @@
 import { Controller, Logger } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CommandBus } from '@nestjs/cqrs';
-import { ChangeCustomerIdCommand, ChangeGeneralCustomerIdCommand, ChangeLabIdCommand } from './commands/impl/migrations.commands';
+import {
+  ChangeCustomerIdCommand,
+  ChangeGeneralCustomerIdCommand,
+  ChangeLabIdCommand,
+} from './commands/impl/migrations.commands';
 import { GetActForFilesCommand } from './commands/impl/get-act-for-files.command';
 import { ActForFilesDto } from './models/dto/act-for-files.dto';
+import { ActsService } from './acts.service';
 
 export interface ChangeIdDto {
   newId: string;
@@ -14,38 +19,46 @@ export interface ChangeIdDto {
 export class ActsController {
   logger = new Logger(this.constructor.name);
 
-  constructor(private commandBus: CommandBus,) {}
+  constructor(
+    private commandBus: CommandBus,
+    private readonly as: ActsService,
+  ) {}
 
   @GrpcMethod('MigrationService', 'MigrationCustomer')
   async migrationCustomer(data: ChangeIdDto): Promise<any> {
     this.logger.verbose('migration-customer inside `grpcMethod`');
-    await this.commandBus.execute(
-      new ChangeCustomerIdCommand(data),
-    );
+    await this.commandBus.execute(new ChangeCustomerIdCommand(data));
     return { respon: 'success' };
   }
 
   @GrpcMethod('MigrationService')
   async migrationGeneralCustomer(data: ChangeIdDto): Promise<any> {
-    this.logger.verbose('migration-gcustomer inside `grpcMethod`')
-    await this.commandBus.execute(
-      new ChangeGeneralCustomerIdCommand(data),
-    )
-    return { respon: 'success' }
+    this.logger.verbose('migration-gcustomer inside `grpcMethod`');
+    await this.commandBus.execute(new ChangeGeneralCustomerIdCommand(data));
+    return { respon: 'success' };
   }
 
   @GrpcMethod('MigrationService')
   async migrationLab(data: ChangeIdDto): Promise<any> {
-    this.logger.verbose('migration-lab indsede `grpcMethod`')
-    await this.commandBus.execute(
-      new ChangeLabIdCommand(data),
-    )
-    return { respon: 'success' }
+    this.logger.verbose('migration-lab indsede `grpcMethod`');
+    await this.commandBus.execute(new ChangeLabIdCommand(data));
+    return { respon: 'success' };
   }
 
   @GrpcMethod('ActDocService')
   async findLabels(data: { id: string }): Promise<ActForFilesDto> {
-    this.logger.verbose('find-act-by-id.grpc-method')
-    return await this.commandBus.execute(new GetActForFilesCommand(data.id))
+    this.logger.verbose('find-act-by-id.grpc-method');
+    return await this.commandBus.execute(new GetActForFilesCommand(data.id));
+  }
+
+  @GrpcMethod('ActDocService')
+  async addReferenceToAct(actId: string, docId: string): Promise<void> {
+    this.logger.verbose('add-reference-to-act');
+
+    try {
+      await this.as.addDocToAct(actId, docId);
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 }

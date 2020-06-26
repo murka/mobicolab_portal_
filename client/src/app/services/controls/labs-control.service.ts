@@ -23,4 +23,6 @@ export class LabsControlService {
     return this.http.post(environment.baseURL + 'labs/', body)
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
+
+  
 }

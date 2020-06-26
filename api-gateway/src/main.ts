@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
+import bodyParser from "body-parser";
+import { graphqlUploadExpress } from 'graphql-upload';
 
 const configService = new ConfigService()
 
@@ -11,6 +13,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors()
+
+  // app.use(bodyParser.json())
+  app.use(graphqlUploadExpress({maxFieldSize: 1000000, maxFiles: 10}))
 
   const port = configService.get<number>('PORT')
 

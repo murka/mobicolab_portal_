@@ -7,7 +7,7 @@ service SubscriptionsService {
     rpc PushDocs (stream Data) returns (Null);
 }
 
-message Id {
+message Data {
     string docId = 1;
     string actId = 2;
     string mutation = 3;
