@@ -15,6 +15,7 @@ const logger = new Logger('docService');
 
 interface ActDocGrpcClient {
   findLabels(data: { id: string }): Promise<ActForFilesDto>;
+  addReferenceToAct(data: { actId: string, docId: string }): Promise<void>
 }
 
 interface SubscriptionsGrpcClient {
@@ -48,6 +49,11 @@ export class DocsService implements OnModuleInit {
     this.subscriptionsGrpcClient = this.subscriptionClient.getService<
       SubscriptionsGrpcClient
     >('SubscriptionsService');
+  }
+
+  async addReferenceToAct(actId: string, docId: string): Promise<void> {
+    logger.verbose('add-reference-to-act.method')
+    await this.actDocGrpcClient.addReferenceToAct({ actId, docId })
   }
 
   async publishDoc(
@@ -117,6 +123,8 @@ export class DocsService implements OnModuleInit {
 
     const doc = await this.actDocGrpcClient.findLabels({ id: actId });
 
+    logger.log(doc)
+
     const name = doc.name;
     const date = new Date(doc.datetime.date);
     const year = date.getFullYear();
@@ -130,10 +138,12 @@ export class DocsService implements OnModuleInit {
     ar.push(year, customer, gcustomer, lab, month, name);
     const path = await this.mkDir(ar);
 
+    logger.verbose(path)
+
     return path;
   }
 
-  async uploadFileToYd(docId: string, file: ReadStream): Promise<void> {
+  async uploadFileToYd(docId: string, file: File): Promise<void> {
     logger.verbose('upload-doc.evetn inside `docService`');
 
     try {

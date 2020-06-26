@@ -1,14 +1,14 @@
 import gql from 'graphql-tag';
 
-export class DroppDoc {
-    document = gql`
-        mutation droppDoc($file: Upload!, $actId: String!, $name: String!) {
-            droppDoc(file: $file, actId: $actId, name: $name) {
-                id
-            }
-        }
-    `
-}
+// export class DroppDoc {
+//     document = gql`
+//         mutation droppDoc($file: Upload!, $actId: String!, $name: String!) {
+//             droppDoc(file: $file, actId: $actId, name: $name) {
+//                 id
+//             }
+//         }
+//     `
+// }
 
 export class TitlingDoc {
     document = gql`

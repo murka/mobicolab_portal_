@@ -4,12 +4,13 @@ import { PrismaService } from 'src/services/prisma.service';
 import { Logger } from '@nestjs/common';
 import { Doc } from '../../models/doc.model';
 import { DroppedDocEvent } from '../../events/impl/dropped-doc.event';
+import { DocRepository } from '../../doc.repository';
 
 @CommandHandler(DroppingDocCommand)
 export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
   logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private eventBus: EventBus) {}
+  constructor(private docRepositroy: DocRepository, private eventBus: EventBus) {}
 
   async execute(command: DroppingDocCommand): Promise<Doc> {
     try {
@@ -17,24 +18,13 @@ export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
 
       const { file, actId, name } = command;
 
-      const act = await this.prisma.act.findOne({ where: { id: actId } });
+      const doc = this.docRepositroy.create({ name: file.name })
 
-      let doc
-
-      if (!act) {
-        doc = await this.prisma.doc.create({
-          data: { name: name, act: { create: { id: actId } } },
-        });
-      } else {
-        doc = await this.prisma.doc.create({
-          data: { name: name, act: { connect: { id: actId } } },
-        });
-      }
+      await this.docRepositroy.save(doc)
 
       this.eventBus.publish(new DroppedDocEvent(doc.id, actId, file));
 
-      return doc
-
+      return doc;
     } catch (error) {
       this.logger.error(error);
     }

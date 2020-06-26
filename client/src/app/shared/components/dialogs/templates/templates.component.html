@@ -1,0 +1,30 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div fxFlex fxLayout="column">
+    <mat-form-field>
+      <mat-label>
+        Лаборатория
+      </mat-label>
+      <mat-select formControlName="lab" required>
+        <div *ngFor="let lab of labs">
+          <mat-option [value]="lab.key">
+            {{ lab.value }}
+          </mat-option>
+        </div>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field formControlName="typeOfSample" required>
+      <mat-label>
+        Тип отбираемой среды
+      </mat-label>
+      <mat-select> </mat-select>
+    </mat-form-field>
+    <mat-dialog-actions>
+      <button mat-raised-button>
+        Сохранить
+      </button>
+      <button mat-raised-button>
+        Отмена
+      </button>
+    </mat-dialog-actions>
+  </div>
+</form>

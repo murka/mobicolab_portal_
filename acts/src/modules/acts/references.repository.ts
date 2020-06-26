@@ -4,6 +4,7 @@ import { Customer } from './models/customer.model';
 import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
 import { ActEvent } from './models/act-event.model';
+import { Doc } from './models/doc.model';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
@@ -48,6 +49,11 @@ export class LabRepository extends Repository<Lab> {
       await this.update(lab, {id: newId})
     }
   }
+}
+
+@EntityRepository(Doc)
+export class DocRepository extends Repository<Doc> {
+  logger = new Logger(this.constructor.name)
 }
 
 @EntityRepository(ActEvent)

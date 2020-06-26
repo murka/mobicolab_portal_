@@ -18,10 +18,12 @@ import {
   RemoveDocGQL,
   SavingDocGQL,
   DeleteDocGQL,
-  ChangeDocsGQL,
-  DocSubscriptionsPayload,
   SavingAllDocsGQL,
 } from "src/types/generated";
+import {
+  ChangeDocsGQL,
+  DocSubscriptionsPayload,
+} from "src/types/sub-generated";
 import { map, take } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
@@ -30,6 +32,8 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatSelect } from "@angular/material/select";
 import { QueryRef, Apollo } from "apollo-angular";
 import { ActControlService } from "src/app/services/controls/act-control.service";
+import { variable } from '@angular/compiler/src/output/output_ast';
+import { UploadFilesService } from 'src/app/services/controls/graphql/upload-files.service';
 
 class ItemFile {
   constructor(public id: string, public name: string) {}
@@ -92,27 +96,24 @@ export class DocsComponent implements OnInit, OnDestroy {
     private _snackBar: MatSnackBar,
     private apollo: Apollo,
     private getAllDocs: GetAllDocsGQL,
-    private droppDoc: DroppDocGQL,
+    // private droppDoc: DroppDocGQL,
     private titleDoc: TitlingDocGQL,
     private savingDoc: SavingDocGQL,
     private savingAllDocs: SavingAllDocsGQL,
     private removeDoc: RemoveDocGQL,
     private changeDoc: ChangeDocsGQL,
     private deleteDoc: DeleteDocGQL,
-    private acs: ActControlService
+    private acs: ActControlService,
+    private ufs: UploadFilesService,
   ) {}
 
   ngOnInit(): void {
     this._options = this.options;
     this.form = this.fb.array([]);
-    this.docsQuery = this.apollo.use('filesWS').watchQuery({
+    this.docsQuery = this.apollo.watchQuery({
       query: this.getAllDocs.document,
       variables: { actId: this.act._id },
     });
-    // this.docsQuerySub = this.apollo.use('filesWS').watchQuery({
-    //   query: this.getAllDocs.document,
-    //   variables: { actId: this.act._id },
-    // })
     this.subscriptions$.add(
       this.form.valueChanges
         .pipe(map((value: GroupItem[]) => value.map((val) => val.status)))
@@ -124,8 +125,9 @@ export class DocsComponent implements OnInit, OnDestroy {
           }
         })
     );
-    this.docs$ = this.docsQuery.valueChanges.pipe(map(({ data }) => data.docs));
-    this.subscribeToNewDocs();
+    this.docs$ = this.docsQuery.valueChanges.pipe(map(({ data }) => data));
+    // this.docs$.subscribe(data => console.log(data))
+    // this.subscribeToNewDocs();
   }
 
   subscribeToNewDocs() {
@@ -196,7 +198,7 @@ export class DocsComponent implements OnInit, OnDestroy {
     }
 
     this._files.forEach((element) => {
-      const newObs = this.docs$.pipe(take(1))
+      const newObs = this.docs$.pipe(take(1));
       newObs.subscribe((docs) => {
         if (
           this.files.length > 0 &&
@@ -246,75 +248,84 @@ export class DocsComponent implements OnInit, OnDestroy {
           this.droppMutation(element);
           this.fileInput.nativeElement.value = "";
         }
-      })
+      });
     });
     this.fileInput.nativeElement.value = "";
   }
 
   downloadFile(docId: number, name: string) {
-    this.subscriptions$.add(this.acs.downloadDoc(this.act._id, docId).subscribe((doc) => {
-      saveAs(doc, name);
-    }))
+    this.subscriptions$.add(
+      this.acs.downloadDoc(this.act._id, docId).subscribe((doc) => {
+        saveAs(doc, name);
+      })
+    );
   }
 
   droppMutation(el: File) {
-    this.subscriptions$.add(this.droppDoc
-      .mutate({
-        file: el,
-        actId: this.act._id,
-        name: el.name,
-      })
-      .subscribe(({ data }) => {
-        const file = new ItemFile(data.droppDoc.id, el.name);
-        this.files.push(file);
-        this.addFormArray();
-      }))
+    this.subscriptions$.add(
+      this.ufs.droppDoc(el, this.act._id, el.name)
+        .subscribe(({ data }) => {
+          const file = new ItemFile(data.droppDoc.id, el.name);
+          console.log(JSON.stringify(file))
+          this.files.push(file);
+          this.addFormArray();
+        })
+    );
   }
 
   titlingDoc(id: string, title: string, optId: number, i: number) {
     if (id) {
-      this.subscriptions$.add( 
-      this.titleDoc
-        .mutate({
-          data: {
-            docId: id,
-            title: title,
-          },
-        })
-        .subscribe())
+      this.subscriptions$.add(
+        this.titleDoc
+          .mutate({
+            data: {
+              docId: id,
+              title: title,
+            },
+          })
+          .subscribe()
+      );
     }
   }
 
   savingFile(docId: string, i: number) {
     this.fileInput.nativeElement.value = "";
-    // this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
     const actId = this.act._id;
-    this.subscriptions$.add(this.savingDoc.mutate({ data: { docId, actId } }).subscribe(() => {
-      this.files = [...this.files.filter((file) => file.id !== docId)];
-      this.form.removeAt(i)
-    }))
+    this.subscriptions$.add(
+      this.savingDoc.mutate({ data: { docId, actId } }).subscribe(() => {
+        this.files = [...this.files.filter((file) => file.id !== docId)];
+        this.form.removeAt(i);
+      })
+    );
   }
 
   savingAllFiles() {
-    // this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
     this.fileInput.nativeElement.value = "";
-    const docIds = [...this.files.map(file => file.id)];
-    this.files = []
-    this.form.reset
-    this.subscriptions$.add(this.savingAllDocs.mutate({ data: { actId: this.act._id, docs: docIds } }).subscribe())
+    const docIds = [...this.files.map((file) => file.id)];
+    this.files = [];
+    this.form.reset;
+    this.subscriptions$.add(
+      this.savingAllDocs
+        .mutate({ data: { actId: this.act._id, docs: docIds } })
+        .subscribe()
+    );
   }
 
   removeMutation(docId: string) {
-    this.subscriptions$.add(this.removeDoc
-      .mutate({
-        docId: docId,
-      })
-      .subscribe())
+    this.subscriptions$.add(
+      this.removeDoc
+        .mutate({
+          docId: docId,
+        })
+        .subscribe()
+    );
   }
 
   removeFile(id: string, i: number) {
     this.files = [...this.files.filter((file) => file.id !== id)];
-    this.form.removeAt(i)
+    this.form.removeAt(i);
     this.removeMutation(id);
   }
 
@@ -323,7 +334,7 @@ export class DocsComponent implements OnInit, OnDestroy {
       this.removeMutation(file.id);
     });
     this.files = [];
-    this.form.reset
+    this.form.reset;
   }
 
   unsubscribeAdnDelete(id: string) {
@@ -338,7 +349,7 @@ export class DocsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.removeAllFiles();
     this.subscriptions$.unsubscribe();
-    this.subscription.unsubscribe()
+    this.subscription.unsubscribe();
     this.fileInput.nativeElement.value = "";
   }
 }

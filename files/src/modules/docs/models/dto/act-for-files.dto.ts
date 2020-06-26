@@ -1,4 +1,4 @@
-import { DateAndTime } from '../date-time.model';
+import { DateAndTime } from './date-time';
 
 export class ActForFilesDto {
   id: string;

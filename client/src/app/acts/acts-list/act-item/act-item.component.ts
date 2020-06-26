@@ -16,12 +16,12 @@ export class ActItemComponent implements OnInit {
   }
 
   getColor(status: StatusModel) {
-    if (status.production) return '#d9d9d9';
-    if (status.registration) return '#ff9933';
-    if (status.protocolCreated) return '#e6e600';
-    if (status.remarks) return '#cc0000';
-    if (status.noRemarks) return '#006600';
-    if (status.protocolUploaded) return "#00cc44";
+    // if (status.production) return '#d9d9d9';
+    // if (status.registration) return '#ff9933';
+    // if (status.protocolCreated) return '#e6e600';
+    // if (status.remarks) return '#cc0000';
+    // if (status.noRemarks) return '#006600';
+    // if (status.protocolUploaded) return "#00cc44";
   }
 
 

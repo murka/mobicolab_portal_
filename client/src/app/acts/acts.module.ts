@@ -6,6 +6,7 @@ registerLocaleData(localeRu, "ru-ru");
 
 import { ActsRoutingModule } from "./acts-routing.module";
 import { SharedModule } from "../shared/shared.module";
+import { RulesModule } from './rules/rules.module'
 
 import { ActsComponent } from "./acts.component";
 import { ActsListComponent } from "./acts-list/acts-list.component";
@@ -65,6 +66,7 @@ import { DocsComponent } from "./act-details/docs/docs.component";
     ActsRoutingModule,
     MatCheckboxModule,
     MatExpansionModule,
+    RulesModule
   ],
   providers: [DatePipe, { provide: LOCALE_ID, useValue: "ru-ru" }],
 })

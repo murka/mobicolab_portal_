@@ -11,7 +11,7 @@ import { DocsController } from './docs.controller';
 import { ClientsModule } from '@nestjs/microservices';
 import { grpcClientOptions } from 'src/gRPC/grpc-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DocRepository } from './doc.repository';
+import { DocRepository, DocEventRepository } from './doc.repository';
 import { Doc, DocEvent } from './models/doc.model';
 import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-client.options';
 
@@ -23,6 +23,7 @@ import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-clie
       DocRepository,
       // ActRepository,
       DocEvent,
+      DocEventRepository,
     ]),
     ClientsModule.register([
       {

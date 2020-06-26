@@ -22,6 +22,7 @@ import { DeletingDocCommand } from './commands/impl/deleting-doc.command';
 import { SavingAllDocsCommand } from './commands/impl/saving-all-docs.command';
 import { SavingAllDocsInput } from './models/dto/saving-all-docs.input';
 import { GetAllDocsOfActQuery } from './queries/impl/get-all-docs-of-act.query';
+import { ReadStream } from 'fs';
 
 @Resolver(of => Doc)
 export class DocsResolver {
@@ -49,17 +50,22 @@ export class DocsResolver {
 
   @Mutation(returns => Doc)
   async droppDoc(
-    @Args({ name: 'file', type: () => GraphQLUpload }) file: FileUpload,
+    @Args({ name: 'file', type: () => GraphQLUpload }) file,
     @Args('actId') actId: string,
     @Args('name') name: string,
   ): Promise<any> {
     this.logger.verbose(
-      `mutation droppDoc wit filename: ${name}, in act: ${actId}`,
+      `mutation droppDoc wit filename: ${JSON.stringify(file)}, in act: ${actId}`,
     );
-    const fileStream = file.createReadStream();
+    
+    // const readStream = new ReadStream()
+
+    // readStream.
+
+    // this.logger.verbose(JSON.stringify(readStream))
 
     return await this.commandBus.execute(
-      new DroppingDocCommand(fileStream, actId, name),
+      new DroppingDocCommand(file, actId, name),
     );
   }
 

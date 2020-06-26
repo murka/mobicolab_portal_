@@ -113,15 +113,15 @@ export class StatusStepperComponent implements OnInit, OnChanges {
   }
 
   openBottomSheet(): void {
-    this._bottomSheet.open(CommentBottomSheet, {data: {'status': this.act.status.remarks}}).afterDismissed()
-      .subscribe(result => {
-        if (result.condition === "comment") { this.acs.postComment(this.id.value.id, {"comment": result.comment}).subscribe(act => this.act = act)}
-        if (result.condition === 'remarks') { this.acs.postComment(this.id.value.id, {"comment": result.comment})
-                                              .subscribe((act) => {this.acs.patchAct(this.id.value.id, {"status.remarks": true, "status.protocolCreated": false})
-                                                .subscribe(act => {this.act = act; console.log('act', act); console.log('this act', this.act);
+    // this._bottomSheet.open(CommentBottomSheet, {data: {'status': this.act.status.remarks}}).afterDismissed()
+    //   .subscribe(result => {
+    //     if (result.condition === "comment") { this.acs.postComment(this.id.value.id, {"comment": result.comment}).subscribe(act => this.act = act)}
+    //     if (result.condition === 'remarks') { this.acs.postComment(this.id.value.id, {"comment": result.comment})
+    //                                           .subscribe((act) => {this.acs.patchAct(this.id.value.id, {"status.remarks": true, "status.protocolCreated": false})
+    //                                             .subscribe(act => {this.act = act; console.log('act', act); console.log('this act', this.act);
                                                 
-                                                })})}
-      });
+    //                                             })})}
+      // });
   }
 
   // createDoc() {

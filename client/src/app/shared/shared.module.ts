@@ -47,6 +47,7 @@ import { FfGroupSelectComponent } from './components/forms/ff-group-select/ff-gr
 import { FfAutocompleteComponent } from './components/forms/ff-autocomplete/ff-autocomplete.component';
 import { FfCheapAutocompleteComponent } from './components/forms/ff-cheap-autocomplete/ff-cheap-autocomplete.component';
 import { FileDeleteConfirmComponent } from './components/dialogs/file-delete-confirm/file-delete-confirm.component';
+import { TemplatesComponent } from './components/dialogs/templates/templates.component';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { FileDeleteConfirmComponent } from './components/dialogs/file-delete-con
     FfGroupSelectComponent,
     FfAutocompleteComponent,
     FfCheapAutocompleteComponent,
-    FileDeleteConfirmComponent
+    FileDeleteConfirmComponent,
+    TemplatesComponent
   ],
   imports: [
     CommonModule,
@@ -109,7 +111,6 @@ import { FileDeleteConfirmComponent } from './components/dialogs/file-delete-con
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule,
     AutocompleteComponent,
     FileUploadModule,
     Md2Module,
@@ -121,7 +122,8 @@ import { FileDeleteConfirmComponent } from './components/dialogs/file-delete-con
     FfGroupSelectComponent,
     ClearButtonComponent,
     FfAutocompleteComponent,
-    FfCheapAutocompleteComponent
+    FfCheapAutocompleteComponent,
+    TemplatesComponent
   ],
   providers: [
     { provide: MatDialogRef, useValue: {} },

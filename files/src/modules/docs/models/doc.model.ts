@@ -1,6 +1,5 @@
 import { ObjectType, Field, registerEnumType, ID, Directive } from '@nestjs/graphql';
 import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne, CreateDateColumn, UpdateDateColumn, BaseEntity, JoinColumn } from 'typeorm';
-import { Act } from 'src/modules/docs/models/act.model';
 
 @Entity()
 @ObjectType("Doc")
@@ -21,7 +20,7 @@ export class Doc {
   downloadable: boolean;
   @Field(type => [DocEvent], { nullable: 'itemsAndList'})
   @OneToMany(type => DocEvent, event => event.doc, { nullable: true, onDelete: 'CASCADE' })
-  events?: DocEvent[];
+  docEvents?: DocEvent[];
   @CreateDateColumn()
   createdAt?: Date
   @UpdateDateColumn()
@@ -44,7 +43,7 @@ export class DocEvent {
   @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @ManyToOne(type => Doc, doc => doc.events, { nullable: true, cascade: true, onDelete: 'SET NULL' })
+  @ManyToOne(type => Doc, doc => doc.docEvents, { nullable: true, cascade: true, onDelete: 'SET NULL' })
   doc?: Doc;
   @Column({type: "enum", enum: AllowedEvent, nullable: true})
   event?: string;

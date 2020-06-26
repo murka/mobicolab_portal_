@@ -8,6 +8,7 @@ import { DateAndTime } from './date-time.model';
 import { Application } from './application.model';
 import { ActEvent } from './act-event.model';
 import { Doc } from './doc.model';
+import { ActStatus } from './act-status.model';
 
 
 @Entity()
@@ -27,7 +28,8 @@ export class Act {
   public general_customer: GeneralCustomer;
   @ManyToOne(type => Lab, lab => lab.acts, { cascade: true, onUpdate: 'CASCADE', eager: true })
   public lab: Lab;
-  @OneToMany(type => Doc, docs => docs.act)
+  @Field(type => [Doc], { nullable: true })
+  @OneToMany(type => Doc, docs => docs.act, { cascade: true, eager: true, onUpdate: 'CASCADE' })
   docs: Doc[]
   @Column(type => TypeOfSample)
   public typeOfSample: TypeOfSample;
@@ -70,6 +72,8 @@ export class Act {
   public passedSample?: string;
   @Column(type => Application)
   public application: Application;
+  @Column({ type: 'enum', enum: ActStatus, default: ActStatus.CREATED})
+  status: string;
   @OneToMany(type => ActEvent, event => event.act, { cascade: true, nullable: true })
   public events?: ActEvent[]
   

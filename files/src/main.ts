@@ -3,6 +3,7 @@ import { Logger } from '@nestjs/common'
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { graphqlUploadExpress } from 'graphql-upload';
+import bodyParser = require("body-parser");
 
 const configService = new ConfigService();
 
@@ -12,7 +13,8 @@ async function bootstrap() {
 
   app.enableCors();
   app.setGlobalPrefix('nestapi');
-  app.use(graphqlUploadExpress({maxFieldSize: 1000000, maxFiles: 10}))
+  // app.use(bodyParser.json())
+  app.use(graphqlUploadExpress({maxFieldSize: 1000000, maxFiles: 10,}))
 
   const port = configService.get('PORT')
   await app.listen(port);
