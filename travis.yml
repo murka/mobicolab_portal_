@@ -1,0 +1,10 @@
+sudo: required
+services:
+  - docker
+before_install:
+   - echo "$DOCKER_PASSWORD" | docker login -u "DOCKER_USERNAME" --password-stdin
+deploy:
+  deploy: script
+  script: bash ./deploy.sh
+  on:
+    branch: master

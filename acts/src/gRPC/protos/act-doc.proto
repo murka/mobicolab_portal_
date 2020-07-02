@@ -6,7 +6,12 @@ package act_doc;
 
 service ActDocService {
     rpc FindLabels (Id) returns (Labels);
-    rpc AddReferenceToAct (Id, Id) returns (Null);
+    rpc AddReferenceToAct (Ids) returns (Null);
+}
+
+message Ids {
+    Id actId = 1;
+    Id docId = 2;
 }
 
 message Null {}

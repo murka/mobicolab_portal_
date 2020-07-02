@@ -4,7 +4,12 @@ package act_doc;
 
 service ActDocService {
     rpc FindActById (Id) returns (Act);
-    rpc AddReferenceToAct (Id, Id) returns (Null);
+    rpc AddReferenceToAct (Ids) returns (Null);
+}
+
+message Ids {
+    Id actId = 1;
+    Id docId = 2;
 }
 
 message Null {
