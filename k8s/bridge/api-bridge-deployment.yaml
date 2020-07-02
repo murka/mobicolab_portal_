@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-bridge-deployment
+spec:
+  replicas: 3
+  selectros:
+    matchLabels:
+      component: api-bridge
+  template:
+    metadata:
+      labels:
+        component: api-bridge
+    spec:
+      containers:
+        - name: api-bridge
+          image: mark600/mobicolab_portal_api_bridge
+          ports:
+            - containerPort: 2010

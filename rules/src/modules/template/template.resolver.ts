@@ -19,4 +19,3 @@ export class TemplateResolver {
 
     return await this.queryBus.execute(new GetLabTypeTemplateQuery(labId, typeId));
   }
-}
