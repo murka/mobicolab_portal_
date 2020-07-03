@@ -1,40 +1,40 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Deploymnet
 metadata:
-  name: api-general-customers-deployment
+  name: api-files-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      compnent: api-general-customers
+      component: api-files
   template:
     metadata:
       labels:
-        compnent: api-general-customers
+        component: api-files
     spec:
       volumes:
         - name: db-storage
           persistentVolumeClaim:
             claimName: database-persistent-volume-claim
       containers:
-        - name: api-general-customers
-          image: mark600/mobicolab_portal_api_general_customers
+        - name: api-files
+          image: mark600/mobicolab_portal_api_files
           env:
             - name: TYPEORM_HOST_DOCKER
-              value: db-general-customers
+              value: db-files
           envFrom:
             - configMapRef:
-              name: typeorm-config-general
+                name: typeorm-config-general
           ports:
-            - containerPort: 3040
-        - name: db-general-customers
+            - containerPort: 3010
+        - name: db-files
           image: postgres
           envFrom:
             - configMapRef:
-              name: postgres-config-general
+                name: postgres-config-general
           volumeMounts:
             - name: db-storage
-              mountPath: /var/lib/postgresql/data
+              mountPaht: /var/lib/postgres/data
               subPath: postgres
           ports:
             - containerPort: 5432
