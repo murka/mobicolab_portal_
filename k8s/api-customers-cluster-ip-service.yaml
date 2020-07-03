@@ -8,6 +8,8 @@ spec:
     component: api-customers
   ports:
     - port: 3030
+      name: api
       targetPort: 3030
     - port: 6030
+      name: db
       targetPort: 6030

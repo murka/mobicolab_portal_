@@ -1,40 +1,40 @@
 apiVersion: apps/v1
-kind: Deploymnet
+kind: Deployment
 metadata:
-  name: api-files-deployment
+  name: api-labs-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      component: api-files
-  template:
+      component: api-labs
+  template: 
     metadata:
       labels:
-        component: api-files
+        component: api-labs
     spec:
       volumes:
         - name: db-storage
           persistentVolumeClaim:
             claimName: database-persistent-volume-claim
       containers:
-        - name: api-files
-          image: mark600/mobicolab_portal_api_files
+        - name: api-labs
+          image: mark600/mobicolab_portal_api_labs
           env:
             - name: TYPEORM_HOST_DOCKER
-              value: db-files
+              value: db-labs
           envFrom:
             - configMapRef:
-              name: typeorm-config-general
+                name: typeorm-config-general
           ports:
-            - containerPort: 3010
-        - name: db-files
+            - containerPort: 3050
+        - name: db-labs
           image: postgres
           envFrom:
             - configMapRef:
-              name: postgres-config-general
+                name: postgres-config-general
           volumeMounts:
             - name: db-storage
-              mountPaht: /var/lib/postgres/data
+              mountPath: /var/lib/postgresql/data
               subPath: postgres
           ports:
             - containerPort: 5432

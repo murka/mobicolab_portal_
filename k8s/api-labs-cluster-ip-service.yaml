@@ -8,6 +8,8 @@ spec:
     component: api-labs
   ports:
     - port: 3050
+      name: api
       targetPort: 3050
     - port: 6050
+      name: db
       targetPort: 5432

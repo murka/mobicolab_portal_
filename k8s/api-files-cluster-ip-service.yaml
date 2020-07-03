@@ -8,6 +8,8 @@ spec:
     component: api-files
   ports:
     - port: 3010
+      name: api
       targetPort: 3010
     - port: 6010
+      name: db
       targetPort: 5432
