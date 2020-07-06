@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: api-customers-deployment
 spec:
-  replica: 1
+  replicas: 1
   selector:
     matchLabels:
       component: api-customers
@@ -14,7 +14,7 @@ spec:
     spec:
       volumes:
         - name: db-storage
-          persistentVolimeClaim:
+          persistentVolumeClaim:
             claimName: database-persistent-volume-claim
       containers:
         - name: api-customers
@@ -28,13 +28,13 @@ spec:
           ports:
             - containerPort: 3030
         - name: db-customers
-          image: posgres
+          image: postgres
           envFrom:
             - configMapRef:
                 name: postgres-config-general
           volumeMounts:
             - name: db-storage
-              mountPaht: /var/lib/postgresql/data
-              subPaht: postgres
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
           ports:
             - containerPort: 5432

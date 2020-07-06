@@ -7,5 +7,5 @@ spec:
   selector:
     component: api-gateway
   ports:
-    - ports: 2000
+    - port: 2000
       targetPort: 2000

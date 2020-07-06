@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: posеgres-config-general
+  name: typeorm-config-general
 data:
-  TYPEORM_PORT: "5432"
+  TYPEORM_PORT: '5432'
   TYPEORM_USERNAME: mobicolab
   TYPEORM_PASSWORD: Tick4952
   TYPEORM_DATABASE: postgres
