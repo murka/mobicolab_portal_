@@ -8,6 +8,7 @@ WORKDIR '/app'
 COPY ./package.json ./
 RUN npm install
 RUN npm install -g @angular/cli
+RUN npm install -g typescript@3.8.3
 
 # add app
 COPY . .
