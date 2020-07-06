@@ -6,7 +6,7 @@ docker build -t mark600/mobicolab_portal_api_customers -f ./customers/Dockerfile
 docker build -t mark600/mobicolab_portal_api_files -f ./files/Dockerfile ./files
 docker build -t mark600/mobicolab_portal_api_general_customers -f ./general-customers/Dockerfile ./general-customers
 docker build -t mark600/mobicolab_portal_api_labs -f ./labs/Dockerfile ./labs
-docker build -t mark600/mobicolat_portal_api_subscriptions -f ./api-subscriptions/Dockerfile ./api-subscriptions
+docker build -t mark600/mobicolab_portal_api_subscriptions -f ./api-subscriptions/Dockerfile ./api-subscriptions
 docker push mark600/mobicolab_portal_api_acts
 docker push mark600/mobicolab_portal_api_gateway
 docker push mark600/mobicolab_portal_api_bridge
