@@ -2,10 +2,10 @@
 FROM node as builder
 
 # set working directory
-WORKDIR /app
+WORKDIR '/app'
 
 # install and cache app dependencies
-COPY package.json .
+COPY ./package.json ./
 RUN npm install
 RUN npm install -g @angular/cli
 
@@ -15,4 +15,6 @@ COPY . .
 RUN npm run build
 
 FROM nginx
-COPY --from=builder /app/build /usr/share/nginx/html
+EXPOSE 4200
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
