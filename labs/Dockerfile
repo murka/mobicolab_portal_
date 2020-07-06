@@ -5,7 +5,7 @@ RUN mkdir -p /usr/share/app
 WORKDIR /usr/share/app
 
 COPY package.json /usr/share/app
-RUN npm install
+RUN yarn install
 
 COPY . /usr/share/app
 
