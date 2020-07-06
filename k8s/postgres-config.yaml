@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: typeorm-config-general
+  name: postgres-config-general
 data:
   POSTGRES_PASSWORD: Tick4952
   POSTGRES_USER: mobicolab

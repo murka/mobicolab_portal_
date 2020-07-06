@@ -4,7 +4,7 @@ metadata:
   name: api-bridge-deployment
 spec:
   replicas: 1
-  selectros:
+  selector:
     matchLabels:
       component: api-bridge
   template:

@@ -9,4 +9,4 @@ RUN npm install
 
 COPY . /usr/share/app
 
-CMD ["npm", "start:prod"]
+CMD ["yarn", "start:prod"]
