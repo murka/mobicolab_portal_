@@ -9,4 +9,4 @@ RUN yarn install
 
 COPY . /usr/share/app
 
-CMD ["npm", "run" "start:prod"]
+CMD ["npm", "run", "start:prod"]

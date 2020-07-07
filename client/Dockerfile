@@ -1,24 +1,21 @@
 # base image
 FROM node as builder
 
-# install chrome for protractor tests
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-RUN apt-get update && apt-get install -yq google-chrome-stable
-
 # set working directory
-RUN mkdir -p /app
-WORKDIR /app
-
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+WORKDIR '/app'
 
 # install and cache app dependencies
-COPY package.json /app
+COPY ./package.json ./
 RUN npm install
 RUN npm install -g @angular/cli
+RUN npm install -g typescript@3.8.3
 
 # add app
-COPY . /app
+COPY . .
 
-CMD ng serve --host 0.0.0.0
+RUN npm run build
+
+FROM nginx
+EXPOSE 4200
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
