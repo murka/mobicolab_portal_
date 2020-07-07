@@ -21,7 +21,7 @@ spec:
                   image: mark600/mobicolab_portal_api_acts
                   env:
                       - name: TYPEORM_HOST_DOCKER
-                        value: db-acts
+                        value: localhost
                   envFrom:
                       - configMapRef:
                             name: typeorm-config-general
