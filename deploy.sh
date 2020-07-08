@@ -12,6 +12,7 @@ docker push mark600/mobicolab_portal_api_gateway
 docker push mark600/mobicolab_portal_api_bridge
 docker push mark600/mobicolab_portal_client
 docker push mark600/mobicolab_portal_api_customers
+docker push mark600/mobicolab_portal_api_files
 docker push mark600/mobicolab_portal_api_general_customers
 docker push mark600/mobicolab_portal_api_labs
 docker push mark600/mobicolab_portal_api_subscriptions
