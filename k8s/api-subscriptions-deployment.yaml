@@ -13,28 +13,28 @@ spec:
         component: api-subscriptions
     spec:
       volumes:
-        # - name: db-storage
-        #   persistentVolumeClaim:
-        #     claimName: database-persistent-volume-claim
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
       containers:
         - name: api-subscriptions
           image: mark600/mobicolab_portal_api_subscriptions
           env:
             - name: TYPEORM_HOST_DOCKER
-              value: db-subscriptions
+              value: localhost
           envFrom:
             - configMapRef:
                 name: typeorm-config-general
           ports:
             - containerPort: 3060
-        # - name: db-subscriptions
-        #   image: postgres
-        #   envFrom:
-        #     - configMapRef:
-        #         name: postgres-config-general
-        #   volumeMounts:
-        #     - name: db-storage
-        #       mountPath: /var/lib/postgresql/data
-        #       subPath: postgres
-        #   ports:
-        #     - containerPort: 5432
+        - name: db-subscriptions
+          image: postgres
+          envFrom:
+            - configMapRef:
+                name: postgres-config-general
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          ports:
+            - containerPort: 5432
