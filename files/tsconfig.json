@@ -12,6 +12,8 @@
     "incremental": true,
     "noImplicitAny": false,
     "noLib": false,
+    "esModuleInterop": true
+    
   },
   "include": [
     "src/**/*"
