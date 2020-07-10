@@ -6,3 +6,4 @@ data:
   POSTGRES_PASSWORD: Tick4952
   POSTGRES_USER: mobicolab
   POSTGRES_DB: postgres
+  PGDATA: /var/lib/postgresql/data/pgdata
