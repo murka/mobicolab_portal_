@@ -29,6 +29,7 @@ import { Doc } from 'src/modules/acts/models/doc.model';
     GraphQLFederationModule.forRoot({
       installSubscriptionHandlers: false,
       autoSchemaFile: true,
+      introspection: true,
       buildSchemaOptions: {
         orphanedTypes: [Customer, GeneralCustomer, Lab, Doc],
       },
