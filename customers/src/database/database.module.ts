@@ -27,9 +27,10 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
       installSubscriptionHandlers: false,
       uploads: false,
       autoSchemaFile: true,
-      // buildSchemaOptions: {
-      //   orphanedTypes: [Act],
-      // },
+      introspection: true,
+      engine: {
+        experimental_schemaReporting: true,
+      },
       debug: true,
       playground: true,
     }),
