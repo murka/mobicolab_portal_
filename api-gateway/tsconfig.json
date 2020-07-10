@@ -12,6 +12,7 @@
     "incremental": true,
     "esModuleInterop": true,
     "allowJs": true,
+    "skipLibCheck": true,
   },
   "exclude": ["node_modules", "dist"]
 }
