@@ -25,6 +25,7 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
     GraphQLFederationModule.forRoot({
       installSubscriptionHandlers: false,
       uploads: false,
+      introspection: true,
       autoSchemaFile: true,
       debug: true,
       playground: true,
