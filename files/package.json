@@ -36,7 +36,7 @@
     "@nestjs/mongoose": "^6.4.0",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/platform-socket.io": "^7.0.11",
-    "@nestjs/typeorm": "^7.0.0",
+    "@nestjs/typeorm": "^7.1.0",
     "@nestjs/websockets": "^7.0.11",
     "@prisma/client": "^2.0.0-beta.3",
     "apollo-graphql": "^0.4.4",
@@ -49,11 +49,11 @@
     "grpc": "^1.24.3",
     "mongoose": "^5.9.9",
     "nestjs-webdav": "^1.0.1",
-    "pg": "^8.2.1",
+    "pg": "^8.3.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "typeorm": "^0.2.24",
+    "typeorm": "^0.2.25",
     "webdav": "^3.2.0"
   },
   "devDependencies": {
