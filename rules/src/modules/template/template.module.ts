@@ -3,12 +3,19 @@ import { TemplateResolver } from './template.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LabTypeOfSampleTemplateModel } from './models/lab-type-of-sample.model';
 import { LabTypeTemplateRepository } from './template.repository';
+import { CqrsModule } from '@nestjs/cqrs';
+import { QueryHandlers } from './queries/handlers';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([
+  imports: [
+    CqrsModule,
+    TypeOrmModule.forFeature([
     LabTypeOfSampleTemplateModel,
     LabTypeTemplateRepository,
   ])],
-  providers: [TemplateResolver]
+  providers: [
+    TemplateResolver,
+    ...QueryHandlers,
+  ]
 })
 export class TemplateModule {}

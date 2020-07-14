@@ -1,0 +1,83 @@
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  local:
+    push: false
+  artifacts:
+    - image: mark600/mobicolab-portal-client
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js:": .
+        "**/*.ts": .
+        "**/*.scss": .
+        "**/*.html": .
+    - image: mark600/mobicolab-portal-api-acts
+      context: acts
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+    - image: mark600/mobicolab-portal-api-customers
+      context: customers
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+    - image: mark600/mobicolab-portal-api-general-customers
+      context: general-customers
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+    - image: mark600/mobicolab-portal-api-labs
+      context: labs
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+    - image: mark600/mobicolab-portal-api-files
+      context: files
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+    - image: mark600/mobicolab-portal-api-subscriptions
+      context: api-subscriptions
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+    - image: mark600/mobicolab-portal-api-gateway
+      context: api-gateway
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        "**/*.js": .
+        "**/*.ts": .
+deploy:
+  kubectl:
+    manifests:
+      - k8s/deployments/client-deployment.yaml
+      - k8s/deployments/api-acts-deployment.yaml
+      - k8s/deployments/api-customers-deployment.yaml
+      - k8s/deployments/api-general-customers-deployment.yaml
+      - k8s/deployments/api-labs-deployment.yaml
+      - k8s/deployments/api-files-deployment.yaml
+      - k8s/deployments/api-subscriptions-deployment.yaml
+      - k8s/deployments/api-gateway-deployment.yaml
+      - k8s/services/client-cluster-ip-service.yaml
+      - k8s/services/api-acts-cluster-ip-service.yaml
+      - k8s/services/api-customers-cluster-ip-service.yaml
+      - k8s/services/api-general-customers-cluster-ip-service.yaml
+      - k8s/services/api-labs-cluster-ip-service.yaml
+      - k8s/services/api-files-cluster-ip-service.yaml
+      - k8s/services/api-subscriptions-cluster-ip-service.yaml
+      - k8s/services/api-gateway-cluster-ip-service.yaml

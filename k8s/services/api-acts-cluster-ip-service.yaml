@@ -10,10 +10,3 @@ spec:
     - port: 3020
       name: api
       targetPort: 3020
-    - port: 6020
-      name: db
-      targetPort: 5432
-    - name: tcp-port
-      port: 3021
-      targetPort: 3020
-      protocol: TCP

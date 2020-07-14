@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-customers-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: api-customers
+  template:
+    metadata:
+      labels:
+        component: api-customers
+    spec:
+      containers:
+        - name: api-customers
+          image: mark600/mobicolab_portal_api_customers
+          env:
+            - name: TYPEORM_HOST_DOCKER
+              value: db-customers
+          envFrom:
+            - configMapRef:
+                name: typeorm-config-general
+          ports:
+            - containerPort: 3030

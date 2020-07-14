@@ -31,9 +31,12 @@ import { Doc } from 'src/modules/acts/models/doc.model';
       autoSchemaFile: true,
       introspection: true,
       buildSchemaOptions: {
-        orphanedTypes: [Customer, GeneralCustomer, Lab, Doc],
+        orphanedTypes: [
+          // Customer, 
+          GeneralCustomer, 
+          Lab, 
+          Doc],
       },
-      debug: true,
       playground: true,
     }),
   ],
