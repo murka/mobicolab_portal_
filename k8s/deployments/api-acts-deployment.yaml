@@ -12,29 +12,14 @@ spec:
             labels:
                 component: api-acts
         spec:
-            volumes:
-                - name: db-storage
-                  persistentVolumeClaim:
-                      claimName: database-persistent-volume-claim
             containers:
                 - name: api-acts
                   image: mark600/mobicolab_portal_api_acts
                   env:
                       - name: TYPEORM_HOST_DOCKER
-                        value: localhost
+                        value: db-acts
                   envFrom:
                       - configMapRef:
                             name: typeorm-config-general
                   ports:
                       - containerPort: 3020
-                - name: db-acts
-                  image: postgres
-                  envFrom:
-                      - configMapRef:
-                            name: postgres-config-general
-                  volumeMounts:
-                      - name: db-storage
-                        mountPath: /var/lib/postgresql/data
-                        subPath: postgres
-                  ports:
-                      - containerPort: 5432
