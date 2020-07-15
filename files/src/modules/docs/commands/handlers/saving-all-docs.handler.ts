@@ -2,10 +2,10 @@ import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { SavingAllDocsCommand } from '../impl/saving-all-docs.command';
 import { Inject, Logger } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
-import { PrismaService } from 'src/services/prisma.service';
 import { SavedDocEvent } from '../../events/impl/saved-doc.event';
 import { Doc } from '../../models/doc.model';
 import { DocsService } from '../../docs.service';
+import { DocRepository } from '../../doc.repository';
 
 @CommandHandler(SavingAllDocsCommand)
 export class SavingAllDocsHandler
@@ -15,7 +15,7 @@ export class SavingAllDocsHandler
   constructor(
     private eventBus: EventBus,
     private readonly ds: DocsService,
-    private prisma: PrismaService,
+    private readonly docRepository: DocRepository,
   ) {}
 
   async execute(command: SavingAllDocsCommand): Promise<Doc[]> {
@@ -30,7 +30,9 @@ export class SavingAllDocsHandler
         try {
           this.eventBus.publish(new SavedDocEvent(docId));
 
-          const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+          // const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+
+          const doc = await this.docRepository.findOne(docId)
  
           updatedDocs.push(doc);
         } catch (e) {

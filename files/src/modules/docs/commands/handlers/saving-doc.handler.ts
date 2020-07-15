@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { SavingDocCommand } from '../impl/saving-doc.command';
-import { Logger, Inject } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { SavedDocEvent } from '../../events/impl/saved-doc.event';
-import { PrismaService } from 'src/services/prisma.service';
 import { DocsService } from '../../docs.service';
+import { DocRepository } from '../../doc.repository';
 
 @CommandHandler(SavingDocCommand)
 export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
@@ -11,8 +11,8 @@ export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
 
   constructor(
     private eventBus: EventBus,
-    private prisma: PrismaService,
     private readonly ds: DocsService,
+    private readonly docRepository: DocRepository
   ) {}
 
   async execute(command: SavingDocCommand) {
@@ -22,7 +22,9 @@ export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
     try {
       this.eventBus.publish(new SavedDocEvent(docId));
 
-      const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+      // const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+
+      const doc = await this.docRepository.findOne(docId)
 
       await this.ds.publishDoc(doc.id, actId, 'UPDATED')
 

@@ -13,5 +13,5 @@ export class DocRepository extends Repository<Doc> {
 //     logger = new Logger(this.constructor.name)
 // }
 
-@EntityRepository(Doc)
+@EntityRepository(DocEvent)
 export class DocEventRepository extends Repository<DocEvent> {}

@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { DroppingDocCommand } from '../impl/dropping-doc.command';
-import { PrismaService } from 'src/services/prisma.service';
 import { Logger } from '@nestjs/common';
 import { Doc } from '../../models/doc.model';
 import { DroppedDocEvent } from '../../events/impl/dropped-doc.event';
