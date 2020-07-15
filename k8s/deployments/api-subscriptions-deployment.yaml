@@ -17,7 +17,7 @@ spec:
           image: mark600/mobicolab_portal_api_subscriptions
           env:
             - name: TYPEORM_HOST_DOCKER
-              value: db-subscriptions
+              value: db-subscriptions-cluster-ip-service
           envFrom:
             - configMapRef:
                 name: typeorm-config-general

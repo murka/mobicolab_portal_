@@ -10,6 +10,3 @@ spec:
     - port: 3040
       name: api
       targetPort: 3040
-    - port: 6040
-      name: db
-      targetPort: 6040
