@@ -1,68 +1,95 @@
-apiVersion: skaffold/v1beta2
+apiVersion: skaffold/v1
 kind: Config
 build:
   local:
     push: false
   artifacts:
-    - image: mark600/mobicolab-portal-client
+    - image: mark600/mobicolab_portal_client
       context: client
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js:": .
-        "**/*.ts": .
-        "**/*.scss": .
-        "**/*.html": .
-    - image: mark600/mobicolab-portal-api-acts
+        manual:
+          - src: "**/*.js:"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+          - src: "**/*.scss"
+            dest: .
+          - src: "**/*.html"
+            dest: .
+    - image: mark600/mobicolab_portal_api_acts
       context: acts
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js": .
-        "**/*.ts": .
-    - image: mark600/mobicolab-portal-api-customers
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+    - image: mark600/mobicolab_portal_api_customers
       context: customers
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js": .
-        "**/*.ts": .
-    - image: mark600/mobicolab-portal-api-general-customers
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+    - image: mark600/mobicolab_portal_api_general_customers
       context: general-customers
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js": .
-        "**/*.ts": .
-    - image: mark600/mobicolab-portal-api-labs
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+    - image: mark600/mobicolab_portal_api_labs
       context: labs
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js": .
-        "**/*.ts": .
-    - image: mark600/mobicolab-portal-api-files
-      context: files
-      docker:
-        dockerfile: Dockerfile.dev
-      sync:
-        "**/*.js": .
-        "**/*.ts": .
-    - image: mark600/mobicolab-portal-api-subscriptions
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+    # - image: mark600/mobicolab_portal_api_files
+    #   context: files
+    #   docker:
+    #     dockerfile: Dockerfile.dev
+    #   sync:
+    #     manual:
+    #       - src: "**/*.js"
+    #         dest: .
+    #       - src: "**/*.ts"
+    #         dest: .
+    - image: mark600/mobicolab_portal_api_subscriptions
       context: api-subscriptions
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js": .
-        "**/*.ts": .
-    - image: mark600/mobicolab-portal-api-gateway
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
+    - image: mark600/mobicolab_portal_api_gateway
       context: api-gateway
       docker:
         dockerfile: Dockerfile.dev
       sync:
-        "**/*.js": .
-        "**/*.ts": .
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
 deploy:
+  statusCheckDeadlineSeconds: 300
   kubectl:
     manifests:
       - k8s/deployments/client-deployment.yaml
@@ -70,7 +97,7 @@ deploy:
       - k8s/deployments/api-customers-deployment.yaml
       - k8s/deployments/api-general-customers-deployment.yaml
       - k8s/deployments/api-labs-deployment.yaml
-      - k8s/deployments/api-files-deployment.yaml
+      # - k8s/deployments/api-files-deployment.yaml
       - k8s/deployments/api-subscriptions-deployment.yaml
       - k8s/deployments/api-gateway-deployment.yaml
       - k8s/services/client-cluster-ip-service.yaml

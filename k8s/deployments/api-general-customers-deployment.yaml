@@ -17,7 +17,7 @@ spec:
           image: mark600/mobicolab_portal_api_general_customers
           env:
             - name: TYPEORM_HOST_DOCKER
-              value: db-general-customers
+              value: db-general-customers-cluster-ip-service
           envFrom:
             - configMapRef:
                 name: typeorm-config-general
