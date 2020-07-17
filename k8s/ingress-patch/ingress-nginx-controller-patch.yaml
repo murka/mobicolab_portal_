@@ -4,6 +4,8 @@ spec:
       containers:
       - name: controller
         ports:
+          - containerPort: 4200
+            hostPort: 4200
           - containerPort: 3010
             hostPort: 3010
           - containerPort: 3020
