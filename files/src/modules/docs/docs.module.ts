@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DocsService } from './docs.service';
 import { DocsResolver } from './docs.resolver';
-import { PrismaService } from 'src/services/prisma.service';
 import { CommandHandlers } from './commands/handlers';
 import { EventHandlers } from './events/handlers';
 import { DocSagas } from './sagas/doc.sagas';
@@ -48,7 +47,6 @@ import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-clie
   providers: [
     DocsService,
     DocsResolver,
-    PrismaService,
     ...CommandHandlers,
     ...EventHandlers,
     DocSagas,

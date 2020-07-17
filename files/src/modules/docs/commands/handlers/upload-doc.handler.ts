@@ -1,11 +1,9 @@
 import {
   ICommandHandler,
-  EventBus,
   CommandHandler,
 } from '@nestjs/cqrs';
 import { UploadDocCommand } from '../impl/upload-doc.command';
 import { DocsService } from '../../docs.service';
-import { PrismaService } from 'src/services/prisma.service';
 import { Logger } from '@nestjs/common';
 import { DocRepository, DocEventRepository } from '../../doc.repository';
 

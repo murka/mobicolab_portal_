@@ -6,8 +6,6 @@ import {
   ResolveReference,
 } from '@nestjs/graphql';
 
-import { PrismaService } from '../../services/prisma.service';
-
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Doc } from './models/doc.model';
 import { TitlingDocInput } from './models/dto/titling-doc.input';
@@ -23,6 +21,7 @@ import { SavingAllDocsCommand } from './commands/impl/saving-all-docs.command';
 import { SavingAllDocsInput } from './models/dto/saving-all-docs.input';
 import { GetAllDocsOfActQuery } from './queries/impl/get-all-docs-of-act.query';
 import { ReadStream } from 'fs';
+import { DocRepository } from './doc.repository';
 
 @Resolver(of => Doc)
 export class DocsResolver {
@@ -31,20 +30,15 @@ export class DocsResolver {
   constructor(
     private commandBus: CommandBus,
     private readonly queyBus: QueryBus,
-    private prisma: PrismaService,
+    private readonly docRepository: DocRepository,
   ) {}
 
   @Query(returns => [Doc])
   async docs(@Args('actId') actId: string): Promise<Doc[]> {
     this.logger.verbose(`quering all docs in act with id: ${actId}`);
-    let docs;
-    const act = await this.prisma.act.findOne({ where: { id: actId } });
-    if (!act) {
-      await this.prisma.act.create({ data: { id: actId } });
-      docs = [];
-    } else {
-      docs = await this.prisma.act.findOne({ where: { id: actId } }).doc();
-    }
+    
+    const docs = await this.docRepository.find();
+
     return docs;
   }
 

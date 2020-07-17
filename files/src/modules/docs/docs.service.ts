@@ -1,15 +1,13 @@
 import { Injectable, Logger, Inject, OnModuleInit } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 
 import { InjectWebDAV, WebDAV } from 'nestjs-webdav';
 
 import { Doc } from './models/doc.model';
-import { PrismaService } from 'src/services/prisma.service';
 import { ReadStream } from 'fs';
 import { ActForFilesDto } from './models/dto/act-for-files.dto';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable, ReplaySubject } from 'rxjs';
+import { DocRepository } from './doc.repository';
 
 const logger = new Logger('docService');
 
@@ -36,10 +34,10 @@ export class DocsService implements OnModuleInit {
 
   constructor(
     @InjectWebDAV() private readonly webDav: WebDAV,
-    private prisma: PrismaService,
     @Inject('ACT_PACKAGE') private readonly actClient: ClientGrpc,
     @Inject('SUBSCRIPTIONS_PACKAGE')
     private readonly subscriptionClient: ClientGrpc,
+    private readonly docRepository: DocRepository,
   ) {}
 
   onModuleInit() {
@@ -147,7 +145,9 @@ export class DocsService implements OnModuleInit {
     logger.verbose('upload-doc.evetn inside `docService`');
 
     try {
-      const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+      // const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+
+      const doc = await this.docRepository.findOne(docId)
 
       const path = doc.ydUrl;
       const name = doc.name;
