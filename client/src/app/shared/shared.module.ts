@@ -33,6 +33,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FileUploadModule } from 'ng2-file-upload';
 import { Md2Module, NoConflictStyleCompatibilityMode } from 'angular-md2';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
 import { AddingItemComponent } from './adding-item/adding-item.component';
@@ -79,7 +80,10 @@ import { TemplatesComponent } from './components/dialogs/templates/templates.com
     MatAutocompleteModule,
     MatDialogModule,
     MatSelectModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTabsModule,
+    MatRadioModule,
+    PdfViewerModule
   ],
   exports: [
     CommonModule,

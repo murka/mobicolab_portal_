@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActFormDataService } from 'src/app/services/data/act-form-data.service';
 import { OptionsBaseModel } from 'src/app/shared/models/interface/options-base.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TemplatePreviewControlService } from 'src/app/services/controls/template-preview-control.service';
 
 @Component({
   selector: 'app-templates',
@@ -10,6 +11,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./templates.component.scss']
 })
 export class TemplatesComponent implements OnInit {
+
+  mobicolabRadio: string
+
+  file: File
 
   form: FormGroup
   labs: OptionsBaseModel[]
@@ -19,14 +24,18 @@ export class TemplatesComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private AFDs: ActFormDataService,
     private fb: FormBuilder,
+    private tpcs: TemplatePreviewControlService,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.form = this.initForm();
     this.AFDs.getItemOptions('lab').subscribe(option => {
       this.labs = option
       console.log(this.labs);
     })
+    const allFiles = await this.tpcs.getAllFiles()
+    console.log(allFiles);
+    
   }
 
   onNoClick(): void {

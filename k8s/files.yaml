@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: files
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: files-svc
+  labels:
+    app: files
+spec:
+  type: ClusterIP
+  selector:
+    app: files
+  ports:
+    - port: 3010
+      name: api
+      targetPort: 3010
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: files
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: files
+  template:
+    metadata:
+      labels:
+        app: files
+    spec:
+      serviceAccountName: files
+      containers:
+        - name: files
+          image: mark600/mobicolab_portal_api_files
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TYPEORM_HOST_DOCKER
+              value: db-files-svc
+          envFrom:
+            - configMapRef:
+                name: typeorm-config-general
+          ports:
+            - containerPort: 3010
+          resources:
+            requests:
+              memory: "500Mi"
+            limits:
+              memory: "1000Mi"
