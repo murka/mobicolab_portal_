@@ -8,8 +8,19 @@ import {
 import { Response } from 'express'
 import { CommandBus } from '@nestjs/cqrs';
 import { DownloadingDocCommand } from './commands/impl/downloading-doc.command';
+import { GrpcMethod } from '@nestjs/microservices';
+import fs, { ReadStream, createReadStream, readFileSync } from 'fs';
+import path, { dirname } from 'path';
+import { Observable, from, of, ReplaySubject } from 'rxjs';
+import { toArray } from 'rxjs/operators';
 
 const logger = new Logger('docsController');
+
+export interface AllFiles {
+  lab: string,
+  type: string,
+  file: ReadStream
+}
 
 @Controller('docs')
 export class DocsController {
@@ -40,5 +51,35 @@ export class DocsController {
     logger.verbose('download doc request')
     const file = await this.commandBus.execute(new DownloadingDocCommand(actId, docId))
     return file.pipe(res)
+  }
+
+  @GrpcMethod('TemplatePreview')
+  getAllFiles(): Observable<AllFiles> {
+    logger.verbose('get-all-files.method')
+
+    const allFiles: AllFiles[] = []
+
+    const file = createReadStream(path.join(__dirname, '../../../assets/pdf/mobicolab/air.pdf'))
+
+    let allFiles$ = new ReplaySubject<any>();
+
+    allFiles$.next({ lab: 'mobicolab',
+     type: 'air',
+      file: file 
+    })
+
+    allFiles$.next({
+      lab: 'mobicolab',
+      type: 'soil',
+      file: file
+    })
+
+    allFiles$.complete()
+
+    // allFiles.push({ lab: 'mobicolab', type: 'air', file: file })
+
+    // logger.log(file)
+
+    return allFiles$.asObservable()
   }
 }

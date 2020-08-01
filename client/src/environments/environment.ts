@@ -9,6 +9,7 @@ export const environment = {
   GQL_URI: "http://localhost:2000/graphql/",
   GQL_URI_UPLOAD_FILES: "http://localhost:3001/graphql",
   WS_URI_FILES: "ws://localhost:3006/graphql",
+  URI:'http://192.168.64.8/api'
 };
 
 /*

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package template_preview;
+
+service TemplatePreview {
+    rpc GetAllFiles (Null) returns (stream AllFiles);
+}
+
+message Null {}
+
+message AllFiles {
+    string lab = 1;
+    string type = 2;
+    bytes file = 3;
+}

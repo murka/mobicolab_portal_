@@ -3,6 +3,8 @@ import { Logger } from '@nestjs/common'
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { graphqlUploadExpress } from 'graphql-upload';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { grpcServiceOptions } from './gRPC/grpc-service.options';
 
 const configService = new ConfigService();
 
@@ -12,6 +14,10 @@ async function bootstrap() {
 
   app.enableCors();
   app.setGlobalPrefix('nestapi');
+
+  app.connectMicroservice<MicroserviceOptions>(grpcServiceOptions);
+
+  await app.startAllMicroservicesAsync();
 
   app.use(graphqlUploadExpress({maxFieldSize: 1000000, maxFiles: 10,}))
 

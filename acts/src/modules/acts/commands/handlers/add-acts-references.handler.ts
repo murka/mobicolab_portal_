@@ -112,13 +112,15 @@ export class AddActsReferencesHandler
         .subscribe(() => this.logger.log('start gcustomer'));
 
       for await (let act of actsWithLab) {
-        labData$.next(act)
+        labData$.next(act);
       }
       labData$.complete();
 
-      this.labGrpcClient.addActsLabReference(
-        labData$.pipe(concatMap(v => of(v).pipe(delay(2000)))),
-      ).subscribe(() => this.logger.log('start lab'));
+      this.labGrpcClient
+        .addActsLabReference(
+          labData$.pipe(concatMap(v => of(v).pipe(delay(2000)))),
+        )
+        .subscribe(() => this.logger.log('start lab'));
 
       return acts;
     } catch (e) {

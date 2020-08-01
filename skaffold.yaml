@@ -8,26 +8,26 @@ build:
       context: client
       docker:
         dockerfile: Dockerfile.dev
-      # sync:
-      #   manual:
-      #     - src: "src/*.js:"
-      #       dest: .
-      #     - src: "src/*.ts"
-      #       dest: .
-      #     - src: "src/*.scss"
-      #       dest: .
-      #     - src: "src/*.html"
-      #       dest: .
-    - image: mark600/mobicolab_portal_api_acts
-      context: acts
-      docker:
-        dockerfile: Dockerfile.dev
-      # sync:
-      #   manual:
-      #     - src: "src/*.js"
-      #       dest: .
-      #     - src: "src/*.ts"
-      #       dest: .
+      sync:
+        manual:
+          - src: "src/*.js:"
+            dest: .
+          - src: "src/*.ts"
+            dest: .
+          - src: "src/*.scss"
+            dest: .
+          - src: "src/*.html"
+            dest: .
+    # - image: mark600/mobicolab_portal_api_acts
+    #   context: acts
+    #   docker:
+    #     dockerfile: Dockerfile.dev
+    # sync:
+    #   manual:
+    #     - src: "src/*.js"
+    #       dest: .
+    #     - src: "src/*.ts"
+    #       dest: .
     # - image: mark600/mobicolab_portal_api_customers
     #   context: customers
     #   docker:
@@ -58,16 +58,16 @@ build:
     #         dest: .
     #       - src: "**/*.ts"
     #         dest: .
-    # - image: mark600/mobicolab_portal_api_files
-    #   context: files
-    #   docker:
-    #     dockerfile: Dockerfile.dev
-    #   sync:
-    #     manual:
-    #       - src: "**/*.js"
-    #         dest: .
-    #       - src: "**/*.ts"
-    #         dest: .
+    - image: mark600/mobicolab_portal_api_files
+      context: files
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
     # - image: mark600/mobicolab_portal_api_subscriptions
     #   context: api-subscriptions
     #   docker:
@@ -78,33 +78,30 @@ build:
     #         dest: .
     #       - src: "**/*.ts"
     #         dest: .
-    # - image: mark600/mobicolab_portal_api_gateway
-    #   context: api-gateway
-    #   docker:
-    #     dockerfile: Dockerfile.dev
-    #   sync:
-    #     manual:
-    #       - src: "**/*.js"
-    #         dest: .
-    #       - src: "**/*.ts"
-    #         dest: .
+    - image: mark600/mobicolab_portal_api_gateway
+      context: api-gateway
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.ts"
+            dest: .
 deploy:
   statusCheckDeadlineSeconds: 300
   kubectl:
     manifests:
-      - k8s/deployments/client-deployment.yaml
-      - k8s/deployments/api-acts-deployment.yaml
+      - k8s/client.yaml
+      # - k8s/deployments/api-acts-deployment.yaml
       # - k8s/deployments/api-customers-deployment.yaml
       # - k8s/deployments/api-general-customers-deployment.yaml
       # - k8s/deployments/api-labs-deployment.yaml
-      # - k8s/deployments/api-files-deployment.yaml
+      - k8s/files.yaml
       # - k8s/deployments/api-subscriptions-deployment.yaml
-      # - k8s/deployments/api-gateway-deployment.yaml
-      - k8s/services/client-cluster-ip-service.yaml
-      - k8s/services/api-acts-cluster-ip-service.yaml
+      - k8s/api-gateway.yaml
+      # - k8s/services/api-acts-cluster-ip-service.yaml
       # - k8s/services/api-customers-cluster-ip-service.yaml
       # - k8s/services/api-general-customers-cluster-ip-service.yaml
       # - k8s/services/api-labs-cluster-ip-service.yaml
-      # - k8s/services/api-files-cluster-ip-service.yaml
       # - k8s/services/api-subscriptions-cluster-ip-service.yaml
-      # - k8s/services/api-gateway-cluster-ip-service.yaml

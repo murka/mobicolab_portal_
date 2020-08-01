@@ -38,3 +38,8 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+**/.bin
+**/.minikube
+**/.kubectl
+**/istio-1.6.5
