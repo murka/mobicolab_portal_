@@ -1,14 +1,14 @@
 import { CustomerModel } from "./customer.model";
 import { GCustomerModel } from "./gcustomer.model";
-import { StatusModel } from './status.model';
-import { ApplicationModel } from './application.model';
-import { LabModel } from './lab.model';
+import { StatusModel } from "./status.model";
+import { ApplicationModel } from "./application.model";
+import { LabModel } from "./lab.model";
 
 export class ActModel {
-  public _id: string;
+  public id: string;
   public name: string;
   public customer: CustomerModel;
-  public generalCustomer: GCustomerModel['_id'];
+  public generalCustomer: GCustomerModel["id"];
   public lab: LabModel;
   public typeOfSample: {
     habitan?: string;
@@ -38,21 +38,19 @@ export class ActModel {
   public passedSample: string;
   public createdAt: string;
   public updatedAt: string;
-  public files: Array< 
-    {
-      title?: string,
-      name?: string,
-      path?: string,
-    }
-  >;
+  public files: Array<{
+    title?: string;
+    name?: string;
+    path?: string;
+  }>;
   public status: string;
   public application: ApplicationModel[];
 
   constructor(options: {
-    _id?: string;
+    id?: string;
     name?: string;
     customer?: CustomerModel;
-    generalCustomer?: GCustomerModel['_id'];
+    generalCustomer?: GCustomerModel["id"];
     lab?: LabModel;
     typeOfSample?: {
       habitan?: string;
@@ -84,19 +82,19 @@ export class ActModel {
     updatedAt?: string;
     files?: [
       {
-        title?: string,
-        name?: string,
-        path?: string,
+        title?: string;
+        name?: string;
+        path?: string;
       }
     ];
     status?: string;
     application?: ApplicationModel[];
   }) {
-    this._id = options._id;
+    this.id = options.id;
     this.name = options.name;
     this.customer = options.customer;
     this.generalCustomer = options.generalCustomer;
-    this.lab = options.lab
+    this.lab = options.lab;
     this.typeOfSample = options.typeOfSample;
     this.objectName = options.objectName;
     this.place = options.place;

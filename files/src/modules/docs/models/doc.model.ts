@@ -1,10 +1,26 @@
-import { ObjectType, Field, registerEnumType, ID, Directive } from '@nestjs/graphql';
-import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne, CreateDateColumn, UpdateDateColumn, BaseEntity, JoinColumn } from 'typeorm';
+import {
+  ObjectType,
+  Field,
+  registerEnumType,
+  ID,
+  Directive,
+} from '@nestjs/graphql';
+import {
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  Entity,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
-@ObjectType("Doc")
+@ObjectType('Doc')
 @Directive('@key(fields: "id")')
-export class Doc {
+export class Docs {
   // @ManyToOne(type => Act, act => act.docs, { cascade: true, })
   // act?: Act
   @Field(type => ID)
@@ -18,23 +34,26 @@ export class Doc {
   name?: string;
   @Column({ default: false })
   downloadable: boolean;
-  @Field(type => [DocEvent], { nullable: 'itemsAndList'})
-  @OneToMany(type => DocEvent, event => event.doc, { nullable: true, onDelete: 'CASCADE' })
+  @Field(type => [DocEvent], { nullable: 'itemsAndList' })
+  @OneToMany(
+    type => DocEvent,
+    event => event.doc,
+    { nullable: true, onDelete: 'CASCADE' },
+  )
   docEvents?: DocEvent[];
   @CreateDateColumn()
-  createdAt?: Date
+  createdAt?: Date;
   @UpdateDateColumn()
   updatedAt?: Date;
-
 }
 
 export enum AllowedEvent {
-  DROPPED = "DROPPED",
-  UPLOADED = "UPLOADED",
-  DOWNLOADED = "DOWNLOADED",
-  DELETED = "DELETED",
-  TITLED = "TITLED",
-  SAVED = "SAVED",
+  DROPPED = 'DROPPED',
+  UPLOADED = 'UPLOADED',
+  DOWNLOADED = 'DOWNLOADED',
+  DELETED = 'DELETED',
+  TITLED = 'TITLED',
+  SAVED = 'SAVED',
 }
 
 @Entity()
@@ -43,12 +62,16 @@ export class DocEvent {
   @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @ManyToOne(type => Doc, doc => doc.docEvents, { nullable: true, cascade: true, onDelete: 'SET NULL' })
-  doc?: Doc;
-  @Column({type: "enum", enum: AllowedEvent, nullable: true})
+  @ManyToOne(
+    type => Docs,
+    doc => doc.docEvents,
+    { nullable: true, cascade: true, onDelete: 'SET NULL' },
+  )
+  doc?: Docs;
+  @Column({ type: 'enum', enum: AllowedEvent, nullable: true })
   event?: string;
   @CreateDateColumn()
-  createdAt?: string
+  createdAt?: string;
   @UpdateDateColumn()
   updatedAt?: string;
 }

@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { DroppingDocCommand } from '../impl/dropping-doc.command';
 import { Logger } from '@nestjs/common';
-import { Doc } from '../../models/doc.model';
+import { Docs } from '../../models/doc.model';
 import { DroppedDocEvent } from '../../events/impl/dropped-doc.event';
 import { DocRepository } from '../../doc.repository';
 
@@ -9,17 +9,20 @@ import { DocRepository } from '../../doc.repository';
 export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
   logger = new Logger(this.constructor.name);
 
-  constructor(private docRepositroy: DocRepository, private eventBus: EventBus) {}
+  constructor(
+    private docRepositroy: DocRepository,
+    private eventBus: EventBus,
+  ) {}
 
-  async execute(command: DroppingDocCommand): Promise<Doc> {
+  async execute(command: DroppingDocCommand): Promise<Docs> {
     try {
       this.logger.verbose('dropping-doc.command');
 
       const { file, actId, name } = command;
 
-      const doc = this.docRepositroy.create({ name: file.name })
+      const doc = this.docRepositroy.create({ name: file.name });
 
-      await this.docRepositroy.save(doc)
+      await this.docRepositroy.save(doc);
 
       this.eventBus.publish(new DroppedDocEvent(doc.id, actId, file));
 

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package template;
+
+service TemplateService {
+    rpc GetAllTemplate (Null) returns (TemplateList);
+}
+
+message Null {}
+
+message Template {
+    string label = 1;
+    repeated File files = 2;
+}
+
+message TemplateList {
+    repeated Template templates = 1;
+}
+
+message File {
+    string path = 1;
+    bytes file = 2;
+}

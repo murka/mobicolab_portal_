@@ -1,9 +1,8 @@
-
 # schema: 'http://localhost:2000/graphql'
 # # documents: 'src/**/*.gql'
 # overwrite: true
 # documents: "src/**/*.graphql.ts"
-# generates: 
+# generates:
 #     "src/types/generated.ts":
 #         plugins:
 #             - "typescript"
@@ -11,19 +10,19 @@
 #             - "typescript-apollo-angular"
 
 generates:
-    'src/types/generated.ts':
-        schema: 'http://localhost:2000/graphql'
-        documents: 'src/app/services/controls/graphql/*.graphql.ts'
-        config:
-            federation: true
-        plugins:
-            - "typescript"
-            - "typescript-operations"
-            - "typescript-apollo-angular"
-    'src/types/sub-generated.ts':
-        schema: 'http://localhost:3006/graphql'
-        documents: 'src/app/services/controls/graphql/subscriptions/*.graphql.ts'
-        plugins:
-            - "typescript"
-            - "typescript-operations"
-            - "typescript-apollo-angular"
+  "src/types/generated.ts":
+    schema: "http://localhost:2000/graphql"
+    documents: "src/app/services/controls/graphql/methods/**/*.graphql.ts"
+    config:
+      federation: true
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-apollo-angular"
+  "src/types/sub-generated.ts":
+    schema: "http://localhost:3060/graphql"
+    documents: "src/app/services/controls/graphql/subscriptions/*.graphql.ts"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-apollo-angular"

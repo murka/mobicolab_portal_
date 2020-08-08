@@ -1,21 +1,32 @@
-import { Component, OnInit, Input, ViewChild, Inject, OnChanges } from '@angular/core';
-import { ActControlService } from 'src/app/services/controls/act-control.service';
-import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { MatStepper } from '@angular/material/stepper';
-import { saveAs } from 'file-saver';
-import { ActivatedRoute, Params } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { ActModel } from 'src/app/shared/models/act.model';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  Inject,
+  OnChanges,
+} from "@angular/core";
+import { ActControlService } from "src/app/services/controls/act-control.service";
+import {
+  MatBottomSheet,
+  MatBottomSheetRef,
+  MAT_BOTTOM_SHEET_DATA,
+} from "@angular/material/bottom-sheet";
+import { MatStepper } from "@angular/material/stepper";
+import { saveAs } from "file-saver";
+import { ActivatedRoute, Params } from "@angular/router";
+import { environment } from "src/environments/environment";
+import { ActModel } from "src/app/shared/models/act.model";
 
 @Component({
-  selector: 'app-status-stepper',
-  templateUrl: './status-stepper.component.html',
-  styleUrls: ['./status-stepper.component.scss']
+  selector: "app-status-stepper",
+  templateUrl: "./status-stepper.component.html",
+  styleUrls: ["./status-stepper.component.scss"],
 })
 export class StatusStepperComponent implements OnInit, OnChanges {
   @Input() act: ActModel;
 
-  @ViewChild('stepper', { static: false }) stepper: MatStepper;
+  @ViewChild("stepper", { static: false }) stepper: MatStepper;
 
   id: Params;
   urlScan: string;
@@ -28,22 +39,24 @@ export class StatusStepperComponent implements OnInit, OnChanges {
   protocolname: string;
   finalprotocolname: string;
 
-  constructor(private acs: ActControlService,
+  constructor(
+    private acs: ActControlService,
     private route: ActivatedRoute,
-    private _bottomSheet: MatBottomSheet) { }
-
+    private _bottomSheet: MatBottomSheet
+  ) {}
 
   ngOnInit() {
     this.id = this.route.params;
-    this.urlScan = environment.baseURL + 'file/scanAct/' + this.id.value.id;
-    this.urlDoc = environment.baseURL + 'file/' + this.id.value.id;
-    this.urlProtocol = environment.baseURL + 'file/protocol/' + this.id.value.id;
-    this.urlProtocolFinal = environment.baseURL + 'file/protocolFinal/' + this.id.value.id;
+    this.urlScan = environment.baseURL + "file/scanAct/" + this.id.value.id;
+    this.urlDoc = environment.baseURL + "file/" + this.id.value.id;
+    this.urlProtocol =
+      environment.baseURL + "file/protocol/" + this.id.value.id;
+    this.urlProtocolFinal =
+      environment.baseURL + "file/protocolFinal/" + this.id.value.id;
   }
 
   ngOnChanges() {
-    console.log('ngOninit', this.act);
-    
+    console.log("ngOninit", this.act);
   }
 
   handleFileInput(files: FileList) {
@@ -51,18 +64,18 @@ export class StatusStepperComponent implements OnInit, OnChanges {
   }
 
   selectFile(type: string) {
-    if (type == 'scan') {
+    if (type == "scan") {
       this.uploadFile(this.file, this.urlScan);
-      this.scanname = '';
-    } else if (type == 'doc') {
+      this.scanname = "";
+    } else if (type == "doc") {
       this.uploadFile(this.file, this.urlDoc);
-      this.docname = '';
-    } else if (type == 'protocol') {
+      this.docname = "";
+    } else if (type == "protocol") {
       this.uploadFile(this.file, this.urlProtocol);
-      this.protocolname = '';
-    } else if (type == 'finalprotocol') {
+      this.protocolname = "";
+    } else if (type == "finalprotocol") {
       this.uploadFile(this.file, this.urlProtocolFinal);
-      this.finalprotocolname = '';
+      this.finalprotocolname = "";
     }
     this.file = null;
   }
@@ -70,20 +83,18 @@ export class StatusStepperComponent implements OnInit, OnChanges {
   uploadFile(file: File, url: string) {
     if (!file) {
       console.log("no file selected");
-      return
+      return;
     }
-    this.acs.uploadFile(url, file)
-      .subscribe((act) => {
-        this.act = act; console.log(act);
-        
-      });
+    this.acs.uploadFile(url, file).subscribe((act) => {
+      this.act = act;
+      console.log(act);
+    });
   }
 
   downloadScan() {
-    this.acs.downloadScan(this.act._id)
-      .subscribe(data => {
-        saveAs(data, `scanAct${this.act._id}.pdf`)
-      })
+    this.acs.downloadScan(this.act.id).subscribe((data) => {
+      saveAs(data, `scanAct${this.act.id}.pdf`);
+    });
   }
 
   downloadDoc() {
@@ -94,22 +105,24 @@ export class StatusStepperComponent implements OnInit, OnChanges {
   }
 
   downloadProtocol() {
-    this.acs.downloadProtocol(this.act._id)
-      .subscribe(data =>
-        saveAs(data, `Протокол${this.act._id}.pdf`)
-      );
+    this.acs
+      .downloadProtocol(this.act.id)
+      .subscribe((data) => saveAs(data, `Протокол${this.act.id}.pdf`));
   }
 
   downloadFinalProtocol() {
-    this.acs.downloadFinalProtocol(this.act._id)
-      .subscribe(data =>
-        saveAs(data, `Протокол(итог)${this.act._id}.pdf`)
-      );
+    this.acs
+      .downloadFinalProtocol(this.act.id)
+      .subscribe((data) => saveAs(data, `Протокол(итог)${this.act.id}.pdf`));
   }
 
   changeStatusToNoRemarks() {
-    this.acs.patchAct(this.id.value.id, {"status.remarks": false, "status.noRemarks": true})
-      .subscribe(act => this.act = act);
+    this.acs
+      .patchAct(this.id.value.id, {
+        "status.remarks": false,
+        "status.noRemarks": true,
+      })
+      .subscribe((act) => (this.act = act));
   }
 
   openBottomSheet(): void {
@@ -119,9 +132,8 @@ export class StatusStepperComponent implements OnInit, OnChanges {
     //     if (result.condition === 'remarks') { this.acs.postComment(this.id.value.id, {"comment": result.comment})
     //                                           .subscribe((act) => {this.acs.patchAct(this.id.value.id, {"status.remarks": true, "status.protocolCreated": false})
     //                                             .subscribe(act => {this.act = act; console.log('act', act); console.log('this act', this.act);
-                                                
     //                                             })})}
-      // });
+    // });
   }
 
   // createDoc() {
@@ -132,19 +144,20 @@ export class StatusStepperComponent implements OnInit, OnChanges {
   //       this.stepper.next();
   //     });
   // }
-
 }
 
 @Component({
-  selector: 'comment-bottom-sheet',
-  templateUrl: 'comment-bottom-sheet.html',
+  selector: "comment-bottom-sheet",
+  templateUrl: "comment-bottom-sheet.html",
 })
 export class CommentBottomSheet {
   // @ViewChild('comment', {static:false}) comment: string;
   comment: string;
 
-  constructor(private _bottomSheetRef: MatBottomSheetRef<CommentBottomSheet>,
-              @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {}
+  constructor(
+    private _bottomSheetRef: MatBottomSheetRef<CommentBottomSheet>,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
+  ) {}
 
   openLink(envent: MouseEvent): void {
     this._bottomSheetRef.dismiss();
@@ -152,10 +165,16 @@ export class CommentBottomSheet {
   }
 
   changeRemarks() {
-    this._bottomSheetRef.dismiss({'comment': this.comment, 'condition': 'remarks'});
+    this._bottomSheetRef.dismiss({
+      comment: this.comment,
+      condition: "remarks",
+    });
   }
 
   addComment() {
-    this._bottomSheetRef.dismiss({'comment': this.comment, 'condition': 'comment'})
+    this._bottomSheetRef.dismiss({
+      comment: this.comment,
+      condition: "comment",
+    });
   }
 }

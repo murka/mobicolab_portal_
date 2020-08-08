@@ -16,7 +16,7 @@ TemplatePreview.GetAllFiles = {
   requestStream: false,
   responseStream: false,
   requestType: template_preview_pb.Null,
-  responseType: template_preview_pb.AllFiles
+  responseType: template_preview_pb.TemplateList
 };
 
 exports.TemplatePreview = TemplatePreview;

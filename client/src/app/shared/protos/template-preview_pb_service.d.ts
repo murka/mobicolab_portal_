@@ -10,7 +10,7 @@ type TemplatePreviewGetAllFiles = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof template_preview_pb.Null;
-  readonly responseType: typeof template_preview_pb.AllFiles;
+  readonly responseType: typeof template_preview_pb.TemplateList;
 };
 
 export class TemplatePreview {
@@ -53,11 +53,11 @@ export class TemplatePreviewClient {
   getAllFiles(
     requestMessage: template_preview_pb.Null,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: template_preview_pb.AllFiles|null) => void
+    callback: (error: ServiceError|null, responseMessage: template_preview_pb.TemplateList|null) => void
   ): UnaryResponse;
   getAllFiles(
     requestMessage: template_preview_pb.Null,
-    callback: (error: ServiceError|null, responseMessage: template_preview_pb.AllFiles|null) => void
+    callback: (error: ServiceError|null, responseMessage: template_preview_pb.TemplateList|null) => void
   ): UnaryResponse;
 }
 

@@ -6,6 +6,7 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
 import { GeneralCustomer } from 'src/modules/acts/models/general-customer.model';
 import { Lab } from 'src/modules/acts/models/lab.model';
 import { Doc } from 'src/modules/acts/models/doc.model';
+import { Customer } from 'src/modules/acts/models/customer.model';
 
 @Module({
   imports: [
@@ -30,15 +31,10 @@ import { Doc } from 'src/modules/acts/models/doc.model';
       autoSchemaFile: true,
       introspection: true,
       buildSchemaOptions: {
-        orphanedTypes: [
-          // Customer, 
-          GeneralCustomer, 
-          Lab, 
-          Doc],
+        orphanedTypes: [Customer, GeneralCustomer, Lab, Doc],
       },
       playground: true,
     }),
   ],
-
 })
 export class DatabaseModule {}

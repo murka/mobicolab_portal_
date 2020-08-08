@@ -49,6 +49,7 @@ import { FfAutocompleteComponent } from './components/forms/ff-autocomplete/ff-a
 import { FfCheapAutocompleteComponent } from './components/forms/ff-cheap-autocomplete/ff-cheap-autocomplete.component';
 import { FileDeleteConfirmComponent } from './components/dialogs/file-delete-confirm/file-delete-confirm.component';
 import { TemplatesComponent } from './components/dialogs/templates/templates.component';
+import { PdfViewComponent } from './components/dialogs/templates/pdf-view/pdf-view.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { TemplatesComponent } from './components/dialogs/templates/templates.com
     FfAutocompleteComponent,
     FfCheapAutocompleteComponent,
     FileDeleteConfirmComponent,
-    TemplatesComponent
+    TemplatesComponent,
+    PdfViewComponent
   ],
   imports: [
     CommonModule,

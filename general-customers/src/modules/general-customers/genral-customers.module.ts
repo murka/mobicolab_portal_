@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ActResolver } from './act.resolver';
 import {
   GeneralCustomerRepository,
   ActRepository,
@@ -24,10 +23,10 @@ import { GeneralCustomersService } from './general-customers.service';
     CqrsModule,
     TypeOrmModule.forFeature([
       GeneralCustomer,
-      // Act,
+      Act,
       GSEvent,
       GeneralCustomerRepository,
-      // ActRepository,
+      ActRepository,
       EventRepository,
     ]),
     ClientsModule.register([
@@ -42,7 +41,6 @@ import { GeneralCustomersService } from './general-customers.service';
     ]),
   ],
   providers: [
-    // ActResolver,
     GeneralCustomerResolver,
     ...CommandHandlers,
     ...EvnetHandlers,

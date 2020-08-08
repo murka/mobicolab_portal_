@@ -1,21 +1,28 @@
 import { Entity, Column } from 'typeorm';
-import { ObjectType, Field,} from '@nestjs/graphql';
+import { ObjectType, Field, InputType } from '@nestjs/graphql';
 
 @ObjectType()
+@InputType('LabAddressInput')
 export class LabAddress {
-    @Field()
-    @Column({ nullable: true })
-    zip?: string;
-    @Column({ nullable: true })
-    county?: string;
-    @Column({ nullable: true })
-    region?: string;
-    @Column({ nullable: true })
-    city?: string;
-    @Column({ nullable: true })
-    street?: string;
-    @Column({ nullable: true })
-    building?: string;
-    @Column({ nullable: true })
-    room?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  zip?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  country?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  region?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  city?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  street?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  building?: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  room?: string;
 }

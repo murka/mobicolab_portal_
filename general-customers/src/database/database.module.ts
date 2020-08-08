@@ -23,21 +23,19 @@ import { GraphQLModule, GraphQLFederationModule } from '@nestjs/graphql';
         synchronize: false,
       }),
     }),
-     GraphQLFederationModule.forRoot({
+    GraphQLFederationModule.forRoot({
       installSubscriptionHandlers: false,
       uploads: false,
       autoSchemaFile: true,
       debug: true,
       playground: true,
-      formatError: (e) => {
+      formatError: e => {
         return new HttpException(
           { status: e.name, error: e.message },
           HttpStatus.BAD_GATEWAY,
         );
-      }
+      },
     }),
   ],
 })
-export class DatabaseModule {
-  
-}
+export class DatabaseModule {}

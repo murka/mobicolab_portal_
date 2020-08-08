@@ -3,20 +3,52 @@ import { HttpClient } from "@angular/common/http";
 import { ProcessHTTPMsgService } from "../process-httpmsg.service";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { catchError } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { CustomerModel } from "src/app/shared/models/customer.model";
 import { GCustomerModel } from "src/app/shared/models/gcustomer.model";
 import { LabModel } from "src/app/shared/models/lab.model";
 import { generalOptionModel } from "src/app/shared/models/generalOptions.model";
 import { TypeOfSample } from "src/app/shared/models/type-sample.model";
+import {
+  GetLabsForOptionGQL,
+  GetCustomersForOptionGQL,
+  GetGeneralCustomersForOptionGQL,
+  GetHabitansOptionGQL,
+  CreateCustomerThroughOptionGQL,
+  CreateGeneralCustomerThroughOptionGQL,
+  CreateLabThroughOptionGQL,
+  PatchCustomerThroughOptionGQL,
+  PatchGeneralCustomerThroughOptionGQL,
+  PatchLabThroughOptionGQL,
+  GetCustomerGQL,
+  GetGeneralCustomerGQL,
+  GetLabGQL,
+  CreateCustomerThroughOptionDocument,
+} from "src/types/generated";
+import { Apollo } from "apollo-angular";
+import { DocumentNode } from "graphql";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ActFormControlService {
   constructor(
     private http: HttpClient,
-    private processHTTPMsgService: ProcessHTTPMsgService
+    private processHTTPMsgService: ProcessHTTPMsgService,
+    private readonly getLabsOpt: GetLabsForOptionGQL,
+    private readonly getCusteromsOpt: GetCustomersForOptionGQL,
+    private readonly getGeneralCustomersOpt: GetGeneralCustomersForOptionGQL,
+    private readonly getHabitansOpt: GetHabitansOptionGQL,
+    private readonly postCustomerOpt: CreateCustomerThroughOptionGQL,
+    private readonly postGeneralCustomerOpt: CreateGeneralCustomerThroughOptionGQL,
+    private readonly postLabOpt: CreateLabThroughOptionGQL,
+    private readonly updateCustomerOpt: PatchCustomerThroughOptionGQL,
+    private readonly updateGeneralCusomerOpt: PatchGeneralCustomerThroughOptionGQL,
+    private readonly updateLabOpt: PatchLabThroughOptionGQL,
+    private readonly getCustomer: GetCustomerGQL,
+    private readonly getGeneralCustomer: GetGeneralCustomerGQL,
+    private readonly getLab: GetLabGQL,
+    private readonly apollo: Apollo
   ) {}
 
   // getTypeOfSamples(): Observable<TypeOfSample[]> {
@@ -26,36 +58,71 @@ export class ActFormControlService {
 
   postActItem(
     path: string,
-    body: object
+    body: any
   ): Observable<
-    | CustomerModel
-    | GCustomerModel
-    | LabModel
-    | generalOptionModel
-    | TypeOfSample
+    generalOptionModel | TypeOfSample | { id: string; label: string }
   > {
+    console.log("post");
+
+    if (path === "customer") {
+      console.log("post");
+
+      return this.postCustomerOpt
+        .mutate({ data: <CustomerModel>body })
+        .pipe(map(({ data }) => data.createCustomer))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path === "generalCustomer") {
+      return this.postGeneralCustomerOpt
+        .mutate({ data: <GCustomerModel>body })
+        .pipe(map(({ data }) => data.createGeneralCustomer))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path === "lab") {
+      return this.postLabOpt
+        .mutate({ data: <LabModel>body })
+        .pipe(map(({ data }) => data.createLab))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
     return this.http
-      .post<
-        | CustomerModel
-        | GCustomerModel
-        | LabModel
-        | generalOptionModel
-        | TypeOfSample
-      >(environment.baseURL + path + "/", body)
+      .post<generalOptionModel | TypeOfSample>(
+        environment.baseURL + path + "/",
+        body
+      )
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
   patchtActItem(
     path: string,
     id: string,
-    body: object
+    body: any
   ): Observable<
-    | CustomerModel
-    | GCustomerModel
-    | LabModel
-    | generalOptionModel
-    | TypeOfSample
+    generalOptionModel | TypeOfSample | { id: string; label: string }
   > {
+    if (path === "customer") {
+      return this.updateCustomerOpt
+        .mutate({ data: <CustomerModel>body })
+        .pipe(map(({ data }) => data.updateCustomer))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path === "generalCustomer") {
+      return this.updateGeneralCusomerOpt
+        .mutate({ data: <GCustomerModel>body })
+        .pipe(map(({ data }) => data.updateGeneralCustomer))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path === "lab") {
+      return this.updateLabOpt
+        .mutate({ data: <LabModel>body })
+        .pipe(map(({ data }) => data.updateLab))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
     return this.http
       .patch<CustomerModel | GCustomerModel | LabModel | generalOptionModel>(
         environment.baseURL + path + "/" + id,
@@ -70,28 +137,60 @@ export class ActFormControlService {
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  postActItemsFromArray(
-    path: string,
-    body: object[]
-  ): Observable<void | Object> {
-    return this.http
-      .post(environment.baseURL + path + "/many", body)
-      .pipe(catchError(this.processHTTPMsgService.handleError));
-  }
-
   getItems(
     path: string
   ): Observable<
-    | CustomerModel[]
-    | GCustomerModel[]
-    | LabModel[]
     | generalOptionModel[]
-    | TypeOfSample[]
+    | { id: string; label: string }[]
+    | {
+        id: string;
+        label: string;
+        htypes: { id: string; label: string }[];
+      }[]
   > {
+    console.log("getItmes");
+
+    if (path === "lab") {
+      console.log("getItmes labs");
+      return this.getLabsOpt.watch().valueChanges.pipe(
+        map(({ data }) => {
+          console.log(data);
+
+          return data.getLabs;
+        })
+      );
+    }
+
+    if (path === "customer") {
+      return <Observable<{ id: string; label: string }[]>>(
+        this.getCusteromsOpt
+          .watch()
+          .valueChanges.pipe(map(({ data }) => data.getCustomers))
+      );
+    }
+
+    if (path === "generalCustomer") {
+      return <Observable<{ id: string; label: string }[]>>(
+        this.getGeneralCustomersOpt
+          .watch()
+          .valueChanges.pipe(map(({ data }) => data.getGeneralCustomers))
+      );
+    }
+
+    if (path === "typeOfSample") {
+      <
+        Observable<
+          {
+            id: string;
+            label: string;
+            htypes: { id: string; label: string }[];
+          }[]
+        >
+      >this.getHabitansOpt.watch().valueChanges.pipe(map(({ data }) => data.getAllHabitans));
+    }
+
     return this.http
-      .get<
-        CustomerModel[] | GCustomerModel[] | LabModel[] | generalOptionModel[]
-      >(environment.baseURL + path)
+      .get<generalOptionModel[]>(environment.baseURL + path)
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
@@ -101,6 +200,27 @@ export class ActFormControlService {
   ): Observable<
     CustomerModel | GCustomerModel | LabModel | generalOptionModel
   > {
+    if (path === "customer") {
+      this.getCustomer
+        .watch({ data: id })
+        .valueChanges.pipe(map(({ data }) => data.customer))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path == "generalCustomer") {
+      this.getGeneralCustomer
+        .watch({ data: id })
+        .valueChanges.pipe(map(({ data }) => data.getGeneralCustomer))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path === "lab") {
+      this.getLab
+        .watch({ data: id })
+        .valueChanges.pipe(map(({ data }) => data.getLab))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
     return this.http
       .get<CustomerModel | GCustomerModel | LabModel | generalOptionModel>(
         environment.baseURL + path + "/" + id

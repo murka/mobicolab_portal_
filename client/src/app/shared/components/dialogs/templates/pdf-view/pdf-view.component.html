@@ -1,0 +1,12 @@
+<div class="pdf">
+  <pdf-viewer
+    [(src)]="pdfSrc"
+    [original-size]="true"
+    [page]="1"
+    [render-text]="false"
+    [show-all]="false"
+    [fit-to-page]="true"
+    [autoresize]="true"
+    (page-rendered)="pageRendered()"
+  ></pdf-viewer>
+</div>

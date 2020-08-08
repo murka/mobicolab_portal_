@@ -34,10 +34,10 @@ export class ActControlService {
           data.getActs.map(
             (query) =>
               new ActModel({
-                _id: query.id,
+                id: query.id,
                 name: query.name,
                 status: query.status,
-                lab: new LabModel({ label: query.lab.label }),
+                // lab: new LabModel({ label: query.lab.label }),
               })
           )
         )
@@ -58,9 +58,10 @@ export class ActControlService {
       .valueChanges.pipe(
         map(
           ({ data }) =>
-            new ActModel({ _id: data.getAct.id, name: data.getAct.name })
+            new ActModel({ id: data.getAct.id, name: data.getAct.name })
         )
-      ).pipe(catchError(this.processHTTPMsgService.handleError))
+      )
+      .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
   getActs(): Observable<ActModel[]> {

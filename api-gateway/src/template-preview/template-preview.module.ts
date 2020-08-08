@@ -4,14 +4,14 @@ import { grpcTemplatePreviewOptions } from 'src/gRPC/grpc-template-preview.optio
 import { TemplatePreviewController } from './template-preview.controller';
 
 @Module({
-    imports: [
-        ClientsModule.register([
-            {
-                name: 'TEMPLATE_PREVIEW_PACKAGE',
-                ...grpcTemplatePreviewOptions
-            }
-        ])
-    ],
-    controllers: [TemplatePreviewController]
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'TEMPLATE_PREVIEW_PACKAGE',
+        ...grpcTemplatePreviewOptions,
+      },
+    ]),
+  ],
+  controllers: [TemplatePreviewController],
 })
 export class TemplatePreviewModule {}

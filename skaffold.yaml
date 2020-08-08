@@ -10,13 +10,13 @@ build:
         dockerfile: Dockerfile.dev
       sync:
         manual:
-          - src: "src/*.js:"
+          - src: "**/*.js:"
             dest: .
-          - src: "src/*.ts"
+          - src: "**/*.ts"
             dest: .
-          - src: "src/*.scss"
+          - src: "**/*.scss"
             dest: .
-          - src: "src/*.html"
+          - src: "**/*.html"
             dest: .
     # - image: mark600/mobicolab_portal_api_acts
     #   context: acts

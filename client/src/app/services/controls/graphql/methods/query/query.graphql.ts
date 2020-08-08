@@ -5,7 +5,7 @@ export class getAllDocs {
     query getAllDocs($actId: String!) {
       getAct(id: $actId) {
         id
-        docs{
+        docs {
           id
           name
           ydUrl
@@ -13,17 +13,6 @@ export class getAllDocs {
       }
     }
   `;
-}
-
-export class getLabsForOption {
-  document = gql`
-    query getLabs {
-      getLabs {
-        id
-        label
-      }
-    }
-  `
 }
 
 export class getActForItem {
@@ -38,7 +27,7 @@ export class getActForItem {
         }
       }
     }
-  `
+  `;
 }
 
 export class getActIds {
@@ -48,7 +37,7 @@ export class getActIds {
         id
       }
     }
-  `
+  `;
 }
 
 export class getActForDetails {
@@ -59,5 +48,5 @@ export class getActForDetails {
         name
       }
     }
-  `
+  `;
 }
