@@ -17,6 +17,9 @@ spec:
     - port: 3010
       name: api
       targetPort: 3010
+    - name: grpc-web
+      port: 50051
+      targetPort: 50051
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,6 +48,7 @@ spec:
                 name: typeorm-config-general
           ports:
             - containerPort: 3010
+            - containerPort: 50051
           resources:
             requests:
               memory: "500Mi"

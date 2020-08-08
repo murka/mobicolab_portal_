@@ -7,7 +7,6 @@ import {
   LabRepository,
   EventRepository,
 } from './lab.repository';
-import { ActResolver } from './act.resolver';
 import { LabResolver } from './lab.resolver';
 import { grpcActsClientOptions } from 'src/gRPC/grpc-acts-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -23,10 +22,10 @@ import { LabsService } from './labs.service';
   imports: [
     CqrsModule,
     TypeOrmModule.forFeature([
-      // Act,
+      Act,
       Lab,
       LabEvent,
-      // ActRepository,
+      ActRepository,
       LabRepository,
       EventRepository,
     ]),
@@ -41,11 +40,7 @@ import { LabsService } from './labs.service';
       },
     ]),
   ],
-  providers: [
-    // ActResolver, 
-    LabResolver, 
-    ...CommandHandlers, 
-    ...EvnetHandlers, LabsService],
+  providers: [LabResolver, ...CommandHandlers, ...EvnetHandlers, LabsService],
   controllers: [LabsController],
 })
 export class LabsModule {}

@@ -10,12 +10,10 @@ import { QueryHandlers } from './queries/handlers';
   imports: [
     CqrsModule,
     TypeOrmModule.forFeature([
-    LabTypeOfSampleTemplateModel,
-    LabTypeTemplateRepository,
-  ])],
-  providers: [
-    TemplateResolver,
-    ...QueryHandlers,
-  ]
+      LabTypeOfSampleTemplateModel,
+      LabTypeTemplateRepository,
+    ]),
+  ],
+  providers: [TemplateResolver, ...QueryHandlers],
 })
 export class TemplateModule {}

@@ -1,43 +1,36 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div fxFlex fxLayout="column">
-    <mat-form-field>
-      <mat-label>
-        Лаборатория
-      </mat-label>
-      <mat-select formControlName="lab" required>
-        <div *ngFor="let lab of labs">
-          <mat-option [value]="lab.key">
-            {{ lab.value }}
-          </mat-option>
-        </div>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field formControlName="typeOfSample" required>
+    <app-ff-select
+      control="lab"
+      [form]="form"
+      label="Лаборатория"
+      key="lab"
+      [populate]="true"
+      [editable]="true"
+    ></app-ff-select>
+    <!-- <mat-form-field formControlName="typeOfSample" required>
       <mat-label>
         Тип отбираемой среды
       </mat-label>
       <mat-select> </mat-select>
-    </mat-form-field>
-    <mat-tab-group>
-      <mat-tab label='Мобильная Лаборатория'>
-        <mat-radio-group [(ngModel)]="mobicolabRadio">
-          <mat-radio-button value='assets/mobicolab/air.docx'>
-            <pdf-viewer [src]='file'></pdf-viewer>
-          </mat-radio-button>
-        </mat-radio-group>
-      </mat-tab>
-      <mat-tab label="ЗапСибЭкоЦентр">
-
-      </mat-tab>
-      <mat-tab label="ТГУ">
-
-      </mat-tab>
-      <mat-tab label="ФБУЗ НуР">
-
-      </mat-tab>
-      <mat-tab label="ФБУЗ Тюмень">
-
-      </mat-tab>
+    </mat-form-field> -->
+    <mat-tab-group mat-dialog-content>
+      <div *ngFor="let template of templateList">
+        <mat-tab [label]="template.label" *ngIf="template" disableRipple="true">
+          <ng-template matTabContent>
+            <mat-radio-group
+              formControlName="path"
+              (change)="radioChange($event)"
+            >
+              <div *ngFor="let file of template.filesList">
+                <mat-radio-button [value]="file.path" *ngIf="file">
+                  <app-pdf-view [file]="file.file"></app-pdf-view>
+                </mat-radio-button>
+              </div>
+            </mat-radio-group>
+          </ng-template>
+        </mat-tab>
+      </div>
     </mat-tab-group>
     <mat-dialog-actions>
       <button mat-raised-button>

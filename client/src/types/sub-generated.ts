@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { Injectable } from '@angular/core';
 import * as Apollo from 'apollo-angular';
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -14,7 +15,7 @@ export type Scalars = {
 
 
 export type Doc = {
-   __typename?: 'Doc';
+  __typename?: 'Doc';
   id: Scalars['ID'];
   events?: Maybe<Array<Maybe<DocEvent>>>;
   title?: Maybe<Scalars['String']>;
@@ -26,7 +27,7 @@ export type Doc = {
 };
 
 export type DocEvent = {
-   __typename?: 'DocEvent';
+  __typename?: 'DocEvent';
   id: Scalars['ID'];
   doc?: Maybe<Doc>;
   event?: Maybe<Scalars['String']>;
@@ -35,18 +36,18 @@ export type DocEvent = {
 };
 
 export type DocSubscriptionsPayload = {
-   __typename?: 'DocSubscriptionsPayload';
+  __typename?: 'DocSubscriptionsPayload';
   data: Doc;
   mutation: Scalars['String'];
 };
 
 export type Query = {
-   __typename?: 'Query';
+  __typename?: 'Query';
   first: Doc;
 };
 
 export type Subscription = {
-   __typename?: 'Subscription';
+  __typename?: 'Subscription';
   changeDocs: DocSubscriptionsPayload;
 };
 
@@ -55,9 +56,9 @@ export type SubscriptionChangeDocsArgs = {
   actId: Scalars['String'];
 };
 
-export type ChangeDocsSubscriptionVariables = {
+export type ChangeDocsSubscriptionVariables = Exact<{
   actId: Scalars['String'];
-};
+}>;
 
 
 export type ChangeDocsSubscription = (

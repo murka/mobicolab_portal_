@@ -22,7 +22,7 @@ export class ActDetailsComponent implements OnInit {
   prev: string;
   next: string;
 
-  confirmDelete: boolean
+  confirmDelete: boolean;
 
   constructor(
     private acs: ActControlService,
@@ -33,11 +33,13 @@ export class ActDetailsComponent implements OnInit {
   ngOnInit() {
     this.acs.getActIds().subscribe((actIds) => (this.actIds = actIds));
     this.route.params
-      .pipe(switchMap((params: Params) => this.acs.getActForDetails(params["id"])))
+      .pipe(
+        switchMap((params: Params) => this.acs.getActForDetails(params["id"]))
+      )
       .subscribe(
         (act) => {
           this.act = act;
-          this.setPrevNex(act._id);
+          this.setPrevNex(act.id);
         },
         (errmess) => (this.errMess = <any>errmess)
       );
@@ -60,6 +62,6 @@ export class ActDetailsComponent implements OnInit {
   onSubmit() {}
 
   deleteAct() {
-    this.acs.deleteAct(this.act._id).subscribe(() => this.goBack());
+    this.acs.deleteAct(this.act.id).subscribe(() => this.goBack());
   }
 }

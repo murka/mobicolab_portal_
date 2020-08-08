@@ -1,37 +1,35 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "src/environments/environment";
-import { Observable } from "rxjs";
-import { catchError } from "rxjs/operators";
 import { ProcessHTTPMsgService } from "../process-httpmsg.service";
-import { TemplatePreviewClient } from 'src/app/shared/protos/template-preview_pb_service';
-import { File, AllFiles, Null } from 'src/app/shared/protos/template-preview_pb'
+import { TemplatePreviewClient } from "src/app/shared/protos/template-preview_pb_service";
+import { TemplateList, Null } from "src/app/shared/protos/template-preview_pb";
 
 @Injectable({
   providedIn: "root",
 })
 export class TemplatePreviewControlService {
-  client: TemplatePreviewClient
+  client: TemplatePreviewClient;
 
   constructor(
     private http: HttpClient,
-    private processHTTPMsgService: ProcessHTTPMsgService,
+    private processHTTPMsgService: ProcessHTTPMsgService
   ) {
-    this.client = new TemplatePreviewClient("http://localhost:50020")
+    this.client = new TemplatePreviewClient("http://0.0.0.0:8080");
   }
 
-  getAllFiles(): Promise<AllFiles> {
+  async getAllTemplates(): Promise<TemplateList.AsObject> {
     return new Promise((resolve, reject) => {
-      const req = new Null
-      this.client.getAllFiles(req, null, (err, response: AllFiles) => {
+      const req = new Null();
+      this.client.getAllFiles(req, (err, responce: TemplateList) => {
         if (err) {
-          console.log(err);
-          reject(err)
-        }
+          reject(new Error(err.message));
+        } else {
+          console.log(responce);
 
-        resolve(response)
-      })
-    })
+          resolve(responce.toObject());
+        }
+      });
+    });
   }
 
   // getAllFiles() {

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, BaseEntity, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  BaseEntity,
+  Column,
+  OneToMany,
+} from 'typeorm';
 import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { CustomerAddress } from './customer-address.model';
@@ -13,31 +19,34 @@ import { CustomerEvent } from './customer-event.model';
 // directive to define class as useble in apollo federation
 @Directive('@key(fields: "id")')
 export class Customer {
-  // @OneToMany(type => Act, act => act.customer)
-  // public acts: Act[];
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
-  public id: string;
+  readonly id: string;
   @Field()
   @Column()
-  public fullname: string;
+  fullname: string;
   @Field()
   @Column()
-  public label: string;
-  @Field()
+  label: string;
+  @Field(type => CustomerAddress)
   @Column(type => CustomerAddress)
-  public address: CustomerAddress;
-  @Field()
+  address: CustomerAddress;
+  @Field({ nullable: true })
   @Column({ nullable: true })
-  public tel?: string;
-  @Field()
+  tel?: string;
+  @Field({ nullable: true })
   @Column({ nullable: true })
-  public email?: string;
+  email?: string;
   @Field(type => [CustomerEvent])
-  @OneToMany(type => CustomerEvent, events => events.customer, { nullable: true })
-  events: CustomerEvent[]
-
-  constructor(customer?: Partial<Customer>) {
-    Object.assign(this, customer);
-  }
+  @OneToMany(
+    type => CustomerEvent,
+    events => events.customer,
+    { nullable: true },
+  )
+  events: CustomerEvent[];
+  @OneToMany(
+    type => Act,
+    acts => acts.customer,
+  )
+  acts: Act[];
 }

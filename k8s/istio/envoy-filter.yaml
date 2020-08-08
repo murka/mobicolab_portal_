@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: grpc-web-filter
+spec:
+  workloadLabels:
+    app: web-svc #your service name
+  filters:
+    - listenerMatch:
+        portNumber: 80 #your service's port
+        listenerType: SIDECAR_INBOUND
+      filterName: envoy.grpc_web
+      filterType: HTTP
+      filterConfig: {}
+      insertPosition:
+        index: FIRST

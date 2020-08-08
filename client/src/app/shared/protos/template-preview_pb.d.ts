@@ -19,12 +19,57 @@ export namespace Null {
   }
 }
 
-export class File extends jspb.Message {
-  getLab(): string;
-  setLab(value: string): void;
+export class Template extends jspb.Message {
+  getLabel(): string;
+  setLabel(value: string): void;
 
-  getType(): string;
-  setType(value: string): void;
+  clearFilesList(): void;
+  getFilesList(): Array<File>;
+  setFilesList(value: Array<File>): void;
+  addFiles(value?: File, index?: number): File;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Template.AsObject;
+  static toObject(includeInstance: boolean, msg: Template): Template.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Template, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Template;
+  static deserializeBinaryFromReader(message: Template, reader: jspb.BinaryReader): Template;
+}
+
+export namespace Template {
+  export type AsObject = {
+    label: string,
+    filesList: Array<File.AsObject>,
+  }
+}
+
+export class TemplateList extends jspb.Message {
+  clearTemplatesList(): void;
+  getTemplatesList(): Array<Template>;
+  setTemplatesList(value: Array<Template>): void;
+  addTemplates(value?: Template, index?: number): Template;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TemplateList.AsObject;
+  static toObject(includeInstance: boolean, msg: TemplateList): TemplateList.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TemplateList, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TemplateList;
+  static deserializeBinaryFromReader(message: TemplateList, reader: jspb.BinaryReader): TemplateList;
+}
+
+export namespace TemplateList {
+  export type AsObject = {
+    templatesList: Array<Template.AsObject>,
+  }
+}
+
+export class File extends jspb.Message {
+  getPath(): string;
+  setPath(value: string): void;
 
   getFile(): Uint8Array | string;
   getFile_asU8(): Uint8Array;
@@ -43,31 +88,8 @@ export class File extends jspb.Message {
 
 export namespace File {
   export type AsObject = {
-    lab: string,
-    type: string,
+    path: string,
     file: Uint8Array | string,
-  }
-}
-
-export class AllFiles extends jspb.Message {
-  clearItemList(): void;
-  getItemList(): Array<File>;
-  setItemList(value: Array<File>): void;
-  addItem(value?: File, index?: number): File;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AllFiles.AsObject;
-  static toObject(includeInstance: boolean, msg: AllFiles): AllFiles.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AllFiles, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AllFiles;
-  static deserializeBinaryFromReader(message: AllFiles, reader: jspb.BinaryReader): AllFiles;
-}
-
-export namespace AllFiles {
-  export type AsObject = {
-    itemList: Array<File.AsObject>,
   }
 }
 

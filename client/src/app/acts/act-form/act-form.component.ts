@@ -15,7 +15,7 @@ const moment = _moment || _rollupMoment;
 @Component({
   selector: "app-act-form",
   templateUrl: "./act-form.component.html",
-  styleUrls: ["./act-form.component.scss"]
+  styleUrls: ["./act-form.component.scss"],
 })
 export class ActFormComponent implements OnInit, AfterContentInit {
   acts: Array<any>;
@@ -41,7 +41,7 @@ export class ActFormComponent implements OnInit, AfterContentInit {
         this.act = data["act"];
         this.statusControl = true;
       } else {
-        this.act = data['act'];
+        this.act = data["act"];
         this.statusControl = false;
       }
     });
@@ -53,7 +53,7 @@ export class ActFormComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.formAct.get("place").valueChanges.forEach(value => {
+    this.formAct.get("place").valueChanges.forEach((value) => {
       if (
         value === "Приложение" ||
         value === "см. Приложение" ||
@@ -66,25 +66,23 @@ export class ActFormComponent implements OnInit, AfterContentInit {
     });
   }
 
-
   onSubmit() {
     if (this.statusControl) {
-      this.acs.patchAct(this.act._id, this.formAct.value).subscribe(act => {
+      this.acs.patchAct(this.act.id, this.formAct.value).subscribe((act) => {
         this.act = <ActModel>act;
         console.log(this.act);
-        
+
         this._snackBar.open(`Акт № ${this.act.name}`, "Обновлён Успешно", {
-          duration: 2000
+          duration: 2000,
         });
       });
       console.log(this.formAct.value);
-      
     } else {
-      this.acs.postAct(this.formAct.value).subscribe(act => {
+      this.acs.postAct(this.formAct.value).subscribe((act) => {
         console.log("postact", act);
         this.act = <ActModel>act;
         this._snackBar.open(`Акт ${this.act.name}`, "Создан", {
-          duration: 2000
+          duration: 2000,
         });
       });
     }

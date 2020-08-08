@@ -13,7 +13,6 @@ import { saveAs } from "file-saver";
 import {
   Doc,
   GetAllDocsGQL,
-  DroppDocGQL,
   TitlingDocGQL,
   RemoveDocGQL,
   SavingDocGQL,
@@ -32,8 +31,8 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatSelect } from "@angular/material/select";
 import { QueryRef, Apollo } from "apollo-angular";
 import { ActControlService } from "src/app/services/controls/act-control.service";
-import { variable } from '@angular/compiler/src/output/output_ast';
-import { UploadFilesService } from 'src/app/services/controls/graphql/upload-files.service';
+import { variable } from "@angular/compiler/src/output/output_ast";
+import { UploadFilesService } from "src/app/services/controls/graphql/upload-files.service";
 
 class ItemFile {
   constructor(public id: string, public name: string) {}
@@ -104,7 +103,7 @@ export class DocsComponent implements OnInit, OnDestroy {
     private changeDoc: ChangeDocsGQL,
     private deleteDoc: DeleteDocGQL,
     private acs: ActControlService,
-    private ufs: UploadFilesService,
+    private ufs: UploadFilesService
   ) {}
 
   ngOnInit(): void {
@@ -112,7 +111,7 @@ export class DocsComponent implements OnInit, OnDestroy {
     this.form = this.fb.array([]);
     this.docsQuery = this.apollo.watchQuery({
       query: this.getAllDocs.document,
-      variables: { actId: this.act._id },
+      variables: { actId: this.act.id },
     });
     this.subscriptions$.add(
       this.form.valueChanges
@@ -133,7 +132,7 @@ export class DocsComponent implements OnInit, OnDestroy {
   subscribeToNewDocs() {
     this.docsQuery.subscribeToMore({
       document: this.changeDoc.document,
-      variables: { actId: this.act._id },
+      variables: { actId: this.act.id },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData) {
           return prev;
@@ -255,7 +254,7 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   downloadFile(docId: number, name: string) {
     this.subscriptions$.add(
-      this.acs.downloadDoc(this.act._id, docId).subscribe((doc) => {
+      this.acs.downloadDoc(this.act.id, docId).subscribe((doc) => {
         saveAs(doc, name);
       })
     );
@@ -263,13 +262,12 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   droppMutation(el: File) {
     this.subscriptions$.add(
-      this.ufs.droppDoc(el, this.act._id, el.name)
-        .subscribe(({ data }) => {
-          const file = new ItemFile(data.droppDoc.id, el.name);
-          console.log(JSON.stringify(file))
-          this.files.push(file);
-          this.addFormArray();
-        })
+      this.ufs.droppDoc(el, this.act.id, el.name).subscribe(({ data }) => {
+        const file = new ItemFile(data.droppDoc.id, el.name);
+        console.log(JSON.stringify(file));
+        this.files.push(file);
+        this.addFormArray();
+      })
     );
   }
 
@@ -291,7 +289,7 @@ export class DocsComponent implements OnInit, OnDestroy {
   savingFile(docId: string, i: number) {
     this.fileInput.nativeElement.value = "";
     this.subscription.unsubscribe();
-    const actId = this.act._id;
+    const actId = this.act.id;
     this.subscriptions$.add(
       this.savingDoc.mutate({ data: { docId, actId } }).subscribe(() => {
         this.files = [...this.files.filter((file) => file.id !== docId)];
@@ -308,7 +306,7 @@ export class DocsComponent implements OnInit, OnDestroy {
     this.form.reset;
     this.subscriptions$.add(
       this.savingAllDocs
-        .mutate({ data: { actId: this.act._id, docs: docIds } })
+        .mutate({ data: { actId: this.act.id, docs: docIds } })
         .subscribe()
     );
   }
@@ -343,7 +341,7 @@ export class DocsComponent implements OnInit, OnDestroy {
   }
 
   deleteFile(id: string) {
-    this.deleteDoc.mutate({ docId: id, actId: this.act._id }).subscribe();
+    this.deleteDoc.mutate({ docId: id, actId: this.act.id }).subscribe();
   }
 
   ngOnDestroy() {

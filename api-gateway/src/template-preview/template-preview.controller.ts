@@ -1,17 +1,11 @@
 import { Controller, Logger, Get, Inject, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc, GrpcMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
 import { toArray } from 'rxjs/operators';
-import { ReadStream } from 'fs';
-
-export interface AllFiles {
-  lab: string;
-  type: string;
-  file: ReadStream;
-}
+import { TemplateModel } from './models/interfaces/template-model';
+import { Observable } from 'rxjs';
 
 interface TemplatePreviewClient {
-  getAllFiles(): Observable<AllFiles>;
+  getAllTemplate(data: null): Observable<Object>;
 }
 
 @Controller('template-preview')
@@ -27,7 +21,7 @@ export class TemplatePreviewController implements OnModuleInit {
   onModuleInit() {
     this.templatePreviewClient = this.tpClient.getService<
       TemplatePreviewClient
-    >('TemplatePreview');
+    >('TemplateService');
   }
 
   // @Get('all-files')
@@ -45,14 +39,13 @@ export class TemplatePreviewController implements OnModuleInit {
   // }
 
   @GrpcMethod('TemplatePreview')
-  async getAllFiles(): Promise<AllFiles[]> {
+  async getAllFiles(): Promise<object> {
     this.logger.verbose('get-all-files.method');
 
-    const files = await this.templatePreviewClient
-      .getAllFiles()
-      .pipe(toArray())
+    const template = await this.templatePreviewClient
+      .getAllTemplate(null)
       .toPromise();
 
-    return files;
+    return template;
   }
 }

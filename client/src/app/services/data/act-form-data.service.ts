@@ -17,20 +17,20 @@ import { generalOptionModel } from "src/app/shared/models/generalOptions.model";
 import { TypeOfSample } from "src/app/shared/models/type-sample.model";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ActFormDataService {
   constructor(
     private AFCS: ActFormControlService,
     private dialog: MatDialog,
     private gcustomerControl: GeneralCustomerControlService,
-    private customerControl: CustomerControlService,
+    private customerControl: CustomerControlService
   ) {}
 
   getItemOptions(path: string): Observable<OptionsBaseModel[]> {
     const options: OptionsBaseModel[] = [];
-    this.AFCS.getItems(path).subscribe(items => {
-      items.forEach(item => {
+    this.AFCS.getItems(path).subscribe((items) => {
+      items.forEach((item) => {
         options.push(new OptionsBaseModel(item));
       });
     });
@@ -39,19 +39,21 @@ export class ActFormDataService {
 
   getItemOptionsOfGroup(path: string): Observable<OptionGroupBaseModel[]> {
     let options = [];
-    this.AFCS.getItems(path).subscribe(items => {
-      items.forEach(item => options.push(new OptionGroupBaseModel(item)));
+    this.AFCS.getItems(path).subscribe((items) => {
+      items.forEach((item) =>
+        options.push(new OptionGroupBaseModel(<TypeOfSample>item))
+      );
     });
     return of(options);
   }
 
   addItemOptions(key: string, label: string): Observable<OptionsBaseModel> {
     const CustomerRef = this.dialog.open(EditActOptionsComponent, {
-      data: new OptionsEditDataModel(key, label)
+      data: new OptionsEditDataModel(key, label),
     });
     return CustomerRef.afterClosed().pipe(
       filter((result: FormGroup) => result !== undefined),
-      switchMap(result => {
+      switchMap((result) => {
         return this.AFCS.postActItem(key, result).pipe(
           map(
             (
@@ -75,15 +77,15 @@ export class ActFormDataService {
     id: string
   ): Observable<OptionsBaseModel> {
     return this.AFCS.getItem(key, id).pipe(
-      switchMap(item => {
+      switchMap((item) => {
         const CustomerRef = this.dialog.open(EditActOptionsComponent, {
-          data: new OptionsEditDataModel(key, label, item)
+          data: new OptionsEditDataModel(key, label, item),
         });
         return CustomerRef.afterClosed().pipe(
           filter((result: FormGroup) => result !== undefined),
-          switchMap(result => {
+          switchMap((result) => {
             return this.AFCS.patchtActItem(key, id, result).pipe(
-              map(item => {
+              map((item) => {
                 return new OptionsBaseModel(item);
               })
             );
@@ -105,13 +107,13 @@ export class ActFormDataService {
   ): Observable<OptionGroupBaseModel> {
     if (id && name) {
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
-        data: new OptionsEditDataModel(key, name)
+        data: new OptionsEditDataModel(key, name),
       });
       return CustomerRef.afterClosed().pipe(
-        filter(result => result !== undefined),
-        switchMap(result => {
+        filter((result) => result !== undefined),
+        switchMap((result) => {
           return this.AFCS.postActItemArray(key, id, {
-            value: result.label
+            value: result.label,
           }).pipe(
             map((item: TypeOfSample) => {
               return new OptionGroupBaseModel(item);
@@ -121,11 +123,11 @@ export class ActFormDataService {
       );
     } else {
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
-        data: new OptionsEditDataModel(key, label)
+        data: new OptionsEditDataModel(key, label),
       });
       return CustomerRef.afterClosed().pipe(
         filter((result: FormGroup) => result !== undefined),
-        switchMap(result => {
+        switchMap((result) => {
           return this.AFCS.postActItem(key, result).pipe(
             map((item: TypeOfSample) => {
               return new OptionGroupBaseModel(item);
@@ -146,11 +148,11 @@ export class ActFormDataService {
   ): Observable<OptionGroupBaseModel> {
     if (!name) {
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
-        data: new OptionsEditDataModel(key, label, item)
+        data: new OptionsEditDataModel(key, label, item),
       });
       return CustomerRef.afterClosed().pipe(
-        filter(result => result !== undefined),
-        switchMap(result => {
+        filter((result) => result !== undefined),
+        switchMap((result) => {
           return this.AFCS.patchtActItem(key, id, result).pipe(
             map((item: TypeOfSample) => {
               console.log(item);
@@ -160,22 +162,22 @@ export class ActFormDataService {
         })
       );
     } else {
-      const newItem: string[] = item.types.filter(type => type !== tp);
+      const newItem: string[] = item.types.filter((type) => type !== tp);
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
         data: new OptionsEditDataModel(
           key,
           name,
           new generalOptionModel({ label: tp })
-        )
+        ),
       });
       return CustomerRef.afterClosed().pipe(
-        filter(result => result !== undefined),
-        switchMap(result => {
+        filter((result) => result !== undefined),
+        switchMap((result) => {
           newItem.push(result.label);
           return this.AFCS.patchtActItem(
             key,
             id,
-            new TypeOfSample({ label: item.label, types: newItem })
+            new TypeOfSample({ label: item.label, htypes: newItem })
           ).pipe(
             map((item: TypeOfSample) => {
               return new OptionGroupBaseModel(item);
@@ -186,21 +188,28 @@ export class ActFormDataService {
     }
   }
 
-  deleteItemGroupOption(key: string, id :string, item: OptionGroupBaseModel, tp: string): Observable<OptionGroupBaseModel> {
-    const newTypes: string[] = item.types.filter(type => type !== tp);
+  deleteItemGroupOption(
+    key: string,
+    id: string,
+    item: OptionGroupBaseModel,
+    tp: string
+  ): Observable<OptionGroupBaseModel> {
+    const newTypes: string[] = item.types.filter((type) => type !== tp);
     return this.AFCS.patchtActItem(
       key,
       id,
-      new TypeOfSample({ label: item.label, types: newTypes })
-    ).pipe(map((item: TypeOfSample) => {
-      return new OptionGroupBaseModel(item)
-    }))
+      new TypeOfSample({ label: item.label, htypes: newTypes })
+    ).pipe(
+      map((item: TypeOfSample) => {
+        return new OptionGroupBaseModel(item);
+      })
+    );
   }
 
   getActiveGCustomer(): Observable<GCustomerModel[]> {
     return this.gcustomerControl.getGCustomers().pipe(
-      map(customers =>
-        customers.filter(customer => {
+      map((customers) =>
+        customers.filter((customer) => {
           if (customer.acts.length > 0) return customer;
         })
       )
@@ -209,8 +218,8 @@ export class ActFormDataService {
 
   getActiveCustomer(): Observable<CustomerModel[]> {
     return this.customerControl.getCustomers().pipe(
-      map(customers =>
-        customers.filter(customer => {
+      map((customers) =>
+        customers.filter((customer) => {
           if (customer.acts.length > 0) return customer;
         })
       )

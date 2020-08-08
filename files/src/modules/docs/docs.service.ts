@@ -2,7 +2,7 @@ import { Injectable, Logger, Inject, OnModuleInit } from '@nestjs/common';
 
 import { InjectWebDAV, WebDAV } from 'nestjs-webdav';
 
-import { Doc } from './models/doc.model';
+import { Docs } from './models/doc.model';
 import { ReadStream } from 'fs';
 import { ActForFilesDto } from './models/dto/act-for-files.dto';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -13,7 +13,7 @@ const logger = new Logger('docService');
 
 interface ActDocGrpcClient {
   findLabels(data: { id: string }): Promise<ActForFilesDto>;
-  addReferenceToAct(data: { actId: string, docId: string }): Promise<void>
+  addReferenceToAct(data: { actId: string; docId: string }): Promise<void>;
 }
 
 interface SubscriptionsGrpcClient {
@@ -50,8 +50,8 @@ export class DocsService implements OnModuleInit {
   }
 
   async addReferenceToAct(actId: string, docId: string): Promise<void> {
-    logger.verbose('add-reference-to-act.method')
-    await this.actDocGrpcClient.addReferenceToAct({ actId, docId })
+    logger.verbose('add-reference-to-act.method');
+    await this.actDocGrpcClient.addReferenceToAct({ actId, docId });
   }
 
   async publishDoc(
@@ -116,12 +116,12 @@ export class DocsService implements OnModuleInit {
     return filepath;
   }
 
-  async createFilePath(actId: string): Promise<Doc['ydUrl']> {
+  async createFilePath(actId: string): Promise<Docs['ydUrl']> {
     logger.verbose('create-path inside `docService`');
 
     const doc = await this.actDocGrpcClient.findLabels({ id: actId });
 
-    logger.log(doc)
+    logger.log(doc);
 
     const name = doc.name;
     const date = new Date(doc.datetime.date);
@@ -136,7 +136,7 @@ export class DocsService implements OnModuleInit {
     ar.push(year, customer, gcustomer, lab, month, name);
     const path = await this.mkDir(ar);
 
-    logger.verbose(path)
+    logger.verbose(path);
 
     return path;
   }
@@ -147,7 +147,7 @@ export class DocsService implements OnModuleInit {
     try {
       // const doc = await this.prisma.doc.findOne({ where: { id: docId } });
 
-      const doc = await this.docRepository.findOne(docId)
+      const doc = await this.docRepository.findOne(docId);
 
       const path = doc.ydUrl;
       const name = doc.name;

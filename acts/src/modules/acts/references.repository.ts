@@ -5,6 +5,7 @@ import { GeneralCustomer } from './models/general-customer.model';
 import { Lab } from './models/lab.model';
 import { ActEvent } from './models/act-event.model';
 import { Doc } from './models/doc.model';
+import { TypeOfSample } from './models/type-of-sample.model';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
@@ -14,9 +15,9 @@ export class CustomerRepository extends Repository<Customer> {
     this.logger.verbose('changer id inside repository');
 
     const customer = await this.findOne(oldId);
-    
+
     if (customer) {
-      await this.update(customer, {id: newId})
+      await this.update(customer, { id: newId });
     }
   }
 }
@@ -29,9 +30,9 @@ export class GCustomerRepository extends Repository<GeneralCustomer> {
     this.logger.verbose('changer id inside repository');
 
     const gcustomer = await this.findOne(oldId);
-    
+
     if (gcustomer) {
-      await this.update(gcustomer, {id: newId})
+      await this.update(gcustomer, { id: newId });
     }
   }
 }
@@ -44,16 +45,21 @@ export class LabRepository extends Repository<Lab> {
     this.logger.verbose('changer id inside repository');
 
     const lab = await this.findOne(oldId);
-    
+
     if (lab) {
-      await this.update(lab, {id: newId})
+      await this.update(lab, { id: newId });
     }
   }
 }
 
+@EntityRepository(TypeOfSample)
+export class TypeOfSampleRepository extends Repository<TypeOfSample> {
+  logger = new Logger(this.constructor.name);
+}
+
 @EntityRepository(Doc)
 export class DocRepository extends Repository<Doc> {
-  logger = new Logger(this.constructor.name)
+  logger = new Logger(this.constructor.name);
 }
 
 @EntityRepository(ActEvent)

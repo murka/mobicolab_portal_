@@ -9,7 +9,7 @@ import {
 import { Customer } from './models/customer.model';
 import { CustomerRepository } from './customer.repository';
 import { Observable } from 'rxjs';
-import { map, } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ClientGrpc } from '@nestjs/microservices';
 import { MigrationCustomerDto } from './models/dto/migration-customer.dto';
 import { CommandBus } from '@nestjs/cqrs';
@@ -54,32 +54,40 @@ export class CustomerResolver implements OnModuleInit {
   @Query(returns => Customer)
   async transferCustomers() {
     this.logger.verbose('transferCustomer inside `customerResolver`');
-    return this.customerService
-      .findAllCustomers(1)
-      .pipe(
-        map(async customer => {
-          const newCustomer = await this.customerRepository.migrationCreateCustomer(customer);
-          await this.commandBus.execute(
-            new ChangeCustomerIdCommand(newCustomer.id, customer.id),
-          );
-          return newCustomer;
-        }),
-      )
+    return this.customerService.findAllCustomers(1).pipe(
+      map(async customer => {
+        const newCustomer = await this.customerRepository.migrationCreateCustomer(
+          customer,
+        );
+        await this.commandBus.execute(
+          new ChangeCustomerIdCommand(newCustomer.id, customer.id),
+        );
+        return newCustomer;
+      }),
+    );
   }
 
   @Mutation(returns => Customer)
-  async createCustomer(@Args('createCustomerData') createCustomerData: CreateCustomerDto): Promise<Customer> {
-    return await this.commandBus.execute(new CreateCustomerCommand(createCustomerData))
+  async createCustomer(
+    @Args('createCustomerData') createCustomerData: CreateCustomerDto,
+  ): Promise<Customer> {
+    return await this.commandBus.execute(
+      new CreateCustomerCommand(createCustomerData),
+    );
   }
 
   @Mutation(returns => Customer)
-  async updateCustomer(@Args('updateCustomerData') updateCustomerData: PatchCustomerDto): Promise<Customer> {
-    return await this.commandBus.execute(new UpdateCustomerCommand(updateCustomerData))
+  async updateCustomer(
+    @Args('updateCustomerData') updateCustomerData: PatchCustomerDto,
+  ): Promise<Customer> {
+    return await this.commandBus.execute(
+      new UpdateCustomerCommand(updateCustomerData),
+    );
   }
 
   @ResolveReference()
-  async resolveReference(reference: { __typename: string, id: string }) {
-    this.logger.verbose('resolve referense inside `Customer resolver`')
+  async resolveReference(reference: { __typename: string; id: string }) {
+    this.logger.verbose('resolve referense inside `Customer resolver`');
     return await this.customerRepository.findOne(reference.id);
   }
 }

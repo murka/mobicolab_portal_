@@ -15,30 +15,31 @@ import { LabEvent } from './lab-event.model';
 export class Lab {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
-  public id: string;
+  id: string;
+  @Field(() => String)
   @Column()
-  public fullname: string;
+  fullname: string;
+  @Field(() => String)
   @Column()
-  public label: string;
+  label: string;
+  @Field(() => LabAddress)
   @Column(type => LabAddress)
-  public address: LabAddress;
+  address: LabAddress;
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  public tel?: string;
+  tel?: string;
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  public email?: string;
-  //define an actModel for apollo federation
-  // @OneToMany(
-  //   type => Act,
-  //   act => act.lab,
-  // )
-  // public acts: Act[];
+  email?: string;
+  @Field(() => [LabEvent])
   @OneToMany(
     type => LabEvent,
     events => events.lab,
   )
   events: LabEvent[];
-  
-  constructor(partial: Partial<Lab>) {
-    Object.assign(this, partial);
-  }
+  @OneToMany(
+    type => Act,
+    act => act.lab,
+  )
+  acts: Act[];
 }

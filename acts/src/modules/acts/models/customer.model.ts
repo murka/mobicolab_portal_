@@ -13,7 +13,10 @@ export class Customer {
   public id: string;
 
   @Field(type => [Act])
-  @OneToMany(type => Act, act => act.customer )
+  @OneToMany(
+    type => Act,
+    act => act.customer,
+  )
   public acts: Act[];
   constructor(partial?: Partial<Customer>) {
     Object.assign(this, partial);

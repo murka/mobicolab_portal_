@@ -14,7 +14,16 @@ services:
       - gcustomers
       - labs
 
-    
+  envoy:
+    image: envoyproxy/envoy-alpine:v1.15.0
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - test
+
   db_files:
     image: postgres
     volumes:
@@ -28,12 +37,13 @@ services:
     networks:
       - files
   api_files:
-    build:  
-      context: './files'
+    build:
+      context: "./files"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./files:/usr/share/app"
-      - '/usr/share/app/node_modules'
+      - "./files:/app"
+      - "/app/node_modules"
     networks:
       - files
       - test
@@ -44,19 +54,21 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
     ports:
-      - "3001:3001"
+      - "3010:3010"
+      - "50051:50051"
     depends_on:
       - db_files
       - api_acts
     command: yarn start:dev
 
   api_subscriptions:
-    build:  
-      context: './api-subscriptions'
+    build:
+      context: "./api-subscriptions"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./api-subscriptions:/usr/share/app"
-      - '/usr/share/app/node_modules'
+      - "./api-subscriptions:/app"
+      - "app/node_modules"
     networks:
       - files
       - test
@@ -67,13 +79,11 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
     ports:
-      - "3006:3006"
+      - "3060:3060"
     depends_on:
       - db_files
-      - api_bridge
 
     command: yarn start:dev
-  
 
   db_acts:
     image: postgres
@@ -88,12 +98,13 @@ services:
     networks:
       - acts
   api_acts:
-    build:  
-      context: './acts'
+    build:
+      context: "./acts"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./acts:/usr/share/app"
-      - '/usr/share/app/node_modules'
+      - "./acts:/app"
+      - "app/node_modules"
     networks:
       - acts
       - test
@@ -104,12 +115,11 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
     ports:
-      - "3002:3002"
+      - "3020:3020"
     depends_on:
       - db_acts
       - api_customers
     command: npm run start:dev
-
 
   db_customers:
     image: postgres
@@ -124,12 +134,13 @@ services:
     networks:
       - customers
   api_customers:
-    build:  
-      context: './customers'
+    build:
+      context: "./customers"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./customers:/usr/share/app"
-      - 'usr/share/app/node_modules'
+      - "./customers:/app"
+      - "app/node_modules"
     networks:
       - customers
       - test
@@ -140,7 +151,7 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
     ports:
-      - "3003:3003"
+      - "3030:3030"
     depends_on:
       - db_customers
       - api_general_customers
@@ -159,12 +170,13 @@ services:
     networks:
       - gcustomers
   api_general_customers:
-    build:  
-      context: './general-customers'
+    build:
+      context: "./general-customers"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./general-customers:/usr/share/app"
-      - 'usr/share/app/node_modules'
+      - "./general-customers:/app"
+      - "app/node_modules"
     networks:
       - test
       - gcustomers
@@ -175,7 +187,7 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
     ports:
-      - "3004:3004"
+      - "3040:3040"
     depends_on:
       - db_general_customers
       - api_labs
@@ -194,12 +206,13 @@ services:
     networks:
       - labs
   api_labs:
-    build:  
-      context: './labs'
+    build:
+      context: "./labs"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./labs:/usr/share/app"
-      - 'usr/share/app/node_modules'
+      - "./labs:/app"
+      - "app/node_modules"
     networks:
       - labs
       - test
@@ -210,89 +223,165 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
     ports:
-      - "3005:3005"
+      - "3050:3050"
     depends_on:
       - db_labs
     command: yarn start:dev
 
+  db_tos:
+    image: postgres
+    volumes:
+      - ./db_data/db_tos:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6009:5432"
+    networks:
+      - tos
+  api_tos:
+    build:
+      context: "./type-of-sample"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./type-of-sample:/app"
+      - "/app/node_modules"
+    networks:
+      - tos
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_tos
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+    ports:
+      - "3090:3090"
+    depends_on:
+      - db_labs
+      - api_files
+    command: yarn start:dev
 
+  db_rules:
+    image: postgres
+    volumes:
+      - ./db_data/db_rules:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6007:5432"
+    networks:
+      - rules
+  api_rules:
+    build:
+      context: "./rules"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./rules:/app"
+      - "/app/node_modules"
+    networks:
+      - rules
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_rules
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+    ports:
+      - "3070:3070"
+    depends_on:
+      - db_labs
+      - api_tos
+    command: yarn start:dev
 
-
-  db:
+  db_mongo:
     image: mark600/mobicolab_portal_db:latest
     volumes:
       - ./db_data/mongo-data:/data/db
     ports:
       - "27017:27017"
     networks:
-      - test
-
+      - db_mongo
   server:
-    image: mark600/mobicolab_portal_server:latest
+    build:
+      context: "./server"
+      dockerfile: Dockerfile.dev
     restart: always
     volumes:
-      - "./server:/usr/share/app"
+      - "./server:/app"
     networks:
       - test
+      - db_mongo
     ports:
       - "3000:3000"
     depends_on:
-      - db
-      - api_bridge
+      - db_mongo
     command: npm run dev
 
   web:
-    image: mark600/mobicolab_portal_ui:latest
+    build:
+      context: "./client"
+      dockerfile: "Dockerfile.dev"
     volumes:
       - "./client:/app"
-    # - '/app/node_modules'
+      # - "/app/node_modules"
     ports:
       - "4200:4200"
     networks:
       - test
     depends_on:
-      - server
-      - api_bridge
-      
+      - api_files
+
   api_gateway:
-    build:  
-      context: './labs'
+    build:
+      context: "./api-gateway"
+      dockerfile: "Dockerfile.dev"
     restart: always
     volumes:
-      - "./api-gateway:/usr/share/app"
+      - "./api-gateway:/app"
+      - "/app/node_modules"
     networks:
       - test
     ports:
       - "2000:2000"
-    command: yarn start:dev 
+      - "50020:50020"
+    command: yarn start:dev
     depends_on:
+      - api_files
+      - api_customers
+      - api_general_customers
+      - api_labs
 
-        - api_files
-        - api_customers
-        - api_general_customers
-        - api_labs
+  # api_bridge:
+  #   build:
+  #     context: './bridge'
+  #     dockerfile: "Dockerfile.dev"
+  #   restart: always
+  #   volumes:
+  #     - "./bridge:/usr/app"
+  #     - '/usr/app/node_modules'
+  #   networks:
+  #     - test
+  #   depends_on:
+  #       - db
+  #       - api_files
+  # ports:
+  #   - "5000:5000"
+  # command: npm run start:dev
 
-  api_bridge:
-    build:  
-      context: './bridge'
-    restart: always
-    volumes:
-      - "./bridge:/usr/app"
-      - '/usr/app/node_modules'
-    networks:
-      - test
-    depends_on:
-        - db
-        - api_files
-
-    # ports:
-    #   - "5000:5000"
-    command: npm run start:dev
-       
-volumes:
-  mongo-data:
+# volumes:
+#   mongo-data:
 networks:
+  db_mongo:
   test:
+  tos:
+  rules:
   acts:
   customers:
   gcustomers:

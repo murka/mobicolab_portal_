@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 // import { ActResolver } from './act.resolver';
 import { CustomerResolver } from './customer.resolver';
-import { ActRepository, CustomerRepository, EventRepository } from './customer.repository';
+import {
+  ActRepository,
+  CustomerRepository,
+  EventRepository,
+} from './customer.repository';
 import { ClientsModule } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './models/customer.model';

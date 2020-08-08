@@ -28,15 +28,9 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
       uploads: false,
       autoSchemaFile: true,
       introspection: true,
-      // engine: {
-      //   experimental_schemaReporting: true,
-      //   schemaReportingUrl: 'http://mobicolab-customers-graphql.svc.cluster.local:3030/'
-      // },
       debug: true,
       playground: true,
     }),
   ],
 })
-export class DatabaseModule {
-  
-}
+export class DatabaseModule {}

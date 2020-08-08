@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { ActModel } from 'src/app/shared/models/act.model';
+import { ActModel } from "src/app/shared/models/act.model";
 
 @Component({
   selector: "app-dating-list",
   templateUrl: "./dating-list.component.html",
-  styleUrls: ["./dating-list.component.scss"]
+  styleUrls: ["./dating-list.component.scss"],
 })
 export class DatingListComponent implements OnInit {
   @Input() gcustomerActs: [string];
@@ -15,7 +15,7 @@ export class DatingListComponent implements OnInit {
         this.filterActsByGCustomer(acts, this.gcustomerActs)
       );
     }
-  };
+  }
   get acts() {
     return this._actController;
   }
@@ -33,15 +33,17 @@ export class DatingListComponent implements OnInit {
   }
 
   filterActsByGCustomer(acts: ActModel[], customerActs: string[]): ActModel[] {
-    return acts.filter(act => customerActs.includes(act._id));
+    return acts.filter((act) => customerActs.includes(act.id));
   }
 
   createDatesArray(acts: ActModel[]): void {
     let sort = acts.sort(
-      (a, b) => new Date(a.datetime.date).getTime() - new Date(b.datetime.date).getTime()
+      (a, b) =>
+        new Date(a.datetime.date).getTime() -
+        new Date(b.datetime.date).getTime()
     );
     let yearsArray: { year: number; acts: ActModel[] }[] = [];
-    const action = function(actss: ActModel[]) {
+    const action = function (actss: ActModel[]) {
       let start = new Date(actss[0].datetime.date).getFullYear();
       let end = new Date(actss[actss.length - 1].datetime.date).getFullYear();
       if (start === end) {

@@ -11,13 +11,13 @@ import { ClientsModule } from '@nestjs/microservices';
 import { grpcClientOptions } from 'src/gRPC/grpc-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DocRepository, DocEventRepository } from './doc.repository';
-import { Doc, DocEvent } from './models/doc.model';
+import { Docs, DocEvent } from './models/doc.model';
 import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-client.options';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Doc,
+      Docs,
       // Act,
       DocRepository,
       // ActRepository,
@@ -32,7 +32,7 @@ import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-clie
       {
         name: 'SUBSCRIPTIONS_PACKAGE',
         ...grpcSubscriptionsClientOptions,
-      }
+      },
     ]),
     CqrsModule,
     WebDAVModule.forRoot({

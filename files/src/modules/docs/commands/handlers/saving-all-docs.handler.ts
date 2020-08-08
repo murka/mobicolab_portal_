@@ -3,7 +3,7 @@ import { SavingAllDocsCommand } from '../impl/saving-all-docs.command';
 import { Inject, Logger } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { SavedDocEvent } from '../../events/impl/saved-doc.event';
-import { Doc } from '../../models/doc.model';
+import { Docs } from '../../models/doc.model';
 import { DocsService } from '../../docs.service';
 import { DocRepository } from '../../doc.repository';
 
@@ -18,13 +18,13 @@ export class SavingAllDocsHandler
     private readonly docRepository: DocRepository,
   ) {}
 
-  async execute(command: SavingAllDocsCommand): Promise<Doc[]> {
-    this.logger.verbose('saving-all-docs.command')
-    
+  async execute(command: SavingAllDocsCommand): Promise<Docs[]> {
+    this.logger.verbose('saving-all-docs.command');
+
     const { docs, actId } = command;
 
     try {
-      const updatedDocs: Doc[] = [];
+      const updatedDocs: Docs[] = [];
 
       for await (let docId of docs) {
         try {
@@ -32,18 +32,18 @@ export class SavingAllDocsHandler
 
           // const doc = await this.prisma.doc.findOne({ where: { id: docId } });
 
-          const doc = await this.docRepository.findOne(docId)
- 
+          const doc = await this.docRepository.findOne(docId);
+
           updatedDocs.push(doc);
         } catch (e) {
           this.logger.error(e);
         }
       }
-      const docsId = updatedDocs.map(doc => doc.id)
+      const docsId = updatedDocs.map(doc => doc.id);
 
-      await this.ds.publishDocs(docsId, actId, 'UPDATED')
+      await this.ds.publishDocs(docsId, actId, 'UPDATED');
 
-      return updatedDocs
+      return updatedDocs;
     } catch (e) {
       this.logger.error(e);
     }

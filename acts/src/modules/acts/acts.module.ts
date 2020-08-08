@@ -4,6 +4,7 @@ import {
   CustomerResolver,
   GCustomerResolver,
   LabResolver,
+  TypeOfSampleResolver,
 } from './references.resolver';
 import { ActRepository } from './act.repository';
 import {
@@ -11,6 +12,7 @@ import {
   GCustomerRepository,
   LabRepository,
   EventRepository,
+  TypeOfSampleRepository,
 } from './references.repository';
 import { ClientsModule } from '@nestjs/microservices';
 import { grpcClientOptions } from '../../gRPC/grpc-bridge-client.options';
@@ -29,6 +31,8 @@ import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option'
 import { grpcGCustomerClientOptions } from 'src/gRPC/grpc-gcustomer-client.option';
 import { grpcLabClientOptions } from 'src/gRPC/grpc-lab-client.option';
 import { Doc } from './models/doc.model';
+import { QueryHandlers } from './queries/handlers';
+import { TypeOfSample } from './models/type-of-sample.model';
 
 @Module({
   imports: [
@@ -38,13 +42,15 @@ import { Doc } from './models/doc.model';
       Customer,
       GeneralCustomer,
       Lab,
+      TypeOfSample,
       Doc,
       ActEvent,
       ActRepository,
       CustomerRepository,
       GCustomerRepository,
       LabRepository,
-      EventRepository
+      TypeOfSampleRepository,
+      EventRepository,
     ]),
     ClientsModule.register([
       {
@@ -53,16 +59,16 @@ import { Doc } from './models/doc.model';
       },
       {
         name: 'CUSTOMER_PACKAGE',
-        ...grpcCustomerClientOptions
+        ...grpcCustomerClientOptions,
       },
       {
         name: 'GCUSTOMER_PACKAGE',
-        ...grpcGCustomerClientOptions
+        ...grpcGCustomerClientOptions,
       },
       {
         name: 'LAB_PACKAGE',
-        ...grpcLabClientOptions
-      }
+        ...grpcLabClientOptions,
+      },
     ]),
   ],
   providers: [
@@ -71,8 +77,10 @@ import { Doc } from './models/doc.model';
     GCustomerResolver,
     LabResolver,
     ActsService,
+    TypeOfSampleResolver,
     ...CommandHadlers,
-    ...EventsHandlers
+    ...EventsHandlers,
+    ...QueryHandlers,
   ],
   controllers: [ActsController],
 })

@@ -14,7 +14,8 @@ spec:
   selector:
     app: web
   ports:
-    - port: 4200
+    - name: tcp
+      port: 4200
       targetPort: 4200
 ---
 apiVersion: apps/v1

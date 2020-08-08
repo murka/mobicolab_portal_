@@ -23,7 +23,7 @@ import { GraphQLModule, GraphQLFederationModule } from '@nestjs/graphql';
         synchronize: false,
       }),
     }),
-     GraphQLFederationModule.forRoot({
+    GraphQLFederationModule.forRoot({
       installSubscriptionHandlers: false,
       uploads: false,
       autoSchemaFile: true,
