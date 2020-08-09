@@ -43,6 +43,7 @@ export class CustomerResolver implements OnModuleInit {
 
   @Query(returns => [Customer])
   async getCustomers(): Promise<Customer[]> {
+    this.logger.verbose('get-customers.query');
     return await this.customerRepository.find();
   }
 

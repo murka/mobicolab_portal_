@@ -9,6 +9,7 @@ import { environment } from "src/environments/environment";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { onError } from "apollo-link-error";
+import { ApolloLink } from "apollo-link";
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, ApolloModule, HttpLinkModule],
@@ -38,12 +39,17 @@ export class ApolloFilesModule {
       if (networkError) console.log(`[Network error]: ${networkError}`);
     });
 
+    const httpLinkWithErrorHandling = ApolloLink.from([linkEr, http]);
+
     apollo.create({ link: link, cache: new InMemoryCache() }, "filesWS");
     apollo.create(
       { link: uploadLink, cache: new InMemoryCache() },
       "uploadFiles"
     );
-    apollo.create({ link: http, cache: new InMemoryCache() });
-    apollo.create({ link: linkEr, cache: new InMemoryCache() });
+    apollo.create({
+      link: httpLinkWithErrorHandling,
+      cache: new InMemoryCache(),
+    });
+    // apollo.create({ link: linkEr, cache: new InMemoryCache() });
   }
 }

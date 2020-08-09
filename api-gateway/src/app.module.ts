@@ -16,12 +16,12 @@ import FileUploadDataSource from './file-upload-data-source';
         introspection: true,
         uploads: false,
         playground: true,
-        formatError: e => {
-          return new HttpException(
-            { status: e.name, error: e.message },
-            HttpStatus.BAD_GATEWAY,
-          );
-        },
+        // formatError: e => {
+        //   return new HttpException(
+        //     { status: e.name, error: e.message },
+        //     HttpStatus.BAD_GATEWAY,
+        //   );
+        // },
       },
       gateway: {
         // logger: {
@@ -30,7 +30,7 @@ import FileUploadDataSource from './file-upload-data-source';
         //   debug: console.debug,
         //   warn: console.warn,
         // },
-        buildService: ({ url }) => new FileUploadDataSource({ url }),
+        // buildService: ({ url }) => new FileUploadDataSource({ url }),
       },
     }),
     TemplatePreviewModule,

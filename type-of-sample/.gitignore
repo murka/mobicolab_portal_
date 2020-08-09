@@ -2,9 +2,6 @@
 /dist
 /node_modules
 
-# Data of databases
-/db_data
-
 # Logs
 logs
 *.log
@@ -35,8 +32,3 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-**/.bin
-**/.minikube
-**/.kubectl
-**/istio-1.6.5

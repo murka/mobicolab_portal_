@@ -31,15 +31,16 @@ export class ActControlService {
       .watch()
       .valueChanges.pipe(
         map(({ data }) =>
-          data.getActs.map(
-            (query) =>
-              new ActModel({
-                id: query.id,
-                name: query.name,
-                status: query.status,
-                // lab: new LabModel({ label: query.lab.label }),
-              })
-          )
+          data.getActs.map((query) => {
+            console.log(query);
+
+            return new ActModel({
+              id: query.id,
+              name: query.name,
+              status: query.status,
+              lab: new LabModel({ label: query.lab.label }),
+            });
+          })
         )
       )
       .pipe(catchError(this.processHTTPMsgService.handleError));

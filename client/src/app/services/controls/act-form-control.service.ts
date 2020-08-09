@@ -81,6 +81,8 @@ export class ActFormControlService {
     }
 
     if (path === "lab") {
+      console.log("lab");
+
       return this.postLabOpt
         .mutate({ data: <LabModel>body })
         .pipe(map(({ data }) => data.createLab))
