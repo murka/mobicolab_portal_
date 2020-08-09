@@ -54,6 +54,8 @@ export class ActFormDataService {
     return CustomerRef.afterClosed().pipe(
       filter((result: FormGroup) => result !== undefined),
       switchMap((result) => {
+        console.log(result);
+
         return this.AFCS.postActItem(key, result).pipe(
           map(
             (
@@ -63,6 +65,8 @@ export class ActFormDataService {
                 | LabModel
                 | generalOptionModel
             ) => {
+              console.log(`after req ${item}`);
+
               return new OptionsBaseModel(item);
             }
           )

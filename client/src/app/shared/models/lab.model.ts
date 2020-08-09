@@ -9,7 +9,7 @@ export class LabModel {
   public address?: AddressModel;
 
   constructor(options: {
-    fullname: string;
+    fullname?: string;
     label: string;
     tel?: string;
     email?: string;
