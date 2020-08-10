@@ -11,12 +11,14 @@ import { HabitansTypeRepository } from './repositories/habitans-type.repository'
 import { HabitanResolver } from './resolvers/habitan.resolver';
 import { CommandHandlers } from 'src/commands/handlers';
 import { QueryHandlers } from 'src/queries/handlers';
+import { Act } from './models/act.model';
 
 @Module({
   imports: [
     CqrsModule,
     TypeOrmModule.forFeature([
       TypeOfSample,
+      Act,
       Habitan,
       HabitansType,
       TypeOfSampleRepository,

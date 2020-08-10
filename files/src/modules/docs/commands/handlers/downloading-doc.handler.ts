@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { DocsService } from '../../docs.service';
 import { DownloadedDocEvent } from '../../events/impl/downloaded-doc.event';
 import { ReadStream } from 'fs';
-import { DocRepository } from '../../doc.repository';
+import { DocRepository } from '../../repositories/doc.repository';
 
 @CommandHandler(DownloadingDocCommand)
 export class DownloadingDocHandler

@@ -1,7 +1,8 @@
 import { ObjectType, Directive, Field, ID } from '@nestjs/graphql';
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { HabitansType } from './habitans-type.model';
 import { Habitan } from './habitan.model';
+import { Act } from './act.model';
 
 @Entity()
 @ObjectType()
@@ -24,4 +25,9 @@ export class TypeOfSample {
     { cascade: true, eager: true, onUpdate: 'CASCADE' },
   )
   htype: HabitansType;
+  @OneToMany(
+    type => Act,
+    acts => acts.type_of_sample,
+  )
+  acts: Act[];
 }

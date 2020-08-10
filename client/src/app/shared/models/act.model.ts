@@ -11,8 +11,9 @@ export class ActModel {
   public generalCustomer: GCustomerModel["id"];
   public lab: LabModel;
   public typeOfSample: {
+    id: string;
     habitan?: string;
-    types?: string[];
+    types?: string;
   };
   public objectName: string;
   public place: string;
@@ -53,8 +54,9 @@ export class ActModel {
     generalCustomer?: GCustomerModel["id"];
     lab?: LabModel;
     typeOfSample?: {
+      id: string;
       habitan?: string;
-      types?: string[];
+      types?: string;
     };
     objectName?: string;
     place?: string;

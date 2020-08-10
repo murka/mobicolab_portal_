@@ -1,11 +1,11 @@
-import {
-  ICommandHandler,
-  CommandHandler,
-} from '@nestjs/cqrs';
+import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
 import { UploadDocCommand } from '../impl/upload-doc.command';
 import { DocsService } from '../../docs.service';
 import { Logger } from '@nestjs/common';
-import { DocRepository, DocEventRepository } from '../../doc.repository';
+import {
+  DocRepository,
+  DocEventRepository,
+} from '../../repositories/doc.repository';
 
 @CommandHandler(UploadDocCommand)
 export class UploadDocHandler implements ICommandHandler<UploadDocCommand> {
@@ -24,17 +24,19 @@ export class UploadDocHandler implements ICommandHandler<UploadDocCommand> {
 
       const path = await this.ds.createFilePath(actId);
 
-      const doc = await this.docRepository.findOne(docId)
+      const doc = await this.docRepository.findOne(docId);
 
-      doc.ydUrl = path
+      doc.ydUrl = path;
 
       await this.ds.uploadFileToYd(docId, file);
 
-      doc.downloadable = true
-      const docEvent = this.evetRepositroy.create({ event: 'UPLOADED', doc: doc })
+      doc.downloadable = true;
+      const docEvent = this.evetRepositroy.create({
+        event: 'UPLOADED',
+        doc: doc,
+      });
 
-      await this.evetRepositroy.save(docEvent)
-
+      await this.evetRepositroy.save(docEvent);
     } catch (error) {
       this.logger.error(error);
     }

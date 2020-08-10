@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
 import { DroppingDocCommand } from '../impl/dropping-doc.command';
 import { Logger } from '@nestjs/common';
-import { Docs } from '../../models/doc.model';
+import { Doc } from '../../models/doc.model';
 import { DroppedDocEvent } from '../../events/impl/dropped-doc.event';
-import { DocRepository } from '../../doc.repository';
+import { DocRepository } from '../../repositories/doc.repository';
 
 @CommandHandler(DroppingDocCommand)
 export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
@@ -14,7 +14,7 @@ export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
     private eventBus: EventBus,
   ) {}
 
-  async execute(command: DroppingDocCommand): Promise<Docs> {
+  async execute(command: DroppingDocCommand): Promise<Doc> {
     try {
       this.logger.verbose('dropping-doc.command');
 

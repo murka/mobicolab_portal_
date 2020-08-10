@@ -3,9 +3,9 @@ import { SavingAllDocsCommand } from '../impl/saving-all-docs.command';
 import { Inject, Logger } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { SavedDocEvent } from '../../events/impl/saved-doc.event';
-import { Docs } from '../../models/doc.model';
+import { Doc } from '../../models/doc.model';
 import { DocsService } from '../../docs.service';
-import { DocRepository } from '../../doc.repository';
+import { DocRepository } from '../../repositories/doc.repository';
 
 @CommandHandler(SavingAllDocsCommand)
 export class SavingAllDocsHandler
@@ -18,13 +18,13 @@ export class SavingAllDocsHandler
     private readonly docRepository: DocRepository,
   ) {}
 
-  async execute(command: SavingAllDocsCommand): Promise<Docs[]> {
+  async execute(command: SavingAllDocsCommand): Promise<Doc[]> {
     this.logger.verbose('saving-all-docs.command');
 
     const { docs, actId } = command;
 
     try {
-      const updatedDocs: Docs[] = [];
+      const updatedDocs: Doc[] = [];
 
       for await (let docId of docs) {
         try {

@@ -13,25 +13,28 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  BaseEntity,
-  JoinColumn,
 } from 'typeorm';
+import { Act } from './act.model';
 
 @Entity()
 @ObjectType('Doc')
 @Directive('@key(fields: "id")')
-export class Docs {
+export class Doc {
   // @ManyToOne(type => Act, act => act.docs, { cascade: true, })
   // act?: Act
   @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Field()
   @Column({ nullable: true })
   title?: string;
+  @Field()
   @Column({ nullable: true })
   ydUrl?: string;
+  @Field()
   @Column({ nullable: true })
   name?: string;
+  @Field()
   @Column({ default: false })
   downloadable: boolean;
   @Field(type => [DocEvent], { nullable: 'itemsAndList' })
@@ -41,6 +44,12 @@ export class Docs {
     { nullable: true, onDelete: 'CASCADE' },
   )
   docEvents?: DocEvent[];
+  @ManyToOne(
+    type => Act,
+    act => act.docs,
+    { cascade: true, onUpdate: 'CASCADE' },
+  )
+  act: Act;
   @CreateDateColumn()
   createdAt?: Date;
   @UpdateDateColumn()
@@ -63,11 +72,11 @@ export class DocEvent {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @ManyToOne(
-    type => Docs,
+    type => Doc,
     doc => doc.docEvents,
     { nullable: true, cascade: true, onDelete: 'SET NULL' },
   )
-  doc?: Docs;
+  doc?: Doc;
   @Column({ type: 'enum', enum: AllowedEvent, nullable: true })
   event?: string;
   @CreateDateColumn()

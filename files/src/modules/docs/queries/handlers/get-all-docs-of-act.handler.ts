@@ -1,23 +1,23 @@
 import { GetAllDocsOfActQuery } from '../impl/get-all-docs-of-act.query';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
-import { Docs } from '../../models/doc.model';
-import { DocRepository } from '../../doc.repository';
+import { Doc } from '../../models/doc.model';
+import { ActRepository } from '../../repositories/act.repository';
 
 @QueryHandler(GetAllDocsOfActQuery)
 export class GetAllDocsOfActHandler
   implements IQueryHandler<GetAllDocsOfActQuery> {
   logger = new Logger(this.constructor.name);
 
-  constructor(private readonly docRepository: DocRepository) {}
+  constructor(private readonly actRepository: ActRepository) {}
 
-  async execute(query: GetAllDocsOfActQuery): Promise<Docs[]> {
+  async execute(query: GetAllDocsOfActQuery): Promise<Doc[]> {
     this.logger.verbose('get-all-docs-of-acts.query');
 
-    const { actIds } = query;
+    const { actId } = query;
 
     try {
-      return await this.docRepository.findByIds(actIds);
+      return (await this.actRepository.findOne(actId)).docs;
     } catch (e) {
       this.logger.error(e);
     }

@@ -14,7 +14,7 @@ import { CustomerControlService } from "../controls/customer-control.service";
 import { OptionGroupBaseModel } from "src/app/shared/models/interface/option-group-base.model";
 import { LabModel } from "src/app/shared/models/lab.model";
 import { generalOptionModel } from "src/app/shared/models/generalOptions.model";
-import { TypeOfSample } from "src/app/shared/models/type-sample.model";
+import { Habitan } from "src/app/shared/models/type-sample.model";
 
 @Injectable({
   providedIn: "root",
@@ -41,7 +41,7 @@ export class ActFormDataService {
     let options = [];
     this.AFCS.getItems(path).subscribe((items) => {
       items.forEach((item) =>
-        options.push(new OptionGroupBaseModel(<TypeOfSample>item))
+        options.push(new OptionGroupBaseModel(<Habitan>item))
       );
     });
     return of(options);
@@ -119,7 +119,7 @@ export class ActFormDataService {
           return this.AFCS.postActItemArray(key, id, {
             value: result.label,
           }).pipe(
-            map((item: TypeOfSample) => {
+            map((item: Habitan) => {
               return new OptionGroupBaseModel(item);
             })
           );
@@ -133,7 +133,7 @@ export class ActFormDataService {
         filter((result: FormGroup) => result !== undefined),
         switchMap((result) => {
           return this.AFCS.postActItem(key, result).pipe(
-            map((item: TypeOfSample) => {
+            map((item: Habitan) => {
               return new OptionGroupBaseModel(item);
             })
           );
@@ -158,7 +158,7 @@ export class ActFormDataService {
         filter((result) => result !== undefined),
         switchMap((result) => {
           return this.AFCS.patchtActItem(key, id, result).pipe(
-            map((item: TypeOfSample) => {
+            map((item: Habitan) => {
               console.log(item);
               return new OptionGroupBaseModel(item);
             })
@@ -181,9 +181,9 @@ export class ActFormDataService {
           return this.AFCS.patchtActItem(
             key,
             id,
-            new TypeOfSample({ label: item.label, htypes: newItem })
+            new Habitan({ label: item.label, htypes: newItem })
           ).pipe(
-            map((item: TypeOfSample) => {
+            map((item: Habitan) => {
               return new OptionGroupBaseModel(item);
             })
           );
@@ -202,9 +202,9 @@ export class ActFormDataService {
     return this.AFCS.patchtActItem(
       key,
       id,
-      new TypeOfSample({ label: item.label, htypes: newTypes })
+      new Habitan({ label: item.label, htypes: newTypes })
     ).pipe(
-      map((item: TypeOfSample) => {
+      map((item: Habitan) => {
         return new OptionGroupBaseModel(item);
       })
     );

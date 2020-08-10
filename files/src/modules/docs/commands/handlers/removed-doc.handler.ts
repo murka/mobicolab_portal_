@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RemoveDocCommand } from '../impl/remove-doc.command';
 import { Logger } from '@nestjs/common';
 import { DocsService } from '../../docs.service';
-import { DocRepository } from '../../doc.repository';
+import { DocRepository } from '../../repositories/doc.repository';
 
 @CommandHandler(RemoveDocCommand)
 export class RemoveDocHandler implements ICommandHandler<RemoveDocCommand> {

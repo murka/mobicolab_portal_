@@ -1,7 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { TitlingDocCommand } from '../impl/titling-doc.command';
 import { Logger } from '@nestjs/common';
-import { DocRepository, DocEventRepository } from '../../doc.repository';
+import {
+  DocRepository,
+  DocEventRepository,
+} from '../../repositories/doc.repository';
 
 @CommandHandler(TitlingDocCommand)
 export class TitlingDocHandler implements ICommandHandler<TitlingDocCommand> {
@@ -9,7 +12,7 @@ export class TitlingDocHandler implements ICommandHandler<TitlingDocCommand> {
 
   constructor(
     private readonly docRepository: DocRepository,
-    private readonly docEventRepository: DocEventRepository
+    private readonly docEventRepository: DocEventRepository,
   ) {}
 
   async execute(command: TitlingDocCommand): Promise<any> {
@@ -23,17 +26,20 @@ export class TitlingDocHandler implements ICommandHandler<TitlingDocCommand> {
       //   data: { title: title, doc_event: { create: [{ event: 'TITLED' }] } },
       // });
 
-      const doc = await this.docRepository.findOne(docId)
+      const doc = await this.docRepository.findOne(docId);
 
-      await this.docRepository.update(doc, { title: title, })
+      await this.docRepository.update(doc, { title: title });
 
-      const newEvent = this.docEventRepository.create({ event: 'TITLED', doc: doc })
+      const newEvent = this.docEventRepository.create({
+        event: 'TITLED',
+        doc: doc,
+      });
 
-      await this.docEventRepository.save(newEvent)
+      await this.docEventRepository.save(newEvent);
 
       return doc;
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error);
     }
   }
 }
