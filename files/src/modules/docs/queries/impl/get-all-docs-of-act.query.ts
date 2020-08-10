@@ -1,3 +1,3 @@
 export class GetAllDocsOfActQuery {
-    constructor(public readonly actIds: string[]) {}
+  constructor(public readonly actId: string) {}
 }

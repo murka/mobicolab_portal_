@@ -1,7 +1,10 @@
 import { DownloadedDocEvent } from '../impl/downloaded-doc.event';
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
-import { DocRepository, DocEventRepository } from '../../doc.repository';
+import {
+  DocRepository,
+  DocEventRepository,
+} from '../../repositories/doc.repository';
 
 @EventsHandler(DownloadedDocEvent)
 export class DownloadedDocHandler implements IEventHandler<DownloadedDocEvent> {
@@ -23,12 +26,14 @@ export class DownloadedDocHandler implements IEventHandler<DownloadedDocEvent> {
       //   data: { doc_event: { create: { event: 'DOWNLOADED' } } },
       // });
 
-      const doc = await this.docRepositroy.findOne(docId)
+      const doc = await this.docRepositroy.findOne(docId);
 
-      const newEvent = this.eventRepository.create({ event: 'DOWNLOADED', doc: doc })
+      const newEvent = this.eventRepository.create({
+        event: 'DOWNLOADED',
+        doc: doc,
+      });
 
-      await this.eventRepository.save(newEvent)
-
+      await this.eventRepository.save(newEvent);
     } catch (error) {
       this.logger.error(error);
     }

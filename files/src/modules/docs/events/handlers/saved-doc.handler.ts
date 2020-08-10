@@ -1,7 +1,10 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { SavedDocEvent } from '../impl/saved-doc.event';
 import { Logger } from '@nestjs/common';
-import { DocRepository, DocEventRepository } from '../../doc.repository';
+import {
+  DocRepository,
+  DocEventRepository,
+} from '../../repositories/doc.repository';
 
 @EventsHandler(SavedDocEvent)
 export class SavedDocHadler implements IEventHandler<SavedDocEvent> {
@@ -23,12 +26,14 @@ export class SavedDocHadler implements IEventHandler<SavedDocEvent> {
       //   data: { doc_event: { create: [{ event: 'SAVED' }] } },
       // });
 
-      const doc = await this.docRepository.findOne(docId)
+      const doc = await this.docRepository.findOne(docId);
 
-      const newEvent = this.eventRepository.create({ event: 'SAVED', doc: doc })
+      const newEvent = this.eventRepository.create({
+        event: 'SAVED',
+        doc: doc,
+      });
 
-      await this.eventRepository.save(newEvent)
-
+      await this.eventRepository.save(newEvent);
     } catch (error) {
       this.logger.error(error);
     }

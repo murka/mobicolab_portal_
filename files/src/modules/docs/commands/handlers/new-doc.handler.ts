@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NewDocCommand } from '../impl/new-doc.commadn';
 import { Logger, Inject } from '@nestjs/common';
-import { Docs } from '../../models/doc.model';
+import { Doc } from '../../models/doc.model';
 
 @CommandHandler(NewDocCommand)
 export class NewDocHandler implements ICommandHandler<NewDocCommand> {

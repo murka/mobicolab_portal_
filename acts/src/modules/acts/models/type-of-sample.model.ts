@@ -10,7 +10,7 @@ export class TypeOfSample {
   @Field(type => ID)
   @Directive('@external')
   @PrimaryColumn()
-  public id: string;
+  id: string;
   @Field(type => [Act])
   @OneToMany(
     type => Act,

@@ -10,17 +10,22 @@ import { DocsController } from './docs.controller';
 import { ClientsModule } from '@nestjs/microservices';
 import { grpcClientOptions } from 'src/gRPC/grpc-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DocRepository, DocEventRepository } from './doc.repository';
-import { Docs, DocEvent } from './models/doc.model';
+import {
+  DocRepository,
+  DocEventRepository,
+} from './repositories/doc.repository';
+import { Doc, DocEvent } from './models/doc.model';
 import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-client.options';
+import { Act } from './models/act.model';
+import { ActRepository } from './repositories/act.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Docs,
-      // Act,
+      Doc,
+      Act,
       DocRepository,
-      // ActRepository,
+      ActRepository,
       DocEvent,
       DocEventRepository,
     ]),

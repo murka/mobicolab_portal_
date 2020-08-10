@@ -1,10 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Docs, DocEvent } from './models/doc.model';
+import { Doc, DocEvent } from '../models/doc.model';
 import { Logger } from '@nestjs/common';
 // import { Act } from "./models/act.model";
 
-@EntityRepository(Docs)
-export class DocRepository extends Repository<Docs> {
+@EntityRepository(Doc)
+export class DocRepository extends Repository<Doc> {
   logger = new Logger(this.constructor.name);
 }
 

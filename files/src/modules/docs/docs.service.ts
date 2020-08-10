@@ -2,12 +2,12 @@ import { Injectable, Logger, Inject, OnModuleInit } from '@nestjs/common';
 
 import { InjectWebDAV, WebDAV } from 'nestjs-webdav';
 
-import { Docs } from './models/doc.model';
+import { Doc } from './models/doc.model';
 import { ReadStream } from 'fs';
 import { ActForFilesDto } from './models/dto/act-for-files.dto';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable, ReplaySubject } from 'rxjs';
-import { DocRepository } from './doc.repository';
+import { DocRepository } from './repositories/doc.repository';
 
 const logger = new Logger('docService');
 
@@ -116,7 +116,7 @@ export class DocsService implements OnModuleInit {
     return filepath;
   }
 
-  async createFilePath(actId: string): Promise<Docs['ydUrl']> {
+  async createFilePath(actId: string): Promise<Doc['ydUrl']> {
     logger.verbose('create-path inside `docService`');
 
     const doc = await this.actDocGrpcClient.findLabels({ id: actId });
