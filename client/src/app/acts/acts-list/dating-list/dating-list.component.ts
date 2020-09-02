@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { ActModel } from "src/app/shared/models/act.model";
+import { GetCustomersWithActsQuery } from "src/types/generated";
 
 @Component({
   selector: "app-dating-list",
@@ -7,43 +8,51 @@ import { ActModel } from "src/app/shared/models/act.model";
   styleUrls: ["./dating-list.component.scss"],
 })
 export class DatingListComponent implements OnInit {
-  @Input() gcustomerActs: [string];
-  @Input() set acts(acts: ActModel[]) {
-    this._actController = acts;
-    if (this.gcustomerActs) {
-      this.createDatesArray(
-        this.filterActsByGCustomer(acts, this.gcustomerActs)
-      );
-    }
-  }
-  get acts() {
-    return this._actController;
-  }
+  //   @Input() gcustomerActs: [string];
+  //   @Input() set acts(acts: ActModel[]) {
+  //     this._actController = acts;
+  //     if (this.gcustomerActs) {
+  //       this.createDatesArray(
+  //         this.filterActsByGCustomer(acts, this.gcustomerActs)
+  //       );
+  //     }
+  //   }
+  //   get acts() {
+  //     return this._actController;
+  //   }
+
+  @Input() customer: GetCustomersWithActsQuery["getCustomers"][0];
 
   filteredActsByGCustomer: ActModel[];
-  yearsArray: { year: number; acts: ActModel[] }[];
+  yearsArray: {
+    year: number;
+    acts: GetCustomersWithActsQuery["getCustomers"][0]["acts"];
+  }[];
   _actController: ActModel[];
 
   constructor() {}
 
   ngOnInit() {
-    this.createDatesArray(
-      this.filterActsByGCustomer(this.acts, this.gcustomerActs)
-    );
+    this.createDatesArray(this.customer.acts);
   }
 
-  filterActsByGCustomer(acts: ActModel[], customerActs: string[]): ActModel[] {
-    return acts.filter((act) => customerActs.includes(act.id));
-  }
+  createDatesArray(
+    acts: GetCustomersWithActsQuery["getCustomers"][0]["acts"]
+  ): void {
+    console.log(`start datearray ${acts}`);
 
-  createDatesArray(acts: ActModel[]): void {
     let sort = acts.sort(
       (a, b) =>
         new Date(a.datetime.date).getTime() -
         new Date(b.datetime.date).getTime()
     );
-    let yearsArray: { year: number; acts: ActModel[] }[] = [];
-    const action = function (actss: ActModel[]) {
+    let yearsArray: {
+      year: number;
+      acts: GetCustomersWithActsQuery["getCustomers"][0]["acts"];
+    }[] = [];
+    const action = function (
+      actss: GetCustomersWithActsQuery["getCustomers"][0]["acts"]
+    ) {
       let start = new Date(actss[0].datetime.date).getFullYear();
       let end = new Date(actss[actss.length - 1].datetime.date).getFullYear();
       if (start === end) {

@@ -3,6 +3,8 @@ import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { LabAddress } from './lab-address.model';
 import { LabEvent } from './lab-event.model';
+import { LabCreatedEvent } from '../events/impl/lab-created.event';
+import { AggregateRoot } from '@nestjs/cqrs';
 
 //Model of Lab for TypeORM and GraphQl modules
 
@@ -12,7 +14,7 @@ import { LabEvent } from './lab-event.model';
 @ObjectType('Lab')
 //directive to define class as useble in apollo federation
 @Directive('@key(fields: "id")')
-export class Lab {
+export class Lab extends AggregateRoot {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -31,7 +33,6 @@ export class Lab {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   email?: string;
-  @Field(() => [LabEvent])
   @OneToMany(
     type => LabEvent,
     events => events.lab,
@@ -42,4 +43,8 @@ export class Lab {
     act => act.lab,
   )
   acts: Act[];
+
+  labCreated() {
+    this.apply(new LabCreatedEvent(this));
+  }
 }

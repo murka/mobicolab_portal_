@@ -1,3 +1,3 @@
 export class RemoveDocCommand {
-    constructor(public readonly docId: string) {}
+  constructor(public readonly docId: string) {}
 }

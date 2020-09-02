@@ -1,5 +1,48 @@
 version: "3.7"
 services:
+  zookeeper:
+    image: debezium/zookeeper:latest
+    ports:
+      - 2888:2888
+      - 3888:3888
+      - 2181:2181
+    volumes:
+      - ./db_data/zookeeper/data:/zookeeper/data
+      - ./db_data/zookeeper/txns:/zookeeper/txns
+    networks:
+      - zookeeper
+
+  connect:
+    image: debezium/connect:1.2
+    ports:
+      - 8583:8083
+    environment:
+      GROUP_ID: 3
+      CONFIG_STORAGE_TOPIC: lab-connect-configs
+      OFFSET_STORAGE_TOPIC: lab-connect-offsets
+      STATUS_STORAGE_TOPIC: my_source_connect_statuses
+      BOOTSTRAP_SERVERS: ${HOST_IP}:9092
+    volumes:
+      - ./db_data/kafka/connect_lab/:/kafka/logs
+    networks:
+      - zookeeper
+    depends_on:
+      - zookeeper
+
+  kafka:
+    image: debezium/kafka:latest
+    ports:
+      - 9092:9092
+    environment:
+      ZOOKEEPER_CONNECT: zookeeper:2181
+      ADVERTISED_HOST_NAME: ${HOST_IP}
+    volumes:
+      - ./db_data/kafka/kafka:/kafka/data
+    networks:
+      - zookeeper
+    depends_on:
+      - zookeeper
+
   pgadmin:
     image: dpage/pgadmin4
     ports:
@@ -13,6 +56,15 @@ services:
       - customers
       - gcustomers
       - labs
+      - tos
+
+  # generic:
+  #   build:
+  #     context: ./proto
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - "./proto:/app"
+  #   working_dir: /app
 
   envoy:
     image: envoyproxy/envoy-alpine:v1.15.0
@@ -25,7 +77,7 @@ services:
       - test
 
   db_files:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_files2:/var/lib/postgresql/data
     environment:
@@ -36,6 +88,7 @@ services:
       - "6001:5432"
     networks:
       - files
+      - zookeeper
   api_files:
     build:
       context: "./files"
@@ -44,6 +97,7 @@ services:
     volumes:
       - "./files:/app"
       - "/app/node_modules"
+      - "./proto:/proto"
     networks:
       - files
       - test
@@ -53,13 +107,14 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3010:3010"
       - "50051:50051"
     depends_on:
       - db_files
       - api_acts
-    command: yarn start:dev
 
   api_subscriptions:
     build:
@@ -68,7 +123,8 @@ services:
     restart: always
     volumes:
       - "./api-subscriptions:/app"
-      - "app/node_modules"
+      - "/app/node_modules"
+      - "./proto:/proto"
     networks:
       - files
       - test
@@ -78,15 +134,15 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3060:3060"
     depends_on:
       - db_files
 
-    command: yarn start:dev
-
   db_acts:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_acts2:/var/lib/postgresql/data
     environment:
@@ -97,6 +153,7 @@ services:
       - "6002:5432"
     networks:
       - acts
+      - zookeeper
   api_acts:
     build:
       context: "./acts"
@@ -104,7 +161,8 @@ services:
     restart: always
     volumes:
       - "./acts:/app"
-      - "app/node_modules"
+      - "/app/node_modules"
+      - ./proto:/proto
     networks:
       - acts
       - test
@@ -114,15 +172,16 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3020:3020"
     depends_on:
       - db_acts
       - api_customers
-    command: npm run start:dev
 
   db_customers:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_customers2:/var/lib/postgresql/data
     environment:
@@ -133,6 +192,7 @@ services:
       - "6003:5432"
     networks:
       - customers
+      - zookeeper
   api_customers:
     build:
       context: "./customers"
@@ -140,7 +200,8 @@ services:
     restart: always
     volumes:
       - "./customers:/app"
-      - "app/node_modules"
+      - "/app/node_modules"
+      - "./proto:/proto"
     networks:
       - customers
       - test
@@ -150,15 +211,16 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3030:3030"
     depends_on:
       - db_customers
       - api_general_customers
-    command: npm run start:dev
 
   db_general_customers:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_general_customers:/var/lib/postgresql/data
     environment:
@@ -169,6 +231,7 @@ services:
       - "6004:5432"
     networks:
       - gcustomers
+      - zookeeper
   api_general_customers:
     build:
       context: "./general-customers"
@@ -176,7 +239,8 @@ services:
     restart: always
     volumes:
       - "./general-customers:/app"
-      - "app/node_modules"
+      - "/app/node_modules"
+      - "./proto:/proto"
     networks:
       - test
       - gcustomers
@@ -186,15 +250,16 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3040:3040"
     depends_on:
       - db_general_customers
       - api_labs
-    command: yarn start:dev
 
   db_labs:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_labs:/var/lib/postgresql/data
     environment:
@@ -205,6 +270,7 @@ services:
       - "6005:5432"
     networks:
       - labs
+      - zookeeper
   api_labs:
     build:
       context: "./labs"
@@ -212,7 +278,8 @@ services:
     restart: always
     volumes:
       - "./labs:/app"
-      - "app/node_modules"
+      - "/app/node_modules"
+      - "./proto:/proto"
     networks:
       - labs
       - test
@@ -222,14 +289,15 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3050:3050"
     depends_on:
       - db_labs
-    command: yarn start:dev
 
   db_tos:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_tos:/var/lib/postgresql/data
     environment:
@@ -240,6 +308,7 @@ services:
       - "6009:5432"
     networks:
       - tos
+      - zookeeper
   api_tos:
     build:
       context: "./type-of-sample"
@@ -248,6 +317,7 @@ services:
     volumes:
       - "./type-of-sample:/app"
       - "/app/node_modules"
+      - ./proto:/proto
     networks:
       - tos
       - test
@@ -257,15 +327,16 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3090:3090"
     depends_on:
       - db_labs
       - api_files
-    command: yarn start:dev
 
   db_rules:
-    image: postgres
+    image: debezium/postgres:latest
     volumes:
       - ./db_data/db_rules:/var/lib/postgresql/data
     environment:
@@ -276,6 +347,7 @@ services:
       - "6007:5432"
     networks:
       - rules
+      - zookeeper
   api_rules:
     build:
       context: "./rules"
@@ -293,12 +365,33 @@ services:
       TYPEORM_USERNAME: mobicolab
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     ports:
       - "3070:3070"
     depends_on:
       - db_labs
       - api_tos
-    command: yarn start:dev
+
+  api_templater:
+    build:
+      context: "./templater"
+      dockerfile: Dockerfile.dev
+    restart: always
+    environment:
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
+    volumes:
+      - "./templater:/app"
+      - "/app/node_modules"
+      - "./proto:/proto"
+    networks:
+      - test
+    ports:
+      - "3080:3080"
+    depends_on:
+      - db_labs
+      - api_rules
 
   db_mongo:
     image: mark600/mobicolab_portal_db:latest
@@ -322,7 +415,7 @@ services:
       - "3000:3000"
     depends_on:
       - db_mongo
-    command: npm run dev
+    command: ["npm", "run", "dev"]
 
   web:
     build:
@@ -343,15 +436,18 @@ services:
       context: "./api-gateway"
       dockerfile: "Dockerfile.dev"
     restart: always
+    environment:
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 9092
     volumes:
       - "./api-gateway:/app"
       - "/app/node_modules"
+      - "./proto:/proto"
     networks:
       - test
     ports:
       - "2000:2000"
       - "50020:50020"
-    command: yarn start:dev
     depends_on:
       - api_files
       - api_customers
@@ -387,3 +483,4 @@ networks:
   gcustomers:
   labs:
   files:
+  zookeeper:

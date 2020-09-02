@@ -24,11 +24,11 @@ export class AddActHandler implements ICommandHandler<AddActCommand> {
 
       if (!customer)
         throw new HttpException(
-          { status: HttpStatus.NOT_FOUND, error: 'Customer doesn`t find' },
+          { status: HttpStatus.NOT_FOUND, error: 'Customer didn`t find' },
           HttpStatus.NOT_FOUND,
         );
 
-      // newAct.customer = customer;
+      newAct.customer = customer;
 
       await this.actRepository.save(newAct);
     } catch (e) {

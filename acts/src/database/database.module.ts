@@ -3,10 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLFederationModule } from '@nestjs/graphql';
-import { GeneralCustomer } from 'src/modules/acts/models/general-customer.model';
-import { Lab } from 'src/modules/acts/models/lab.model';
-import { Doc } from 'src/modules/acts/models/doc.model';
-import { Customer } from 'src/modules/acts/models/customer.model';
+import { GeneralCustomer } from 'src/modules/general-customers/models/general-customer.model';
+import { Lab } from 'src/modules/labs/models/lab.model';
+import { Doc } from 'src/modules/files/models/doc.model';
+import { Customer } from 'src/modules/customers/models/customer.model';
 
 @Module({
   imports: [

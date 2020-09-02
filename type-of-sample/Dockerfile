@@ -1,6 +1,7 @@
 FROM node:alpine
 WORKDIR /app
 COPY package.json /app
-RUN yarn install
+RUN npm install
 COPY . /app
-CMD ["yarn", "start"]
+COPY ../proto /proto
+CMD ["npm", "run", "start"]

@@ -9,6 +9,13 @@ import {
   GetActForItemGQL,
   GetActIdsGQL,
   GetActForDetailsGQL,
+  PatchActGQL,
+  PostActGQL,
+  PostActMutation,
+  GetActForDetailsQuery,
+  GetWholeActGQL,
+  GetWholeActQuery,
+  PatchActMutation,
 } from "../../../types/generated";
 import { Apollo } from "apollo-angular";
 import { LabModel } from "src/app/shared/models/lab.model";
@@ -23,7 +30,10 @@ export class ActControlService {
     private processHTTPMsgService: ProcessHTTPMsgService,
     private getActForItemQuery: GetActForItemGQL,
     private getActIdsQuery: GetActIdsGQL,
-    private getActForDetailsQuery: GetActForDetailsGQL
+    private getActForDetailsQuery: GetActForDetailsGQL,
+    private createAct: PostActGQL,
+    private getWholeAct: GetWholeActGQL,
+    private updateAct: PatchActGQL
   ) {}
 
   getActsForItem(): Observable<ActModel[] | any> {
@@ -53,15 +63,10 @@ export class ActControlService {
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  getActForDetails(id: string): Observable<ActModel> {
+  getActForDetails(id: string): Observable<GetActForDetailsQuery["getAct"]> {
     return this.getActForDetailsQuery
       .watch({ actId: id })
-      .valueChanges.pipe(
-        map(
-          ({ data }) =>
-            new ActModel({ id: data.getAct.id, name: data.getAct.name })
-        )
-      )
+      .valueChanges.pipe(map(({ data }) => data.getAct))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
@@ -71,17 +76,25 @@ export class ActControlService {
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  getAct(id: string): Observable<ActModel> {
-    return this.http
-      .get<ActModel>(environment.baseURL + "acts/" + id)
+  getAct(id: string): Observable<GetWholeActQuery["getAct"]> {
+    // return this.http
+    //   .get<ActModel>(environment.baseURL + "acts/" + id)
+    //   .pipe(catchError(this.processHTTPMsgService.handleError));
+    return this.getWholeAct
+      .watch({ data: id })
+      .valueChanges.pipe(map(({ data }) => data.getAct))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  postAct(body: any) {
+  postAct(body: any): Observable<PostActMutation> {
     console.log(body);
 
-    return this.http
-      .post(environment.baseURL + "acts/", body)
+    // return this.http
+    //   .post(environment.baseURL + "acts/", body)
+    //   .pipe(catchError(this.processHTTPMsgService.handleError));
+    return this.createAct
+      .mutate({ data: body })
+      .pipe(map(({ data }) => data))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
@@ -91,9 +104,13 @@ export class ActControlService {
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  patchAct(id: string, body: any): Observable<ActModel> {
-    return this.http
-      .patch<ActModel>(environment.baseURL + "acts/" + id, body)
+  patchAct(body: any): Observable<PatchActMutation["updateAct"]> {
+    // return this.http
+    //   .patch<ActModel>(environment.baseURL + "acts/" + id, body)
+    //   .pipe(catchError(this.processHTTPMsgService.handleError));
+    return this.updateAct
+      .mutate({ data: body })
+      .pipe(map(({ data }) => data.updateAct))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 

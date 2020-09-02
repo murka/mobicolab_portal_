@@ -1,44 +1,32 @@
-import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
+import { ICommandHandler, CommandHandler, EventBus } from '@nestjs/cqrs';
 import { UploadDocCommand } from '../impl/upload-doc.command';
 import { DocsService } from '../../docs.service';
 import { Logger } from '@nestjs/common';
-import {
-  DocRepository,
-  DocEventRepository,
-} from '../../repositories/doc.repository';
+import { SavedDocEvent } from '../../events/impl/saved-doc.event';
 
 @CommandHandler(UploadDocCommand)
 export class UploadDocHandler implements ICommandHandler<UploadDocCommand> {
   logger = new Logger(this.constructor.name);
 
-  constructor(
-    private docRepository: DocRepository,
-    private evetRepositroy: DocEventRepository,
-    private ds: DocsService,
-  ) {}
+  constructor(private ds: DocsService, private readonly eventBus: EventBus) {}
 
-  async execute(event: UploadDocCommand) {
+  async execute(command: UploadDocCommand) {
     this.logger.verbose('create-path.command');
+
+    const { actId, doc, file } = command;
+
     try {
-      const { actId, docId, file } = event;
-
       const path = await this.ds.createFilePath(actId);
-
-      const doc = await this.docRepository.findOne(docId);
 
       doc.ydUrl = path;
 
-      await this.ds.uploadFileToYd(docId, file);
+      await this.ds.saveDoc(doc);
 
-      doc.downloadable = true;
-      const docEvent = this.evetRepositroy.create({
-        event: 'UPLOADED',
-        doc: doc,
-      });
+      this.eventBus.publish(new SavedDocEvent(doc, doc.title, actId));
 
-      await this.evetRepositroy.save(docEvent);
+      await this.ds.uploadFileToYd(file, path, doc.name);
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(JSON.stringify(error.message, null, 2));
     }
   }
 }

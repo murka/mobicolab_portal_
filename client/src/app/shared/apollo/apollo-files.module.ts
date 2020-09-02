@@ -19,7 +19,7 @@ export class ApolloFilesModule {
     const http = httpLink.create({ uri: environment.GQL_URI });
 
     const uploadLink = createUploadLink({
-      uri: environment.GQL_URI_UPLOAD_FILES,
+      uri: environment.GQL_URI_SUB,
     });
 
     const client = new SubscriptionClient(environment.WS_URI_FILES, {
@@ -42,14 +42,10 @@ export class ApolloFilesModule {
     const httpLinkWithErrorHandling = ApolloLink.from([linkEr, http]);
 
     apollo.create({ link: link, cache: new InMemoryCache() }, "filesWS");
-    apollo.create(
-      { link: uploadLink, cache: new InMemoryCache() },
-      "uploadFiles"
-    );
+    apollo.create({ link: uploadLink, cache: new InMemoryCache() }, "sub");
     apollo.create({
       link: httpLinkWithErrorHandling,
       cache: new InMemoryCache(),
     });
-    // apollo.create({ link: linkEr, cache: new InMemoryCache() });
   }
 }

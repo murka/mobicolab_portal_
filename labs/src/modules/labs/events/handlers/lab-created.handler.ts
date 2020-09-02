@@ -15,8 +15,11 @@ export class LabCretedHandler implements IEventHandler<LabCreatedEvent> {
     const { lab } = event;
 
     try {
-      const newEvent = this.eventRepository.create({ event: 'CREATED' });
+      const newEvent = this.eventRepository.create({ event_type: 'CREATED' });
 
+      newEvent.event_key = lab.id;
+      newEvent.aggregateType = 'Lab' + '.' + newEvent.event_type;
+      newEvent.aggregateid = lab.id;
       newEvent.lab = lab;
 
       await this.eventRepository.save(newEvent);

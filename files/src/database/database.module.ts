@@ -28,9 +28,8 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
       autoSchemaFile: true,
       debug: true,
       playground: true,
-      introspection: true, 
+      introspection: true,
     }),
   ],
 })
-export class DatabaseModule {
-}
+export class DatabaseModule {}

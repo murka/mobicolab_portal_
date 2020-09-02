@@ -8,13 +8,13 @@ import { TemplateList, Null } from "src/app/shared/protos/template-preview_pb";
   providedIn: "root",
 })
 export class TemplatePreviewControlService {
-  client: TemplatePreviewClient;
+  private client: TemplatePreviewClient;
 
   constructor(
     private http: HttpClient,
     private processHTTPMsgService: ProcessHTTPMsgService
   ) {
-    this.client = new TemplatePreviewClient("http://0.0.0.0:8080");
+    this.client = new TemplatePreviewClient("http://192.168.1.6:8080");
   }
 
   async getAllTemplates(): Promise<TemplateList.AsObject> {

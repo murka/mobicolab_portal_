@@ -1,19 +1,5 @@
 import gql from "graphql-tag";
-
-export class getAllDocs {
-  document = gql`
-    query getAllDocs($actId: String!) {
-      getAct(id: $actId) {
-        id
-        docs {
-          id
-          name
-          ydUrl
-        }
-      }
-    }
-  `;
-}
+import { WholeAct } from "../fragments/act.graphql";
 
 export class getActForItem {
   document = gql`
@@ -46,7 +32,26 @@ export class getActForDetails {
       getAct(id: $actId) {
         id
         name
+        typeOfSample {
+          habitan {
+            id
+          }
+        }
+        lab {
+          id
+        }
       }
     }
+  `;
+}
+
+export class getWholeAct {
+  document = gql`
+    query getWholeAct($data: String!) {
+      getAct(id: $data) {
+        ...WholeAct
+      }
+    }
+    ${WholeAct.document}
   `;
 }

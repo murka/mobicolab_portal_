@@ -5,8 +5,9 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryColumn,
+  JoinColumn,
 } from 'typeorm';
-import { registerEnumType, ObjectType, Field, ID } from '@nestjs/graphql';
 import { Customer } from './customer.model';
 
 export enum AllowEvent {
@@ -16,22 +17,25 @@ export enum AllowEvent {
 }
 
 @Entity()
-@ObjectType()
 export class CustomerEvent {
-  @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({ type: 'enum', enum: AllowEvent, nullable: true })
-  event: string;
+  event_type: string;
+  @PrimaryColumn()
+  event_key: string;
+  @Column()
+  aggregateType: string;
+  @Column()
+  aggregateid: string;
   @ManyToOne(
     type => Customer,
     customer => customer.events,
   )
-  customer: Customer
+  @JoinColumn({ name: 'payload' })
+  customer: Customer;
   @CreateDateColumn()
   createdAt: string;
   @UpdateDateColumn()
   updatedAt: string;
 }
-
-registerEnumType(AllowEvent, { name: 'AllowEvent' });

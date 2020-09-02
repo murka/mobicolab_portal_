@@ -32,6 +32,4 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
     }),
   ],
 })
-export class DatabaseModule {
-  
-}
+export class DatabaseModule {}

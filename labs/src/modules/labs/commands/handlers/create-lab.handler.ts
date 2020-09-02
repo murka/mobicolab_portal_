@@ -1,4 +1,9 @@
-import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
+import {
+  CommandHandler,
+  ICommandHandler,
+  EventBus,
+  EventPublisher,
+} from '@nestjs/cqrs';
 import { CreateLabCommand } from '../impl/create-lab.command';
 import { Logger } from '@nestjs/common';
 import { LabRepository } from '../../lab.repository';
@@ -11,7 +16,7 @@ export class CreateLabHandler implements ICommandHandler<CreateLabCommand> {
 
   constructor(
     private readonly labRepository: LabRepository,
-    private readonly eventBus: EventBus,
+    private readonly pubclisher: EventPublisher,
   ) {}
 
   async execute(command: CreateLabCommand): Promise<Lab> {
@@ -24,9 +29,11 @@ export class CreateLabHandler implements ICommandHandler<CreateLabCommand> {
 
       await this.labRepository.save(lab);
 
-      this.eventBus.publish(new LabCreatedEvent(lab));
+      const event = this.pubclisher.mergeObjectContext(lab);
+      event.labCreated();
+      event.commit();
 
-      return lab
+      return lab;
     } catch (e) {
       this.logger.error(e);
     }

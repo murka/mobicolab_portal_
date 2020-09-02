@@ -1,17 +1,15 @@
-import { NewActHandler } from "./new-act.handler";
-import { GetActsOfCustomerHadler, GetActsOfGCustomerHandler, GetActsOfLabHandler } from "./get-acts-reference";
-import { ChangeCustomerIdHandler, ChangeGeneralCustomerIdHandler, ChangeLabIdHandler } from "./migrations.handler";
-import { AddActsReferencesHandler } from "./add-acts-references.handler";
-import { UpdateActHandler } from "./update-act.handler";
+import { NewActHandler } from './new-act.handler';
+import { UpdateActHandler } from './update-act.handler';
+import { CreateAppHandler } from './create-app.handler';
+import { DeleteAppHandler } from './delete-app.handler';
+import { CreateAppCopyHandler } from './create-app-copy.handler';
+import { ChangeStatusHandler } from './change-status.handler';
 
 export const CommandHadlers = [
-    NewActHandler,
-    GetActsOfCustomerHadler,
-    GetActsOfGCustomerHandler,
-    GetActsOfLabHandler,
-    ChangeCustomerIdHandler,
-    ChangeGeneralCustomerIdHandler,
-    ChangeLabIdHandler,
-    AddActsReferencesHandler,
-    UpdateActHandler
-]
+  NewActHandler,
+  UpdateActHandler,
+  CreateAppHandler,
+  DeleteAppHandler,
+  CreateAppCopyHandler,
+  ChangeStatusHandler,
+];

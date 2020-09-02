@@ -1,9 +1,11 @@
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class NewLabTypeOfSampleTemplate {
-    @Field()
-    labId: string
-    typeId: string
-    path: string
+  @Field()
+  labId: string;
+  @Field()
+  typeId: string;
+  @Field()
+  path: string;
 }

@@ -1,87 +1,58 @@
 import { Module } from '@nestjs/common';
-import { ActResolver } from './act.resolver';
-import {
-  CustomerResolver,
-  GCustomerResolver,
-  LabResolver,
-  TypeOfSampleResolver,
-} from './references.resolver';
-import { ActRepository } from './act.repository';
-import {
-  CustomerRepository,
-  GCustomerRepository,
-  LabRepository,
-  EventRepository,
-  TypeOfSampleRepository,
-} from './references.repository';
+import { ActResolver } from './resolvers/act.resolver';
+import { ActRepository } from './repositories/act.repository';
+import { EventRepository } from './repositories/evetns.repository';
 import { ClientsModule } from '@nestjs/microservices';
-import { grpcClientOptions } from '../../gRPC/grpc-bridge-client.options';
+import { grpcClientOptions } from '../../options/grpc-bridge-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Act } from './models/act.model';
-import { Customer } from './models/customer.model';
-import { GeneralCustomer } from './models/general-customer.model';
-import { Lab } from './models/lab.model';
 import { ActsService } from './acts.service';
 import { CommandHadlers } from './commands/handlers';
 import { EventsHandlers } from './events/handlers';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ActEvent } from './models/act-event.model';
 import { ActsController } from './acts.controller';
-import { grpcCustomerClientOptions } from 'src/gRPC/grpc-customer-client.option';
-import { grpcGCustomerClientOptions } from 'src/gRPC/grpc-gcustomer-client.option';
-import { grpcLabClientOptions } from 'src/gRPC/grpc-lab-client.option';
-import { Doc } from './models/doc.model';
+import { Doc } from '../files/models/doc.model';
 import { QueryHandlers } from './queries/handlers';
-import { TypeOfSample } from './models/type-of-sample.model';
+import { CustomersModule } from '../customers/customers.module';
+import { GeneralCustomersModule } from '../general-customers/general-customers.module';
+import { LabsModule } from '../labs/labs.module';
+import { TypeOfSampleModule } from '../type-of-sample/type-of-sample.module';
+import { ApplicationRepository } from './repositories/application.repository';
+import { Application } from './models/application.model';
+import { AppResolver } from './resolvers/applications.resolver';
 
 @Module({
   imports: [
     CqrsModule,
     TypeOrmModule.forFeature([
       Act,
-      Customer,
-      GeneralCustomer,
-      Lab,
-      TypeOfSample,
-      Doc,
       ActEvent,
       ActRepository,
-      CustomerRepository,
-      GCustomerRepository,
-      LabRepository,
-      TypeOfSampleRepository,
       EventRepository,
+      Application,
+      ApplicationRepository,
     ]),
     ClientsModule.register([
       {
         name: 'ACT_PACKAGE',
         ...grpcClientOptions,
       },
-      {
-        name: 'CUSTOMER_PACKAGE',
-        ...grpcCustomerClientOptions,
-      },
-      {
-        name: 'GCUSTOMER_PACKAGE',
-        ...grpcGCustomerClientOptions,
-      },
-      {
-        name: 'LAB_PACKAGE',
-        ...grpcLabClientOptions,
-      },
     ]),
+    CustomersModule,
+    GeneralCustomersModule,
+    LabsModule,
+    TypeOfSampleModule,
   ],
   providers: [
     ActResolver,
-    CustomerResolver,
-    GCustomerResolver,
-    LabResolver,
     ActsService,
-    TypeOfSampleResolver,
+    AppResolver,
     ...CommandHadlers,
     ...EventsHandlers,
     ...QueryHandlers,
   ],
   controllers: [ActsController],
+  exports: [TypeOrmModule, ActsService],
 })
 export class ActsModule {}

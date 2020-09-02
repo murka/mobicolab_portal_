@@ -10,28 +10,23 @@ import {
 export class SavedDocHadler implements IEventHandler<SavedDocEvent> {
   logger = new Logger(this.constructor.name);
 
-  constructor(
-    private readonly docRepository: DocRepository,
-    private readonly eventRepository: DocEventRepository,
-  ) {}
+  constructor(private readonly eventRepository: DocEventRepository) {}
 
   async handle(event: SavedDocEvent) {
     this.logger.verbose('saving-doc.event inside `evenbnHandler`');
 
+    const { doc, aggregateType, aggregationId } = event;
+
     try {
-      const { docId } = event;
-
-      // this.prisma.doc.update({
-      //   where: { id: docId },
-      //   data: { doc_event: { create: [{ event: 'SAVED' }] } },
-      // });
-
-      const doc = await this.docRepository.findOne(docId);
-
       const newEvent = this.eventRepository.create({
-        event: 'SAVED',
-        doc: doc,
+        event_type: 'SAVED',
+        payload: doc,
+        aggregateType: aggregateType,
+        aggregateid: aggregationId,
+        event_key: doc.id,
       });
+
+      this.logger.log(newEvent.aggregateType);
 
       await this.eventRepository.save(newEvent);
     } catch (error) {

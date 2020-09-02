@@ -9,11 +9,11 @@ import { SelectWAdrAct } from "../../shared/models/ff/act-selectWAdr";
 import { GroupSelectAct } from "../../shared/models/ff/act-group-select";
 import { TimeAct } from "../../shared/interfaces/forms/act-time";
 import { NestedAct } from "src/app/shared/interfaces/forms/act-nested";
-import { AutocompleteAct } from 'src/app/shared/models/ff/act-autocomplete';
-import { CheapAutocompleteAct } from 'src/app/shared/models/ff/act-cheap-autocomplete';
+import { AutocompleteAct } from "src/app/shared/models/ff/act-autocomplete";
+import { CheapAutocompleteAct } from "src/app/shared/models/ff/act-cheap-autocomplete";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ActFormFieldsService {
   constructor() {}
@@ -25,7 +25,7 @@ export class ActFormFieldsService {
           required: true,
           visible: true,
           key: "name",
-          label: "Номер пробы"
+          label: "Номер пробы",
         }),
 
         new SelectWAdrAct({
@@ -34,7 +34,7 @@ export class ActFormFieldsService {
           key: "customer",
           label: "Заказчик",
           populate: true,
-          editable: true
+          editable: true,
         }),
 
         new SelectWAdrAct({
@@ -43,7 +43,7 @@ export class ActFormFieldsService {
           key: "generalCustomer",
           label: "Генеральный заказчик",
           populate: true,
-          editable: true
+          editable: true,
         }),
 
         new SelectWAdrAct({
@@ -52,7 +52,7 @@ export class ActFormFieldsService {
           key: "lab",
           label: "Лаборатория",
           populate: true,
-          editable: true
+          editable: true,
         }),
 
         new NestedAct({
@@ -60,13 +60,13 @@ export class ActFormFieldsService {
           visible: true,
           required: false,
           key: "typeOfSample",
-          label: "Тип отбираемой Среды"
+          label: "Тип отбираемой Среды",
         }),
 
         new InputAct({
           visible: true,
           key: "objectName",
-          label: "Наименование объекта"
+          label: "Наименование объекта",
         }),
 
         new SelectWAdrAct({
@@ -74,14 +74,14 @@ export class ActFormFieldsService {
           key: "place",
           label: "Место отбора пробы",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new NestedAct({
           controlType: "datetime",
-          required: false,
+          required: true,
           visible: true,
-          key: "datetime"
+          key: "datetime",
         }),
 
         new SelectWAdrAct({
@@ -89,7 +89,7 @@ export class ActFormFieldsService {
           key: "method",
           label: "Метод отбора проб",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new SelectWAdrAct({
@@ -97,19 +97,19 @@ export class ActFormFieldsService {
           key: "toolType",
           label: "Tип пробоотборного устройства",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new InputAct({
           visible: true,
           key: "climaticEnvironmental",
-          label: "Климатические условия окружающей среды при отборе проб"
+          label: "Климатические условия окружающей среды при отборе проб",
         }),
 
         new InputAct({
           visible: true,
           key: "planning",
-          label: "План (программа) отбора"
+          label: "План (программа) отбора",
         }),
 
         new ManySelectAct({
@@ -117,14 +117,14 @@ export class ActFormFieldsService {
           key: "normativeDocument",
           label: "НД на метод отбора",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new SelectWAdrAct({
           visible: true,
           key: "sampleType",
           label: "Тип пробы",
-          editable: true
+          editable: true,
         }),
 
         new AutocompleteAct({
@@ -132,7 +132,7 @@ export class ActFormFieldsService {
           key: "sample",
           label: "Объем отобранной пробы, материал тары",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new ManySelectAct({
@@ -140,7 +140,7 @@ export class ActFormFieldsService {
           key: "preparation",
           label: "Подготовка пробы к хранению",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new SelectWAdrAct({
@@ -148,7 +148,7 @@ export class ActFormFieldsService {
           key: "goal",
           label: "Цель исследования воды",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new CheapAutocompleteAct({
@@ -156,19 +156,19 @@ export class ActFormFieldsService {
           key: "definedIndicators",
           label: "Определяемые показатели",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new TextFieldAct({
           visible: true,
           key: "additions",
-          label: "Дополнительные сведения"
+          label: "Дополнительные сведения",
         }),
 
         new TextFieldAct({
           visible: true,
           key: "informationAboutSelection",
-          label: "Сведения о проведенных при отборе измерениях"
+          label: "Сведения о проведенных при отборе измерениях",
         }),
 
         new SelectWAdrAct({
@@ -176,7 +176,7 @@ export class ActFormFieldsService {
           key: "environmentalEngineer",
           label: "Должность, Ф.И.О., подпись лица, отбирающего пробу",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new SelectWAdrAct({
@@ -184,7 +184,7 @@ export class ActFormFieldsService {
           key: "representative",
           label: "Должность, Ф.И.О., подпись представителя",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         new SelectWAdrAct({
@@ -192,7 +192,7 @@ export class ActFormFieldsService {
           key: "passedSample",
           label: "Пробу сдал",
           editable: true,
-          deletable: true
+          deletable: true,
         }),
 
         // new ActBase({
@@ -204,10 +204,17 @@ export class ActFormFieldsService {
 
       return acts;
     }
-    if (key === "application" && fieldControl === "act") {
+    if (key === "applications" && fieldControl === "act") {
       let apps: any[] = [
+        new ActBase({
+          controlType: "id",
+          visible: false,
+          key: "id",
+        }),
+
         new SelectWAdrAct({
           visible: true,
+          required: true,
           key: "place",
           label: "Место отбора пробы",
         }),
@@ -216,26 +223,26 @@ export class ActFormFieldsService {
           controlType: "datetime",
           required: false,
           visible: true,
-          key: "datetime"
-        })
+          key: "datetime",
+        }),
       ];
       return apps;
     }
     if (key === "datetime" && fieldControl === "act") {
       let dateTimesFields: TimeAct[] | DateAct[] = [
         new DateAct({
-          required: false,
+          required: true,
           visible: true,
           key: "date",
-          label: "Дата"
+          label: "Дата",
         }),
 
         new TimeAct({
-          required: false,
+          required: true,
           visible: true,
           key: "time",
-          label: "Время"
-        })
+          label: "Время",
+        }),
       ];
 
       return dateTimesFields;
@@ -244,36 +251,36 @@ export class ActFormFieldsService {
       let fields: any[] = [
         new GroupSelectAct({
           visible: true,
-          key: "habitan"
+          key: "habitan",
         }),
 
         new ActBase({
           required: true,
           visible: false,
-          key: "types"
-        })
+          key: "htype",
+        }),
       ];
 
       return fields;
     }
     if (
-      key === "customer" && fieldControl === "editOptions" ||
-      key === "generalCustomer" && fieldControl === "editOptions" ||
-      key === "lab" && fieldControl === "editOptions"
+      (key === "customer" && fieldControl === "editOptions") ||
+      (key === "generalCustomer" && fieldControl === "editOptions") ||
+      (key === "lab" && fieldControl === "editOptions")
     ) {
       let fields = [
         new InputAct({
           required: true,
           visible: true,
           key: "fullname",
-          label: "Название"
+          label: "Название",
         }),
 
         new InputAct({
           required: true,
           visible: true,
           key: "label",
-          label: "Сокращённое название"
+          label: "Сокращённое название",
         }),
 
         new NestedAct({
@@ -281,48 +288,47 @@ export class ActFormFieldsService {
           visible: true,
           key: "address",
           label: "Адрес",
-          controlType: "address"
+          controlType: "address",
         }),
 
         new InputAct({
           visible: true,
           key: "tel",
-          label: "Телефон"
+          label: "Телефон",
         }),
 
         new InputAct({
           visible: true,
           key: "email",
-          label: "E-mail"
-        })
+          label: "E-mail",
+        }),
       ];
       return fields;
     }
     if (
-      key === "normativeDocument" && fieldControl === "editOptions" ||
-      key === "sample" && fieldControl === "editOptions" ||
-      key === "preparation" && fieldControl === "editOptions" ||
-      key === "definedIndicators" && fieldControl === "editOptions" ||
-      key === "toolType" && fieldControl === "editOptions" ||
-      key === "method" && fieldControl === "editOptions" ||
-      key === "sampleType" && fieldControl === "editOptions" ||
-      key === "goal" && fieldControl === "editOptions" ||
-      key === "place" && fieldControl === "editOptions" ||
-      key === "environmentalEngineer" && fieldControl === "editOptions" ||
-      key === "representative" && fieldControl === "editOptions" ||
-      key === "passedSample" && fieldControl === "editOptions" ||
-      key === "typeOfSample" && fieldControl === "editOptions"
+      (key === "normativeDocument" && fieldControl === "editOptions") ||
+      (key === "sample" && fieldControl === "editOptions") ||
+      (key === "preparation" && fieldControl === "editOptions") ||
+      (key === "definedIndicators" && fieldControl === "editOptions") ||
+      (key === "toolType" && fieldControl === "editOptions") ||
+      (key === "method" && fieldControl === "editOptions") ||
+      (key === "sampleType" && fieldControl === "editOptions") ||
+      (key === "goal" && fieldControl === "editOptions") ||
+      (key === "place" && fieldControl === "editOptions") ||
+      (key === "environmentalEngineer" && fieldControl === "editOptions") ||
+      (key === "representative" && fieldControl === "editOptions") ||
+      (key === "passedSample" && fieldControl === "editOptions") ||
+      (key === "typeOfSample" && fieldControl === "editOptions")
     ) {
       let fields = [
         new InputAct({
           required: true,
           visible: true,
           key: "label",
-          label: "Название"
-        })
+          label: "Название",
+        }),
       ];
-      return fields
+      return fields;
     }
   }
-  
 }

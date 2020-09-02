@@ -8,17 +8,19 @@ export class CustomerModel {
   public tel: string;
   public email: string;
   public address: AddressModel;
-  public acts: ActModel["id"][];
+  public acts: ActModel[];
 
   constructor(options: {
-    fullname: string;
-    label: string;
+    fullname?: string;
+    label?: string;
+    acts?: ActModel[];
     tel?: string;
     email?: string;
     address?: AddressModel;
   }) {
     this.fullname = options.fullname;
     this.label = options.label;
+    this.acts = options.acts;
     this.tel = options.tel;
     this.email = options.email;
     this.address = options.address;

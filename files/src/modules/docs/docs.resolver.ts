@@ -11,17 +11,11 @@ import { Doc } from './models/doc.model';
 import { TitlingDocInput } from './models/dto/titling-doc.input';
 import { DroppingDocCommand } from './commands/impl/dropping-doc.command';
 import { TitlingDocCommand } from './commands/impl/titling-doc.command';
-import { SavingDocInput } from './models/dto/saving-doc.input';
-import { RemoveDocCommand } from './commands/impl/remove-doc.command';
 import { Logger } from '@nestjs/common';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
-import { SavingDocCommand } from './commands/impl/saving-doc.command';
-import { DeletingDocCommand } from './commands/impl/deleting-doc.command';
-import { SavingAllDocsCommand } from './commands/impl/saving-all-docs.command';
-import { SavingAllDocsInput } from './models/dto/saving-all-docs.input';
 import { GetAllDocsOfActQuery } from './queries/impl/get-all-docs-of-act.query';
-import { ReadStream } from 'fs';
 import { DocRepository } from './repositories/doc.repository';
+import { RemoveDocCommand } from './commands/impl/remove-doc.command';
+import { DocsService } from './docs.service';
 
 @Resolver(of => Doc)
 export class DocsResolver {
@@ -31,6 +25,7 @@ export class DocsResolver {
     private commandBus: CommandBus,
     private readonly queyBus: QueryBus,
     private readonly docRepository: DocRepository,
+    private readonly docService: DocsService,
   ) {}
 
   @Query(returns => [Doc])
@@ -44,25 +39,16 @@ export class DocsResolver {
 
   @Mutation(returns => Doc)
   async droppDoc(
-    @Args({ name: 'file', type: () => GraphQLUpload }) file,
     @Args('actId') actId: string,
     @Args('name') name: string,
-  ): Promise<any> {
-    this.logger.verbose(
-      `mutation droppDoc wit filename: ${JSON.stringify(
-        file,
-      )}, in act: ${actId}`,
-    );
+  ): Promise<Doc> {
+    this.logger.verbose(`mutation dropp-doc`);
 
-    // const readStream = new ReadStream()
-
-    // readStream.
-
-    // this.logger.verbose(JSON.stringify(readStream))
-
-    return await this.commandBus.execute(
-      new DroppingDocCommand(file, actId, name),
-    );
+    try {
+      return await this.commandBus.execute(new DroppingDocCommand(actId, name));
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   @Mutation(returns => Doc)
@@ -73,32 +59,17 @@ export class DocsResolver {
       `titling doc with data: ${JSON.stringify(titlingDocData)}`,
     );
     return this.commandBus.execute(
-      new TitlingDocCommand(titlingDocData.title, titlingDocData.docId),
+      new TitlingDocCommand(
+        titlingDocData.actId,
+        titlingDocData.docId,
+        titlingDocData.name,
+        titlingDocData.mimtype,
+        titlingDocData.title,
+      ),
     );
   }
 
-  @Mutation(returns => Doc)
-  async savingDoc(
-    @Args('savingDocData') savingDocData: SavingDocInput,
-    { docId, actId } = savingDocData,
-  ): Promise<Doc> {
-    this.logger.verbose(
-      `savingDoc mutation with data: ${JSON.stringify(savingDocData)}`,
-    );
-
-    return await this.commandBus.execute(new SavingDocCommand(docId, actId));
-  }
-
-  @Mutation(returns => [Doc])
-  async savingAllDocs(
-    @Args('savingAllDocsData') savingAllDocData: SavingAllDocsInput,
-    { docs, actId } = savingAllDocData,
-  ): Promise<Doc[]> {
-    this.logger.verbose(`saving All ${savingAllDocData.docs.length} docs`);
-    return await this.commandBus.execute(new SavingAllDocsCommand(docs, actId));
-  }
-
-  @Mutation(returns => Doc)
+  @Mutation(returns => Doc, { nullable: true })
   async removeDoc(
     @Args({ name: 'docId', type: () => String }) docId: Doc['id'],
   ): Promise<Doc> {
@@ -106,19 +77,10 @@ export class DocsResolver {
     return this.commandBus.execute(new RemoveDocCommand(docId));
   }
 
-  @Mutation(returns => Doc)
-  async deleteDoc(
-    @Args({ name: 'docId', type: () => String }) docId: string,
-    @Args('actId') actId: string,
-  ): Promise<Doc> {
-    this.logger.verbose(`deleting doc with id: ${docId} in act ${actId}`);
-    return this.commandBus.execute(new DeletingDocCommand(docId, actId));
-  }
-
   @ResolveReference()
   async resolveReference(reference: { __typename: string; id: string }) {
     this.logger.verbose('resolve reference of docs');
 
-    return await this.queyBus.execute(new GetAllDocsOfActQuery(reference.id));
+    return await this.docService.getDoc(reference.id);
   }
 }

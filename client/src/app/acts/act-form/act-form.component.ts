@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit } from "@angular/core";
+import { Component, OnInit, AfterContentInit, OnDestroy } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActControlService } from "../../services/controls/act-control.service";
@@ -6,9 +6,12 @@ import { ActivatedRoute, Data } from "@angular/router";
 
 import * as _moment from "moment";
 import { default as _rollupMoment } from "moment";
-import { ActModel } from "src/app/shared/models/act.model";
 import { ActFormService } from "src/app/services/forms/act-form.service";
 import { ActFormFieldsService } from "src/app/services/forms/act-form-fields.service";
+import { NewActDto } from "src/app/shared/models/dto/new-act.dto";
+import { GetWholeActQuery } from "src/types/generated";
+import { Subscription } from "rxjs";
+import { UpdateActDto } from "src/app/shared/models/dto/update-act.dto";
 
 const moment = _moment || _rollupMoment;
 
@@ -17,17 +20,19 @@ const moment = _moment || _rollupMoment;
   templateUrl: "./act-form.component.html",
   styleUrls: ["./act-form.component.scss"],
 })
-export class ActFormComponent implements OnInit, AfterContentInit {
+export class ActFormComponent implements OnInit, AfterContentInit, OnDestroy {
+  private subscriptions$: Subscription = new Subscription();
   acts: Array<any>;
+  act: GetWholeActQuery["getAct"];
   apps: any[];
   statusControl: boolean;
-  act: ActModel;
   dateTimeFields: any[];
   habitanFields: any;
   formAct: FormGroup;
   formControl: FormControl;
   _update: boolean;
   _copy: boolean;
+  copyControl: boolean = false;
 
   constructor(
     private AFFS: ActFormFieldsService,
@@ -36,15 +41,23 @@ export class ActFormComponent implements OnInit, AfterContentInit {
     private activatedroute: ActivatedRoute,
     private _snackBar: MatSnackBar
   ) {
-    this.activatedroute.data.subscribe((data: Data) => {
-      if (data.update === true) {
-        this.act = data["act"];
-        this.statusControl = true;
-      } else {
-        this.act = data["act"];
-        this.statusControl = false;
-      }
-    });
+    this.subscriptions$.add(
+      this.activatedroute.data.subscribe((data: Data) => {
+        console.log(data);
+
+        if (data.update === true) {
+          this.act = data["act"];
+          this.statusControl = true;
+        } else {
+          this.act = data["act"];
+          this.statusControl = false;
+        }
+
+        if (data.copy) {
+          this.copyControl = true;
+        }
+      })
+    );
   }
 
   ngOnInit() {
@@ -68,23 +81,29 @@ export class ActFormComponent implements OnInit, AfterContentInit {
 
   onSubmit() {
     if (this.statusControl) {
-      this.acs.patchAct(this.act.id, this.formAct.value).subscribe((act) => {
-        this.act = <ActModel>act;
-        console.log(this.act);
-
-        this._snackBar.open(`Акт № ${this.act.name}`, "Обновлён Успешно", {
-          duration: 2000,
-        });
-      });
-      console.log(this.formAct.value);
+      this.subscriptions$.add(
+        this.acs
+          .patchAct(
+            new UpdateActDto({ ...this.formAct.value, id: this.act.id })
+          )
+          .subscribe((act) => {
+            this._snackBar.open(`Акт № ${act.name}`, "Обновлён Успешно", {
+              duration: 2000,
+            });
+          })
+      );
     } else {
-      this.acs.postAct(this.formAct.value).subscribe((act) => {
-        console.log("postact", act);
-        this.act = <ActModel>act;
-        this._snackBar.open(`Акт ${this.act.name}`, "Создан", {
-          duration: 2000,
-        });
-      });
+      this.subscriptions$.add(
+        this.acs.postAct(new NewActDto(this.formAct.value)).subscribe((act) => {
+          this._snackBar.open(`Акт ${act.createAct.name}`, "Создан", {
+            duration: 2000,
+          });
+        })
+      );
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions$.unsubscribe();
   }
 }

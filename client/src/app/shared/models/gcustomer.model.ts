@@ -11,8 +11,8 @@ export class GCustomerModel {
   public acts: ActModel[];
 
   constructor(options: {
-    fullname: string;
-    label: string;
+    fullname?: string;
+    label?: string;
     tel?: string;
     email?: string;
     address?: AddressModel;

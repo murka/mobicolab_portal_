@@ -8,46 +8,30 @@ import {
 } from "@angular/core";
 import { ActModel } from "src/app/shared/models/act.model";
 import { FormBuilder, FormArray } from "@angular/forms";
-import { StatusModel } from "src/app/shared/models/status.model";
 import { saveAs } from "file-saver";
-import {
-  Doc,
-  GetAllDocsGQL,
-  TitlingDocGQL,
-  RemoveDocGQL,
-  SavingDocGQL,
-  DeleteDocGQL,
-  SavingAllDocsGQL,
-} from "src/types/generated";
+import { map, filter, switchMap } from "rxjs/operators";
+import { Subscription, Observable, from } from "rxjs";
+import { MatSelect } from "@angular/material/select";
+import { FilesControlService } from "src/app/services/controls/files-control.service";
+import { QueryRef, Apollo } from "apollo-angular";
 import {
   ChangeDocsGQL,
-  DocSubscriptionsPayload,
+  GetAllDocsGQL,
+  Doc,
+  GetAllDocsQuery,
 } from "src/types/sub-generated";
-import { map, take } from "rxjs/operators";
-import { Observable, Subscription } from "rxjs";
-import { MatDialog } from "@angular/material/dialog";
-import { FileDeleteConfirmComponent } from "src/app/shared/components/dialogs/file-delete-confirm/file-delete-confirm.component";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatSelect } from "@angular/material/select";
-import { QueryRef, Apollo } from "apollo-angular";
-import { ActControlService } from "src/app/services/controls/act-control.service";
-import { variable } from "@angular/compiler/src/output/output_ast";
-import { UploadFilesService } from "src/app/services/controls/graphql/upload-files.service";
+import { FilesDataService } from "src/app/services/data/files-data.service";
 
-class ItemFile {
-  constructor(public id: string, public name: string) {}
+export class ItemFile {
+  constructor(public id: string, public file: File) {}
 }
 
-class option {
-  constructor(
-    public label: string,
-    public status: string,
-    public type: string
-  ) {}
+class ItemForm {
+  constructor(public id: string, public type?: string) {}
 }
 
 class GroupItem {
-  constructor(public status?: option) {}
+  constructor(public status?: ItemForm) {}
 }
 
 @Component({
@@ -69,9 +53,9 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   docs$: Observable<Doc[]>;
   docsQuery: QueryRef<any>;
-  docsQuerySub: QueryRef<any>;
-  status: StatusModel;
+  //   status: StatusModel;
   form: FormArray;
+  doc = {};
 
   confirmDelete: boolean;
   _files: File[] = [];
@@ -79,40 +63,27 @@ export class DocsComponent implements OnInit, OnDestroy {
   _options: any[];
   uploadControl: boolean = false;
 
-  options: option[] = [
-    { label: "Акт", status: "registration", type: "ACT" },
-    { label: "Протокол", status: "protocolCreated", type: "PROTOCOL" },
+  options = [
+    { label: "Акт", type: "ACT" },
+    { label: "Протокол", type: "PROTOCOL" },
     {
       label: "Итоговый протокол",
-      status: "protocolUploaded",
       type: "FINAL_PROTOCOL",
     },
   ];
 
   constructor(
     private fb: FormBuilder,
-    private dialog: MatDialog,
-    private _snackBar: MatSnackBar,
-    private apollo: Apollo,
-    private getAllDocs: GetAllDocsGQL,
-    // private droppDoc: DroppDocGQL,
-    private titleDoc: TitlingDocGQL,
-    private savingDoc: SavingDocGQL,
-    private savingAllDocs: SavingAllDocsGQL,
-    private removeDoc: RemoveDocGQL,
-    private changeDoc: ChangeDocsGQL,
-    private deleteDoc: DeleteDocGQL,
-    private acs: ActControlService,
-    private ufs: UploadFilesService
+    private readonly fcs: FilesControlService,
+    private readonly fds: FilesDataService,
+    private readonly apollo: Apollo,
+    private readonly getAllDocs: GetAllDocsGQL,
+    private changeDoc: ChangeDocsGQL
   ) {}
 
   ngOnInit(): void {
     this._options = this.options;
     this.form = this.fb.array([]);
-    this.docsQuery = this.apollo.watchQuery({
-      query: this.getAllDocs.document,
-      variables: { actId: this.act.id },
-    });
     this.subscriptions$.add(
       this.form.valueChanges
         .pipe(map((value: GroupItem[]) => value.map((val) => val.status)))
@@ -124,201 +95,119 @@ export class DocsComponent implements OnInit, OnDestroy {
           }
         })
     );
-    this.docs$ = this.docsQuery.valueChanges.pipe(map(({ data }) => data));
-    // this.docs$.subscribe(data => console.log(data))
-    // this.subscribeToNewDocs();
-  }
-
-  subscribeToNewDocs() {
-    this.docsQuery.subscribeToMore({
-      document: this.changeDoc.document,
+    this.docsQuery = this.apollo.use("filesWS").watchQuery({
+      query: this.getAllDocs.document,
       variables: { actId: this.act.id },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData) {
-          return prev;
-        }
-
-        const payload: DocSubscriptionsPayload =
-          subscriptionData.data.changeDocs;
-        const mutationType = payload.mutation;
-        const newDoc = payload.data;
-        let newAllDocs;
-
-        if (mutationType === "UPDATED") {
-          newAllDocs = [newDoc, ...prev.docs];
-        }
-
-        if (mutationType === "DELETED") {
-          newAllDocs = (<Doc[]>prev.docs).filter((doc) => doc.id !== newDoc.id);
-        }
-
-        return {
-          ...prev,
-          docs: newAllDocs,
-        };
-      },
     });
+    this.subscribeToNewDocs(this.act.id);
+    this.docs$ = this.docsQuery.valueChanges.pipe(
+      filter(({ data }) => data.getDocs !== null),
+      map(({ data }) => (<GetAllDocsQuery>data).getDocs)
+    );
+    this.subscriptions$.add(
+      this.docs$
+        .pipe(
+          switchMap((docs) => from(docs)),
+          filter((doc) => doc.title === "ACT")
+        )
+        .subscribe((data) => {
+          this.doc["ACT"] = data;
+        })
+    );
+    this.subscriptions$.add(
+      this.docs$
+        .pipe(
+          switchMap((docs) => from(docs)),
+          filter((doc) => doc.title === "PROTOCOL")
+        )
+        .subscribe((data) => {
+          this.doc["PROTOCOL"] = data;
+        })
+    );
+    this.subscriptions$.add(
+      this.docs$
+        .pipe(
+          switchMap((docs) => from(docs)),
+          filter((doc) => doc.title === "FINAL_PROTOCOL")
+        )
+        .subscribe((data) => {
+          this.doc["FINAL_PROTOCOL"] = data;
+        })
+    );
   }
 
-  addFormArray(status?: option) {
-    const newGroup = new GroupItem(status);
-    this.form.push(this.fb.group(newGroup));
+  addFormArray(id: string) {
+    const newGroup = this.fb.group(new GroupItem(new ItemForm(id)));
+    this.form.push(newGroup);
   }
 
   droppFiles(event: FileList) {
     if (this.files.length === 0) {
       this.files = [];
     }
-
     for (let i = 0; i < event.length; i++) {
-      if (
-        this.files.length > 0 &&
-        this.files.map((file) => file.name).includes(event[i].name)
-      ) {
-        this._snackBar.open(
-          "Вы не можете добавить документы с одинаковым именем",
-          null,
-          { duration: 3000 }
-        );
-        this.fileInput.nativeElement.value = "";
-        return;
-      } else {
-        this._files.push(event[i]);
-      }
-    }
-
-    if (this._files.length > 3) {
-      this._snackBar.open(
-        "Вы можете добавить только 3 документа к одному акту",
-        null,
-        { duration: 3000 }
-      );
-      this._files = [...this._files.slice(0, 3)];
+      this._files.push(event[i]);
     }
 
     this._files.forEach((element) => {
-      const newObs = this.docs$.pipe(take(1));
-      newObs.subscribe((docs) => {
-        if (
-          this.files.length > 0 &&
-          this.files.map((file) => file.name).includes(element.name)
-        ) {
-          this._snackBar.open(
-            "Вы не можете добавить документы с одинаковым именем",
-            null,
-            { duration: 3000 }
-          );
-          this.fileInput.nativeElement.value = "";
-          return;
-        }
-
-        if (
-          docs.length > 0 &&
-          docs.map((doc) => doc.name).includes(element.name)
-        ) {
-          const id = docs.find((doc) => doc.name === element.name).id;
-
-          const dialogRef = this.dialog.open(FileDeleteConfirmComponent, {
-            data: {
-              id: id,
-              name: element.name,
-            },
-          });
-          dialogRef.afterClosed().subscribe((data) => {
-            if (data.confirm) {
-              this._files = [
-                ...this._files.filter((file) => file.name !== element.name),
-              ];
-              this.unsubscribeAdnDelete(data.id);
-              this.droppMutation(element);
-              this.fileInput.nativeElement.value = "";
-            } else {
-              this._files = [
-                ...this._files.filter((file) => file.name !== element.name),
-              ];
-              this.fileInput.nativeElement.value = "";
-              return;
-            }
-          });
-        } else {
-          this._files = [
-            ...this._files.filter((file) => file.name !== element.name),
-          ];
-          this.droppMutation(element);
-          this.fileInput.nativeElement.value = "";
-        }
-      });
+      this._files = [
+        ...this._files.filter((file) => file.name !== element.name),
+      ];
+      this.droppMutation(element);
+      this.fileInput.nativeElement.value = "";
     });
     this.fileInput.nativeElement.value = "";
   }
 
-  downloadFile(docId: number, name: string) {
-    this.subscriptions$.add(
-      this.acs.downloadDoc(this.act.id, docId).subscribe((doc) => {
-        saveAs(doc, name);
-      })
-    );
+  downloadFile(docId: string) {
+    // this.subscriptions$.add(
+    this.fcs.downloadFile(docId).then((doc) => {
+      const arr = this.fds.convertDataURIToBinary(doc.doc);
+
+      const blob = new Blob([arr]);
+      saveAs(blob, doc.name);
+    });
   }
 
   droppMutation(el: File) {
     this.subscriptions$.add(
-      this.ufs.droppDoc(el, this.act.id, el.name).subscribe(({ data }) => {
-        const file = new ItemFile(data.droppDoc.id, el.name);
-        console.log(JSON.stringify(file));
-        this.files.push(file);
-        this.addFormArray();
+      this.fcs.postDroppDoc(this.act.id, el.name).subscribe((doc) => {
+        this.addFormArray(doc.id);
+        this.files.push(new ItemFile(doc.id, el));
       })
     );
   }
 
-  titlingDoc(id: string, title: string, optId: number, i: number) {
+  titlingDoc(id: string, name: string, title: string, mimtype: string) {
     if (id) {
       this.subscriptions$.add(
-        this.titleDoc
-          .mutate({
-            data: {
-              docId: id,
-              title: title,
-            },
-          })
-          .subscribe()
+        this.fcs.postTitleDoc(this.act.id, id, name, title, mimtype).subscribe()
       );
     }
   }
 
-  savingFile(docId: string, i: number) {
+  savingFile(docId: string, file: File, type: string, i: number) {
     this.fileInput.nativeElement.value = "";
     this.subscription.unsubscribe();
-    const actId = this.act.id;
-    this.subscriptions$.add(
-      this.savingDoc.mutate({ data: { docId, actId } }).subscribe(() => {
-        this.files = [...this.files.filter((file) => file.id !== docId)];
-        this.form.removeAt(i);
-      })
-    );
+    this.fcs.savintDoc(this.act.id, file, docId).then(() => {
+      this.files = [...this.files.filter((file) => file.id !== docId)];
+      this.form.removeAt(i);
+    });
   }
 
   savingAllFiles() {
     this.subscription.unsubscribe();
     this.fileInput.nativeElement.value = "";
-    const docIds = [...this.files.map((file) => file.id)];
-    this.files = [];
     this.form.reset;
     this.subscriptions$.add(
-      this.savingAllDocs
-        .mutate({ data: { actId: this.act.id, docs: docIds } })
-        .subscribe()
+      this.fcs
+        .savinAllDoc(this.files, this.act.id)
+        .subscribe(() => (this.files = []))
     );
   }
 
   removeMutation(docId: string) {
-    this.subscriptions$.add(
-      this.removeDoc
-        .mutate({
-          docId: docId,
-        })
-        .subscribe()
-    );
+    this.subscriptions$.add(this.fcs.removeDoc(docId).subscribe());
   }
 
   removeFile(id: string, i: number) {
@@ -341,7 +230,35 @@ export class DocsComponent implements OnInit, OnDestroy {
   }
 
   deleteFile(id: string) {
-    this.deleteDoc.mutate({ docId: id, actId: this.act.id }).subscribe();
+    // this.deleteDoc.mutate({ docId: id, actId: this.act.id }).subscribe();
+  }
+
+  subscribeToNewDocs(id: string) {
+    this.subscriptions$.add(
+      this.docsQuery.subscribeToMore({
+        document: this.changeDoc.document,
+        variables: { actId: id },
+        updateQuery: (prev, { subscriptionData }) => {
+          console.log(subscriptionData);
+          console.log(prev);
+
+          if (!subscriptionData) {
+            return prev;
+          }
+
+          const payload: Doc = subscriptionData.data.changeDocs;
+          const newDoc = payload;
+          let newAllDocs;
+
+          newAllDocs = [...prev.getDocs, newDoc];
+
+          return {
+            ...prev,
+            getDocs: newAllDocs,
+          };
+        },
+      })
+    );
   }
 
   ngOnDestroy() {

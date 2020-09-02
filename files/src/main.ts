@@ -4,7 +4,8 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { grpcServiceOptions } from './gRPC/grpc-service.options';
+import { grpcServiceOptions } from './options/grpc-service.options';
+import { KafkaClientOptions } from './options/kakfa-client.options';
 
 const configService = new ConfigService();
 
@@ -15,7 +16,11 @@ async function bootstrap() {
   app.enableCors();
   app.setGlobalPrefix('nestapi');
 
+  const kafkaService = app.get(KafkaClientOptions);
+
   app.connectMicroservice<MicroserviceOptions>(grpcServiceOptions);
+
+  app.connectMicroservice<MicroserviceOptions>(kafkaService.kafkaClientOptions);
 
   await app.startAllMicroservicesAsync();
 

@@ -9,6 +9,8 @@ import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { GCAddress } from './gc-address.model';
 import { GSEvent } from './gc-event.model';
+import { GeneralCustomerCreatedEvent } from '../events/impl/gcustomer-created.event';
+import { AggregateRoot } from '@nestjs/cqrs';
 
 //Model of General customer for TypeORM and GraphQl modules
 
@@ -18,7 +20,7 @@ import { GSEvent } from './gc-event.model';
 @ObjectType('GeneralCustomer')
 //directive to define class as usable in apollo federation
 @Directive('@key(fields: "id")')
-export class GeneralCustomer {
+export class GeneralCustomer extends AggregateRoot {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -37,16 +39,19 @@ export class GeneralCustomer {
   @Column({ nullable: true })
   @Field(type => String, { nullable: true })
   email?: string;
-  @Field(type => String)
   @OneToMany(
     type => GSEvent,
     events => events.general_customer,
     { nullable: true },
   )
-  evnets: GSEvent[];
+  events: GSEvent[];
   @OneToMany(
     type => Act,
     act => act.general_customer,
   )
   acts: Act[];
+
+  generalCustomerCreated() {
+    this.apply(new GeneralCustomerCreatedEvent(this));
+  }
 }

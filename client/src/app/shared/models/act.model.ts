@@ -3,6 +3,7 @@ import { GCustomerModel } from "./gcustomer.model";
 import { StatusModel } from "./status.model";
 import { ApplicationModel } from "./application.model";
 import { LabModel } from "./lab.model";
+import { TypeOfSample } from "./type-of-sample.model";
 
 export class ActModel {
   public id: string;
@@ -10,11 +11,7 @@ export class ActModel {
   public customer: CustomerModel;
   public generalCustomer: GCustomerModel["id"];
   public lab: LabModel;
-  public typeOfSample: {
-    id: string;
-    habitan?: string;
-    types?: string;
-  };
+  public typeOfSample: TypeOfSample;
   public objectName: string;
   public place: string;
   public datetime: {
@@ -25,13 +22,12 @@ export class ActModel {
   public toolType: string;
   public climaticEnvironmental: string;
   public planning: string;
-  public normativeDocument: string;
+  public normativeDocument: string[];
   public sampleType: string;
-  public volumeSample: string;
-  public container: string;
-  public preparation: string;
+  public sample: string[];
+  public preparation: string[];
   public goal: string;
-  public definedIndicators: string;
+  public definedIndicators: string[];
   public additions: string;
   public informationAboutSelection: string;
   public environmentalEngineer: string;
@@ -45,7 +41,7 @@ export class ActModel {
     path?: string;
   }>;
   public status: string;
-  public application: ApplicationModel[];
+  public applications: ApplicationModel[];
 
   constructor(options: {
     id?: string;
@@ -53,11 +49,7 @@ export class ActModel {
     customer?: CustomerModel;
     generalCustomer?: GCustomerModel["id"];
     lab?: LabModel;
-    typeOfSample?: {
-      id: string;
-      habitan?: string;
-      types?: string;
-    };
+    typeOfSample?: TypeOfSample;
     objectName?: string;
     place?: string;
     datetime?: {
@@ -68,13 +60,12 @@ export class ActModel {
     toolType?: string;
     climaticEnvironmental?: string;
     planning?: string;
-    normativeDocument?: string;
+    normativeDocument?: string[];
     sampleType?: string;
-    volumeSample?: string;
-    container?: string;
-    preparation?: string;
+    sample?: string[];
+    preparation?: string[];
     goal?: string;
-    definedIndicators?: string;
+    definedIndicators?: string[];
     additions?: string;
     informationAboutSelection?: string;
     environmentalEngineer?: string;
@@ -90,7 +81,7 @@ export class ActModel {
       }
     ];
     status?: string;
-    application?: ApplicationModel[];
+    applications?: ApplicationModel[];
   }) {
     this.id = options.id;
     this.name = options.name;
@@ -107,8 +98,7 @@ export class ActModel {
     this.planning = options.planning;
     this.normativeDocument = options.normativeDocument;
     this.sampleType = options.sampleType;
-    this.volumeSample = options.volumeSample;
-    this.container = options.container;
+    this.sample = options.sample;
     this.preparation = options.preparation;
     this.goal = options.goal;
     this.definedIndicators = options.definedIndicators;
@@ -121,6 +111,6 @@ export class ActModel {
     this.updatedAt = options.updatedAt;
     this.files = options.files;
     this.status = options.status;
-    this.application = options.application;
+    this.applications = options.applications;
   }
 }

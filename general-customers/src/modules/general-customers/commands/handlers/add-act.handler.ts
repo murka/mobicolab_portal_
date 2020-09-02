@@ -11,7 +11,7 @@ export class AddActHanler implements ICommandHandler<AddActCommand> {
   logger = new Logger(this.constructor.name);
 
   constructor(
-    // private readonly actRepository: ActRepository,
+    private readonly actRepository: ActRepository,
     private readonly gcustomerRepository: GeneralCustomerRepository,
   ) {}
 
@@ -21,24 +21,24 @@ export class AddActHanler implements ICommandHandler<AddActCommand> {
     const { data } = command;
 
     try {
-      // // const newAct = this.actRepository.create({ id: data.actId });
+      const newAct = this.actRepository.create({ id: data.actId });
 
-      // const gcustomer = await this.gcustomerRepository.findOne(
-      //   data.gcustomerId,
-      // );
+      const gcustomer = await this.gcustomerRepository.findOne(
+        data.gcustomerId,
+      );
 
-      // if (!gcustomer)
-      //   throw new HttpException(
-      //     {
-      //       status: HttpStatus.NOT_FOUND,
-      //       error: 'General Customer doesn`t find',
-      //     },
-      //     HttpStatus.NOT_FOUND,
-      //   );
+      if (!gcustomer)
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'General Customer didn`t find',
+          },
+          HttpStatus.NOT_FOUND,
+        );
 
-      // // newAct.general_customer = gcustomer;
+      newAct.general_customer = gcustomer;
 
-      // await this.actRepository.save(newAct);
+      await this.actRepository.save(newAct);
     } catch (e) {
       this.logger.error(e);
     }

@@ -12,13 +12,34 @@ export class getCustomersForOption {
   `;
 }
 
-export class getCustomer {
+export class getWholeCustomer {
   document = gql`
-    query getCustomer($data: String!) {
+    query getWholeCustomer($data: String!) {
       customer(id: $data) {
         ...WholeCustomer
       }
     }
     ${WholeCustomer.document}
+  `;
+}
+
+export class getCustomersWithActs {
+  document = gql`
+    query getCustomersWithActs {
+      getCustomers {
+        id
+        label
+        acts {
+          id
+          name
+          datetime {
+            date
+          }
+          lab {
+            label
+          }
+        }
+      }
+    }
   `;
 }

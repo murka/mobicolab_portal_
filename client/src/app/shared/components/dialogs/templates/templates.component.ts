@@ -2,9 +2,15 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ActFormDataService } from "src/app/services/data/act-form-data.service";
 import { OptionsBaseModel } from "src/app/shared/models/interface/options-base.model";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from "@angular/forms";
 import { TemplatePreviewControlService } from "src/app/services/controls/template-preview-control.service";
 import { Template } from "src/app/shared/protos/template-preview_pb";
+import { RulesControlService } from "src/app/services/controls/rules-control.service";
 
 @Component({
   selector: "app-templates",
@@ -21,7 +27,8 @@ export class TemplatesComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<TemplatesComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA)
+    public data: { labId: string; typeId: string; update: boolean },
     private AFDs: ActFormDataService,
     private fb: FormBuilder,
     private tpcs: TemplatePreviewControlService
@@ -31,12 +38,9 @@ export class TemplatesComponent implements OnInit {
     this.form = this.initForm();
     this.AFDs.getItemOptions("lab").subscribe((option) => {
       this.labs = option;
-      console.log(this.labs);
     });
 
     this.templateList = (await this.tpcs.getAllTemplates()).templatesList;
-
-    console.log(this.templateList);
   }
 
   onNoClick(): void {
@@ -44,14 +48,29 @@ export class TemplatesComponent implements OnInit {
   }
 
   initForm(): FormGroup {
-    return this.fb.group({
-      lab: ["", Validators.required],
-      typeOfSample: ["", Validators.required],
-      path: [""],
+    return new FormGroup({
+      lab: new FormControl(
+        {
+          value: this.data.labId ? this.data.labId : "",
+          disabled: this.data.labId ? true : false,
+        },
+        Validators.required
+      ),
+      typeOfSample: new FormControl({
+        value: this.data.typeId ? this.data.typeId : "",
+        disabled: this.data.typeId ? true : false,
+      }),
+      path: new FormControl("", Validators.required),
     });
   }
 
-  onSubmit() {}
+  close(): void {
+    this.dialogRef.close(undefined);
+  }
+
+  onSubmit() {
+    this.dialogRef.close(this.form.value);
+  }
 
   radioChange(event) {
     this.form.controls["path"].reset(event.value);

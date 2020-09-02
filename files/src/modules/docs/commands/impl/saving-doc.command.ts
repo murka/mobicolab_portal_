@@ -1,3 +1,7 @@
 export class SavingDocCommand {
-  constructor(public readonly docId: string, public readonly actId: string) {}
+  constructor(
+    public readonly actId: string,
+    public readonly docId: string,
+    public readonly file: Buffer,
+  ) {}
 }

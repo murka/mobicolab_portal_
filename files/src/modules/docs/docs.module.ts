@@ -8,16 +8,17 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { WebDAVModule } from 'nestjs-webdav';
 import { DocsController } from './docs.controller';
 import { ClientsModule } from '@nestjs/microservices';
-import { grpcClientOptions } from 'src/gRPC/grpc-client.options';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   DocRepository,
   DocEventRepository,
 } from './repositories/doc.repository';
-import { Doc, DocEvent } from './models/doc.model';
-import { grpcSubscriptionsClientOptions } from 'src/gRPC/grpc-subscriptions-client.options';
+import { Doc } from './models/doc.model';
+import { grpcSubscriptionsClientOptions } from 'src/options/grpc-subscriptions-client.options';
 import { Act } from './models/act.model';
 import { ActRepository } from './repositories/act.repository';
+import { DocEvent } from './models/doc-event.model';
+import { QueryHandlers } from './queries/handlers';
 
 @Module({
   imports: [
@@ -28,16 +29,6 @@ import { ActRepository } from './repositories/act.repository';
       ActRepository,
       DocEvent,
       DocEventRepository,
-    ]),
-    ClientsModule.register([
-      {
-        name: 'ACT_PACKAGE',
-        ...grpcClientOptions,
-      },
-      {
-        name: 'SUBSCRIPTIONS_PACKAGE',
-        ...grpcSubscriptionsClientOptions,
-      },
     ]),
     CqrsModule,
     WebDAVModule.forRoot({
@@ -54,6 +45,7 @@ import { ActRepository } from './repositories/act.repository';
     DocsResolver,
     ...CommandHandlers,
     ...EventHandlers,
+    ...QueryHandlers,
     DocSagas,
   ],
 })

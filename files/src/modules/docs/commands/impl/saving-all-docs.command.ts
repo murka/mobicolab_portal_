@@ -1,3 +1,6 @@
-export class SavingAllDocsCommand { 
-    constructor(public readonly docs: string[], public readonly actId: string ) {}
- }
+export class SavingAllDocsCommand {
+  constructor(
+    public readonly actId: string,
+    public readonly docs: { docId: string; file: Buffer }[],
+  ) {}
+}

@@ -8,7 +8,7 @@ import { CustomerModel } from "src/app/shared/models/customer.model";
 import { GCustomerModel } from "src/app/shared/models/gcustomer.model";
 import { LabModel } from "src/app/shared/models/lab.model";
 import { generalOptionModel } from "src/app/shared/models/generalOptions.model";
-import { TypeOfSample } from "src/app/shared/models/type-sample.model";
+import { Habitan } from "src/app/shared/models/habitan.model";
 import {
   GetLabsForOptionGQL,
   GetCustomersForOptionGQL,
@@ -20,10 +20,18 @@ import {
   PatchCustomerThroughOptionGQL,
   PatchGeneralCustomerThroughOptionGQL,
   PatchLabThroughOptionGQL,
-  GetCustomerGQL,
+  GetWholeCustomerGQL,
   GetGeneralCustomerGQL,
   GetLabGQL,
-  CreateCustomerThroughOptionDocument,
+  CreateHabitanGQL,
+  CreateHTypeGQL,
+  CreateHTypeMutation,
+  UpdateHabitanGQL,
+  UpdateHTypeGQL,
+  GetWholeCustomerQuery,
+  GetGeneralCustomerQuery,
+  GetLabQuery,
+  UpdateHTypeMutation,
 } from "src/types/generated";
 import { Apollo } from "apollo-angular";
 import { DocumentNode } from "graphql";
@@ -45,9 +53,13 @@ export class ActFormControlService {
     private readonly updateCustomerOpt: PatchCustomerThroughOptionGQL,
     private readonly updateGeneralCusomerOpt: PatchGeneralCustomerThroughOptionGQL,
     private readonly updateLabOpt: PatchLabThroughOptionGQL,
-    private readonly getCustomer: GetCustomerGQL,
+    private readonly getWholeCustomer: GetWholeCustomerGQL,
     private readonly getGeneralCustomer: GetGeneralCustomerGQL,
     private readonly getLab: GetLabGQL,
+    private readonly postHabitan: CreateHabitanGQL,
+    private readonly postHType: CreateHTypeGQL,
+    private readonly updateHabitan: UpdateHabitanGQL,
+    private readonly updateHType: UpdateHTypeGQL,
     private readonly apollo: Apollo
   ) {}
 
@@ -59,9 +71,7 @@ export class ActFormControlService {
   postActItem(
     path: string,
     body: any
-  ): Observable<
-    generalOptionModel | TypeOfSample | { id: string; label: string }
-  > {
+  ): Observable<generalOptionModel | Habitan | { id: string; label: string }> {
     console.log("post");
 
     if (path === "customer") {
@@ -89,8 +99,15 @@ export class ActFormControlService {
         .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
+    if (path === "typeOfSample") {
+      return this.postHabitan
+        .mutate({ data: body.label })
+        .pipe(map(({ data }) => data.createHabitan))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
     return this.http
-      .post<generalOptionModel | TypeOfSample>(
+      .post<generalOptionModel | Habitan>(
         environment.baseURL + path + "/",
         body
       )
@@ -102,40 +119,64 @@ export class ActFormControlService {
     id: string,
     body: any
   ): Observable<
-    generalOptionModel | TypeOfSample | { id: string; label: string }
+    | generalOptionModel
+    | Habitan
+    | UpdateHTypeMutation["updateHabitansType"]
+    | { id: string; label: string }
   > {
     if (path === "customer") {
       return this.updateCustomerOpt
-        .mutate({ data: <CustomerModel>body })
+        .mutate({ data: { ...(<CustomerModel>body), id: id } })
         .pipe(map(({ data }) => data.updateCustomer))
         .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
     if (path === "generalCustomer") {
       return this.updateGeneralCusomerOpt
-        .mutate({ data: <GCustomerModel>body })
+        .mutate({ data: { ...(<GCustomerModel>body), id: id } })
         .pipe(map(({ data }) => data.updateGeneralCustomer))
         .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
     if (path === "lab") {
       return this.updateLabOpt
-        .mutate({ data: <LabModel>body })
+        .mutate({ data: { ...(<LabModel>body), id: id } })
         .pipe(map(({ data }) => data.updateLab))
         .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
+    if (path === "typeOfSample") {
+      return this.updateHabitan
+        .mutate({ id: id, label: body })
+        .pipe(map(({ data }) => data.updateHabitan))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
+    if (path === "htype") {
+      return this.updateHType
+        .mutate({ id: id, label: body })
+        .pipe(map(({ data }) => data.updateHabitansType))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
+    }
+
     return this.http
-      .patch<CustomerModel | GCustomerModel | LabModel | generalOptionModel>(
-        environment.baseURL + path + "/" + id,
-        body
-      )
+      .patch<generalOptionModel>(environment.baseURL + path + "/" + id, body)
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  postActItemArray(path: string, id: string, body: object): Observable<any> {
-    return this.http
-      .post(environment.baseURL + path + "/" + id, body)
+  postActItemArray(
+    path: string,
+    id: string,
+    body: any
+  ): Observable<CreateHTypeMutation> {
+    // return this.http
+    //   .post(environment.baseURL + path + "/" + id, body)
+    //   .pipe(catchError(this.processHTTPMsgService.handleError));
+    return this.postHType
+      .mutate({
+        data: { habitanId: id, label: body.value },
+      })
+      .pipe(map(({ data }) => data))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
@@ -150,25 +191,21 @@ export class ActFormControlService {
         htypes: { id: string; label: string }[];
       }[]
   > {
-    console.log("getItmes");
+    console.log(`getItmes ${path}`);
 
     if (path === "lab") {
-      console.log("getItmes labs");
       return this.getLabsOpt.watch().valueChanges.pipe(
         map(({ data }) => {
-          console.log(data);
-
           return data.getLabs;
         })
       );
     }
 
     if (path === "customer") {
-      return <Observable<{ id: string; label: string }[]>>(
-        this.getCusteromsOpt
-          .watch()
-          .valueChanges.pipe(map(({ data }) => data.getCustomers))
-      );
+      return <Observable<{ id: string; label: string }[]>>this.getCusteromsOpt
+        .watch()
+        .valueChanges.pipe(map(({ data }) => data.getCustomers))
+        .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
     if (path === "generalCustomer") {
@@ -176,11 +213,12 @@ export class ActFormControlService {
         this.getGeneralCustomersOpt
           .watch()
           .valueChanges.pipe(map(({ data }) => data.getGeneralCustomers))
+          .pipe(catchError(this.processHTTPMsgService.handleError))
       );
     }
 
     if (path === "typeOfSample") {
-      <
+      return <
         Observable<
           {
             id: string;
@@ -188,7 +226,16 @@ export class ActFormControlService {
             htypes: { id: string; label: string }[];
           }[]
         >
-      >this.getHabitansOpt.watch().valueChanges.pipe(map(({ data }) => data.getAllHabitans));
+      >this.getHabitansOpt
+        .watch()
+        .valueChanges.pipe(
+          map(({ data }) => {
+            console.log(data.getAllHabitans);
+
+            return data.getAllHabitans;
+          })
+        )
+        .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
     return this.http
@@ -200,24 +247,28 @@ export class ActFormControlService {
     path: string,
     id: string
   ): Observable<
-    CustomerModel | GCustomerModel | LabModel | generalOptionModel
+    | any
+    | GetGeneralCustomerQuery["getGeneralCustomer"]
+    | GetLabQuery["getLab"]
+    | GetWholeCustomerQuery["customer"]
+    | generalOptionModel
   > {
     if (path === "customer") {
-      this.getCustomer
+      return this.getWholeCustomer
         .watch({ data: id })
         .valueChanges.pipe(map(({ data }) => data.customer))
         .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
     if (path == "generalCustomer") {
-      this.getGeneralCustomer
+      return this.getGeneralCustomer
         .watch({ data: id })
         .valueChanges.pipe(map(({ data }) => data.getGeneralCustomer))
         .pipe(catchError(this.processHTTPMsgService.handleError));
     }
 
     if (path === "lab") {
-      this.getLab
+      return this.getLab
         .watch({ data: id })
         .valueChanges.pipe(map(({ data }) => data.getLab))
         .pipe(catchError(this.processHTTPMsgService.handleError));

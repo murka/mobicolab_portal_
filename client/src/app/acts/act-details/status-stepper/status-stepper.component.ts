@@ -24,7 +24,7 @@ import { ActModel } from "src/app/shared/models/act.model";
   styleUrls: ["./status-stepper.component.scss"],
 })
 export class StatusStepperComponent implements OnInit, OnChanges {
-  @Input() act: ActModel;
+  @Input() act: any;
 
   @ViewChild("stepper", { static: false }) stepper: MatStepper;
 
@@ -118,7 +118,7 @@ export class StatusStepperComponent implements OnInit, OnChanges {
 
   changeStatusToNoRemarks() {
     this.acs
-      .patchAct(this.id.value.id, {
+      .patchAct({
         "status.remarks": false,
         "status.noRemarks": true,
       })

@@ -11,10 +11,14 @@ import { GCustomerModel } from "src/app/shared/models/gcustomer.model";
 import { CustomerModel } from "src/app/shared/models/customer.model";
 import { GeneralCustomerControlService } from "../controls/general-custromer-control.service";
 import { CustomerControlService } from "../controls/customer-control.service";
-import { OptionGroupBaseModel } from "src/app/shared/models/interface/option-group-base.model";
+import {
+  OptionGroupBaseModel,
+  ItemsGroupModel,
+} from "src/app/shared/models/interface/option-group-base.model";
 import { LabModel } from "src/app/shared/models/lab.model";
 import { generalOptionModel } from "src/app/shared/models/generalOptions.model";
-import { Habitan } from "src/app/shared/models/type-sample.model";
+import { Habitan } from "src/app/shared/models/habitan.model";
+import { UpdateHTypeMutation } from "src/types/generated";
 
 @Injectable({
   providedIn: "root",
@@ -52,10 +56,8 @@ export class ActFormDataService {
       data: new OptionsEditDataModel(key, label),
     });
     return CustomerRef.afterClosed().pipe(
-      filter((result: FormGroup) => result !== undefined),
+      filter((result) => result !== undefined),
       switchMap((result) => {
-        console.log(result);
-
         return this.AFCS.postActItem(key, result).pipe(
           map(
             (
@@ -65,7 +67,7 @@ export class ActFormDataService {
                 | LabModel
                 | generalOptionModel
             ) => {
-              console.log(`after req ${item}`);
+              console.log(`after req ${JSON.stringify(item)}`);
 
               return new OptionsBaseModel(item);
             }
@@ -86,7 +88,7 @@ export class ActFormDataService {
           data: new OptionsEditDataModel(key, label, item),
         });
         return CustomerRef.afterClosed().pipe(
-          filter((result: FormGroup) => result !== undefined),
+          filter((result: FormGroup | undefined) => result !== undefined),
           switchMap((result) => {
             return this.AFCS.patchtActItem(key, id, result).pipe(
               map((item) => {
@@ -108,7 +110,7 @@ export class ActFormDataService {
     label: string,
     id?: string,
     name?: string
-  ): Observable<OptionGroupBaseModel> {
+  ): Observable<OptionGroupBaseModel | ItemsGroupModel> {
     if (id && name) {
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
         data: new OptionsEditDataModel(key, name),
@@ -119,8 +121,11 @@ export class ActFormDataService {
           return this.AFCS.postActItemArray(key, id, {
             value: result.label,
           }).pipe(
-            map((item: Habitan) => {
-              return new OptionGroupBaseModel(item);
+            map((item) => {
+              return new ItemsGroupModel({
+                ...item.createHabitansType,
+                buttonController: false,
+              });
             })
           );
         })
@@ -130,7 +135,7 @@ export class ActFormDataService {
         data: new OptionsEditDataModel(key, label),
       });
       return CustomerRef.afterClosed().pipe(
-        filter((result: FormGroup) => result !== undefined),
+        filter((result) => result !== undefined),
         switchMap((result) => {
           return this.AFCS.postActItem(key, result).pipe(
             map((item: Habitan) => {
@@ -147,9 +152,9 @@ export class ActFormDataService {
     label: string,
     id: string,
     item: OptionGroupBaseModel,
-    tp?: string,
+    tp?: ItemsGroupModel,
     name?: string
-  ): Observable<OptionGroupBaseModel> {
+  ): Observable<OptionGroupBaseModel | ItemsGroupModel> {
     if (!name) {
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
         data: new OptionsEditDataModel(key, label, item),
@@ -157,7 +162,7 @@ export class ActFormDataService {
       return CustomerRef.afterClosed().pipe(
         filter((result) => result !== undefined),
         switchMap((result) => {
-          return this.AFCS.patchtActItem(key, id, result).pipe(
+          return this.AFCS.patchtActItem(key, id, result.label).pipe(
             map((item: Habitan) => {
               console.log(item);
               return new OptionGroupBaseModel(item);
@@ -166,25 +171,19 @@ export class ActFormDataService {
         })
       );
     } else {
-      const newItem: string[] = item.types.filter((type) => type !== tp);
       const CustomerRef = this.dialog.open(EditActOptionsComponent, {
         data: new OptionsEditDataModel(
           key,
           name,
-          new generalOptionModel({ label: tp })
+          new generalOptionModel({ label: tp.label })
         ),
       });
       return CustomerRef.afterClosed().pipe(
         filter((result) => result !== undefined),
         switchMap((result) => {
-          newItem.push(result.label);
-          return this.AFCS.patchtActItem(
-            key,
-            id,
-            new Habitan({ label: item.label, htypes: newItem })
-          ).pipe(
-            map((item: Habitan) => {
-              return new OptionGroupBaseModel(item);
+          return this.AFCS.patchtActItem("htype", tp.id, result.label).pipe(
+            map((item: UpdateHTypeMutation["updateHabitansType"]) => {
+              return new ItemsGroupModel({ ...item, buttonController: false });
             })
           );
         })
@@ -198,7 +197,9 @@ export class ActFormDataService {
     item: OptionGroupBaseModel,
     tp: string
   ): Observable<OptionGroupBaseModel> {
-    const newTypes: string[] = item.types.filter((type) => type !== tp);
+    const newTypes: { id: string; label: string }[] = item.htypes.filter(
+      (type) => type.id !== tp
+    );
     return this.AFCS.patchtActItem(
       key,
       id,
@@ -220,13 +221,18 @@ export class ActFormDataService {
     );
   }
 
-  getActiveCustomer(): Observable<CustomerModel[]> {
+  getActiveCustomer() {
     return this.customerControl.getCustomers().pipe(
-      map((customers) =>
-        customers.filter((customer) => {
-          if (customer.acts.length > 0) return customer;
-        })
-      )
+      map((customers) => {
+        console.log(customers.getCustomers);
+
+        return {
+          ...customers,
+          getCustomers: customers.getCustomers.filter(
+            (customer) => customer.acts.length !== 0
+          ),
+        };
+      })
     );
   }
 }

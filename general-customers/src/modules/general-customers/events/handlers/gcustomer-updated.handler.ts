@@ -18,7 +18,10 @@ export class GeneralCustomerUpdatedHandler
     try {
       const newEvent = this.eventRepository.create({
         general_customer: gcustomer,
-        event: 'UPDATED',
+        event_type: 'UPDATED',
+        event_key: gcustomer.id,
+        aggregateid: gcustomer.id,
+        aggregateType: 'GeneralCustomer.' + 'UPDATED',
       });
 
       await this.eventRepository.save(newEvent);

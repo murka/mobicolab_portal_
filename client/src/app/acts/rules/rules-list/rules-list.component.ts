@@ -1,21 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { TemplatesComponent } from 'src/app/shared/components/dialogs/templates/templates.component';
+import { Component, OnInit } from "@angular/core";
+import { RulesService } from "src/app/services/data/rules.service";
 
 @Component({
-  selector: 'app-rules-list',
-  templateUrl: './rules-list.component.html',
-  styleUrls: ['./rules-list.component.scss']
+  selector: "app-rules-list",
+  templateUrl: "./rules-list.component.html",
+  styleUrls: ["./rules-list.component.scss"],
 })
 export class RulesListComponent implements OnInit {
+  constructor(private readonly rulesService: RulesService) {}
 
-  constructor(private dialog: MatDialog) { }
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
+  openDialog(): void {
+    this.rulesService.choiseTemplate(false).subscribe();
   }
-
-  openDialog() {
-    const dialogRef = this.dialog.open(TemplatesComponent)
-  }
-
 }

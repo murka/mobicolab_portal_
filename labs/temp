@@ -1,0 +1,11 @@
+  "transforms.outbox.route.field": null,
+        "transforms.outbox.route.prefix": "user.",
+        "transforms.outbox.route.suffix": ".events",
+
+
+         "transforms.outbox.route.topic.regex": "lab",
+        "transforms.outbox.route.topic.replacement": "outbox.event.${routedByValue}",
+        "transforms.outbox.table.field.event.key": "event_key",
+        "transforms.outbox.table.field.event.payload": "null",
+        "transforms.outbox.table.field.event.payload.id": "null",
+        "transforms.outbox.table.field.event.type": "event_type",

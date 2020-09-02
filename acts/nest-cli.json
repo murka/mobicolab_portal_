@@ -1,9 +1,9 @@
 {
-  "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
-  "compilerOptions": {
-    "plugins": ["@nestjs/graphql/plugin"],
-    "assets": ["**/*.proto"]
-  }
+    "collection": "@nestjs/schematics",
+    "sourceRoot": "src",
+    "compilerOptions": {
+        "assets": [
+            "**/*.proto"
+        ]
+    }
 }
-  

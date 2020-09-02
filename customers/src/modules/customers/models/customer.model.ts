@@ -1,14 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  Column,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { ObjectType, Field, ID, Directive } from '@nestjs/graphql';
 import { Act } from './act.model';
 import { CustomerAddress } from './customer-address.model';
 import { CustomerEvent } from './customer-event.model';
+import { CustomerCreatedEvent } from '../events/impl/customer-created.event';
+import { AggregateRoot } from '@nestjs/cqrs';
 
 // Model of Customer for TypeORM and GraphQl modules
 
@@ -18,7 +14,7 @@ import { CustomerEvent } from './customer-event.model';
 @ObjectType('Customer')
 // directive to define class as useble in apollo federation
 @Directive('@key(fields: "id")')
-export class Customer {
+export class Customer extends AggregateRoot {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
@@ -37,7 +33,6 @@ export class Customer {
   @Field({ nullable: true })
   @Column({ nullable: true })
   email?: string;
-  @Field(type => [CustomerEvent])
   @OneToMany(
     type => CustomerEvent,
     events => events.customer,
@@ -49,4 +44,8 @@ export class Customer {
     acts => acts.customer,
   )
   acts: Act[];
+
+  customerCreated() {
+    this.apply(new CustomerCreatedEvent(this));
+  }
 }

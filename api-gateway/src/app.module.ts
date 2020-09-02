@@ -1,8 +1,11 @@
 import { Module, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLGatewayModule } from '@nestjs/graphql';
-import { TemplatePreviewModule } from './template-preview/template-preview.module';
+import { TemplatePreviewModule } from './modules/template-preview/template-preview.module';
+import { FilesModule } from './modules/files/files.module';
 import FileUploadDataSource from './file-upload-data-source';
+import { KafkaClientOptions } from './options/kakfa-client.options';
+import { ClientProxyFactory } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -34,6 +37,18 @@ import FileUploadDataSource from './file-upload-data-source';
       },
     }),
     TemplatePreviewModule,
+    FilesModule,
+  ],
+  providers: [
+    KafkaClientOptions,
+    {
+      provide: 'KAFKA_CLIENT',
+      useFactory: async (kafkaClientOptions: KafkaClientOptions) => {
+        const options = await kafkaClientOptions.getKafkaOptions();
+        return ClientProxyFactory.create({ ...options });
+      },
+      inject: [KafkaClientOptions],
+    },
   ],
 })
 export class AppModule {}

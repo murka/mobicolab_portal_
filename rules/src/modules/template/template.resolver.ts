@@ -5,6 +5,7 @@ import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { GetLabTypeTemplateQuery } from './queries/impl/getLabTypeTemplate.query';
 import { NewLabTypeOfSampleTemplate } from './models/dto/new-lab-type-of-sample-template.dto';
 import { CreateLabTypeTemplateCommand } from './commands/impl/create-lab-type-template.command';
+import { UpdateLabTypeTemplateCommand } from './commands/impl/update-lab-type-template.command';
 
 @Resolver(of => LabTypeOfSampleTemplateModel)
 export class TemplateResolver {
@@ -15,7 +16,7 @@ export class TemplateResolver {
     private readonly commandBus: CommandBus,
   ) {}
 
-  @Query(returns => LabTypeOfSampleTemplateModel)
+  @Query(returns => LabTypeOfSampleTemplateModel, { nullable: true })
   async getLabTypeOfSampleTemplate(
     @Args('labId') labId: string,
     @Args('typeId') typeId: string,
@@ -43,5 +44,21 @@ export class TemplateResolver {
         newLabTypeOfSampleTemplateData.path,
       ),
     );
+  }
+
+  @Mutation(returns => LabTypeOfSampleTemplateModel)
+  async updateLabTypeOfSampleTemplate(
+    @Args('patchLabTypeOfSampleTemplateData')
+    patchLabTypeOfSampleTemplateData: NewLabTypeOfSampleTemplate,
+  ): Promise<LabTypeOfSampleTemplateModel> {
+    this.logger.verbose('update-lab-type.mutation');
+
+    try {
+      return await this.commandBus.execute(
+        new UpdateLabTypeTemplateCommand(patchLabTypeOfSampleTemplateData),
+      );
+    } catch (error) {
+      this.logger.error(error.message);
+    }
   }
 }

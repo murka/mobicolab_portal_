@@ -5,11 +5,5 @@
         Генеральный Заказчик: {{ gcustomer.label }}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <app-dating-list *ngIf="filteredActsByCustomer"
-      [acts]="filteredActsByCustomer"
-      [gcustomerActs]="gcustomer.acts"
-    ></app-dating-list>
   </mat-expansion-panel>
 </div>
-
-

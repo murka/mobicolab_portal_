@@ -1,33 +1,27 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { GeneralCustomerControlService } from 'src/app/services/controls/general-custromer-control.service';
-import { ActModel } from 'src/app/shared/models/act.model';
-import { GCustomerModel } from 'src/app/shared/models/gcustomer.model';
-import { CustomerModel } from 'src/app/shared/models/customer.model';
+import { Component, OnInit, Input } from "@angular/core";
+import { GeneralCustomerControlService } from "src/app/services/controls/general-custromer-control.service";
+import { ActModel } from "src/app/shared/models/act.model";
+import { GCustomerModel } from "src/app/shared/models/gcustomer.model";
+import { CustomerModel } from "src/app/shared/models/customer.model";
+import { GetCustomersWithActsQuery } from "src/types/generated";
 
 @Component({
-  selector: 'app-customers',
-  templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.scss']
+  selector: "app-customers",
+  templateUrl: "./customers.component.html",
+  styleUrls: ["./customers.component.scss"],
 })
 export class CustomersComponent implements OnInit {
-  @Input() customers: CustomerModel[];
-  @Input() set acts(acts: ActModel[]) {
-    this._actsController = acts;
-  }
+  @Input() customers: GetCustomersWithActsQuery;
+  //   @Input() set acts(acts: ActModel[]) {
+  //     this._actsController = acts;
+  //   }
 
-  gcustomers: GCustomerModel[];
-  filteredActsByCustomer: ActModel[] = [];
-  _actsController: ActModel[];
+  //   filteredActsByCustomer: ActModel[] = [];
+  //   _actsController: ActModel[];
 
-
-  constructor(private GCCS: GeneralCustomerControlService) { }
+  constructor() {}
 
   ngOnInit() {
-    this.GCCS.getGCustomers().subscribe(gc => {
-      this.gcustomers = gc;
-      console.log('gcustomers in customers', this.gcustomers);
-      
-    });
+    console.log(this.customers);
   }
-
 }

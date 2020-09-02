@@ -1,12 +1,18 @@
 export class ApplicationModel {
-    public place: string;
-    public datetime: {
-        date: Date;
-        time: string;
-    }
+  public id: string;
+  public place: string;
+  public datetime: {
+    date: Date;
+    time: string;
+  };
 
-    constructor(place: string, datetime: {date: Date; time: string}) {
-        this.place = place;
-        this.datetime = datetime;
-    }
+  constructor(
+    id: string,
+    place: string,
+    datetime: { date: Date; time: string }
+  ) {
+    this.id = id;
+    this.place = place;
+    this.datetime = datetime;
+  }
 }

@@ -1,9 +1,10 @@
-import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, CommandBus } from '@nestjs/cqrs';
 import { DroppingDocCommand } from '../impl/dropping-doc.command';
 import { Logger } from '@nestjs/common';
 import { Doc } from '../../models/doc.model';
-import { DroppedDocEvent } from '../../events/impl/dropped-doc.event';
 import { DocRepository } from '../../repositories/doc.repository';
+import { UploadDocCommand } from '../impl/upload-doc.command';
+import { DocsService } from '../../docs.service';
 
 @CommandHandler(DroppingDocCommand)
 export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
@@ -11,24 +12,39 @@ export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
 
   constructor(
     private docRepositroy: DocRepository,
-    private eventBus: EventBus,
+    private readonly commandBus: CommandBus,
+    private readonly docService: DocsService,
   ) {}
 
   async execute(command: DroppingDocCommand): Promise<Doc> {
+    this.logger.verbose('dorpping-doc.handler');
+
+    const { file, actId, name, title, mimtype } = command;
+
     try {
       this.logger.verbose('dropping-doc.command');
 
-      const { file, actId, name } = command;
+      const doc = this.docRepositroy.create();
 
-      const doc = this.docRepositroy.create({ name: file.name });
+      if (file) {
+        doc.name = await this.docService.createName(
+          actId,
+          title,
+          name,
+          mimtype,
+        );
+        doc.title = title;
+      }
 
       await this.docRepositroy.save(doc);
 
-      this.eventBus.publish(new DroppedDocEvent(doc.id, actId, file));
+      if (file) {
+        this.commandBus.execute(new UploadDocCommand(actId, doc, file));
+      }
 
       return doc;
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.message);
     }
   }
 }

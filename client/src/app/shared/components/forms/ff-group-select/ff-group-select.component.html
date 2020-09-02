@@ -2,7 +2,7 @@
   <div [formGroupName]="controll">
     <mat-form-field *ngIf="options" fxFlexFill>
       <mat-label>{{ label }}</mat-label>
-      <mat-select formControlName="types" #select>
+      <mat-select formControlName="htype" #select>
         <mat-option (click)="addGroup()" *ngIf="options.length < 1"
           >Добавить Тип Отбираемой Среды</mat-option
         >
@@ -11,7 +11,7 @@
             <app-edit-button (click)="editGroup(group)"></app-edit-button>
             <button
               (click)="_open()"
-              *ngIf="group.types.length >= 1"
+              *ngIf="group.htypes.length >= 1"
               mat-button
               (click)="addItem(group.key)"
             >
@@ -20,27 +20,30 @@
             <mat-option
               (click)="_open()"
               (click)="addItem(group.key)"
-              *ngIf="group.types.length < 1"
+              *ngIf="group.htypes.length < 1"
               >Добавить Тип Отбираемой Пробы</mat-option
             >
             <mat-option
               (click)="_open()"
-              *ngFor="let type of group.types"
-              [value]="type"
-              (mouseenter)="_button = !_button"
-              (mouseleave)="_button = !_button"
+              *ngFor="let type of group.htypes"
+              [value]="type.id"
+              appLookUp
+              (onChangeButtonCondition)="
+                buttonCondition($event, group.key, type.id)
+              "
             >
               <div fxLayout="row">
-                <div>{{ type }}</div>
-                <div *ngIf="_button">
-                  <app-edit-button
-                    (click)="editItem(group, group.key, type)"
-                  ></app-edit-button
-                  ><app-delete-button
+                <div>
+                  {{ type.label }}
+                </div>
+                <app-edit-button
+                  *ngIf="type.buttonController"
+                  (click)="editItem(group, group.key, type)"
+                ></app-edit-button>
+                <!-- <app-delete-button
                     (click)="deleteItem(group, group.key, type)"
                   >
-                  </app-delete-button>
-                </div>
+                  </app-delete-button> -->
               </div>
             </mat-option>
           </mat-optgroup>

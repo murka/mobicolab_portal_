@@ -35,6 +35,7 @@ import { EditActOptionsComponent } from "./act-form/edit-act-options/edit-act-op
 import { ActApplitcationComponent } from "./act-form/act-applitcation/act-applitcation.component";
 import { ActsTableComponent } from "./acts-list/acts-table/acts-table.component";
 import { DocsComponent } from "./act-details/docs/docs.component";
+import { DetailsPdfComponent } from './act-details/details-pdf/details-pdf.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { DocsComponent } from "./act-details/docs/docs.component";
     ActApplitcationComponent,
     ActsTableComponent,
     DocsComponent,
+    DetailsPdfComponent,
   ],
   imports: [
     SharedModule,

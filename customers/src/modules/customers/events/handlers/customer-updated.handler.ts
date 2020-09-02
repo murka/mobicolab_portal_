@@ -4,7 +4,8 @@ import { CustomerUpdatedEvent } from '../impl/customer-updated.event';
 import { EventRepository } from '../../customer.repository';
 
 @EventsHandler(CustomerUpdatedEvent)
-export class CustomerUpdatedHandler implements IEventHandler<CustomerUpdatedEvent> {
+export class CustomerUpdatedHandler
+  implements IEventHandler<CustomerUpdatedEvent> {
   logger = new Logger(this.constructor.name);
 
   constructor(private readonly eventRepository: EventRepository) {}
@@ -17,7 +18,10 @@ export class CustomerUpdatedHandler implements IEventHandler<CustomerUpdatedEven
     try {
       const newEvent = this.eventRepository.create({
         customer: customer,
-        event: 'UPDATED',
+        event_type: 'UPDATED',
+        event_key: customer.id,
+        aggregateType: 'Customer.' + 'UPDATED',
+        aggregateid: customer.id,
       });
 
       await this.eventRepository.save(newEvent);

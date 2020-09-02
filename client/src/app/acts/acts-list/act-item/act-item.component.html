@@ -1,24 +1,23 @@
 <mat-card
-  [ngStyle]="{ backgroundColor: getColor(act.status) }"
   fxFlex
   class="actCard"
   *ngFor="let act of acts"
-  [routerLink]="['../details', act._id]"
+  [routerLink]="['../details', act.id]"
 >
   <mat-card-title>
     {{ act.name }}
   </mat-card-title>
   <mat-card-subtitle> Лаборатория: {{ act.lab.label }} </mat-card-subtitle>
   <mat-divider></mat-divider>
-  <mat-card-content  fxLayout="row">
+  <mat-card-content fxLayout="row">
     <div>
-      <p>Акт зарегистрован</p>
       <mat-icon>cloud_download</mat-icon>
     </div>
-    <mat-divider [vertical]='true'></mat-divider>
+    <mat-divider [vertical]="true"></mat-divider>
     <div>
-        <p>Итоговый протокол</p>
-        <mat-icon>cloud_download</mat-icon>
+      <mat-icon>cloud_download</mat-icon>
     </div>
   </mat-card-content>
 </mat-card>
+
+<!-- [ngStyle]="{ backgroundColor: getColor(act.status) }" -->

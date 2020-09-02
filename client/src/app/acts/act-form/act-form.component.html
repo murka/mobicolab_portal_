@@ -53,7 +53,7 @@
               [form]="formAct"
               [controll]="field.key"
               [key]="field.key"
-              [item]="act? act.datetime : null"
+              [item]="act ? act.datetime : null"
             ></app-ff-date-time>
             <app-ff-input
               *ngSwitchCase="'input'"
@@ -89,12 +89,18 @@
         </div>
       </div>
     </fieldset>
-    <app-act-applitcation [form]="formAct" [item]="act"></app-act-applitcation>
+    <app-act-applitcation
+      [form]="formAct"
+      [item]="act"
+      [statusControl]="statusControl"
+      [copyControl]="copyControl"
+    ></app-act-applitcation>
     <mat-action-list fxLayout="row">
       <button
         mat-button
         type="submit"
         class="background-primary text-floral-white"
+        [disabled]="!formAct.valid"
       >
         {{ statusControl ? "Обновить" : "Создать" }}
       </button>

@@ -1,4 +1,4 @@
-import { OnModuleInit, Inject, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import {
   Resolver,
   Query,
@@ -6,37 +6,22 @@ import {
   ResolveReference,
   Mutation,
 } from '@nestjs/graphql';
-import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Lab } from './models/lab.model';
 import { LabRepository } from './lab.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import { ChangeLabIdCommand } from './commands/impl/change-lab-id.command';
 import { InsertLabDto } from './models/dto/insert-lab.dto';
 import { CreateLabCommand } from './commands/impl/create-lab.command';
 import { CreateLabDto } from './models/dto/create-lab.dto';
 import { UpdateLabCommand } from './commands/impl/update-lab.command';
 
-interface LabService {
-  findAllLabs(data: number): Observable<Lab>;
-}
-
 @Resolver(of => Lab)
-export class LabResolver implements OnModuleInit {
+export class LabResolver {
   logger = new Logger(this.constructor.name);
-
-  private labService: LabService;
 
   constructor(
     private readonly labRepository: LabRepository,
-    @Inject('BRIDGE_PACKAGE') private readonly client: ClientGrpc,
     private readonly commandBus: CommandBus,
   ) {}
-
-  onModuleInit() {
-    this.labService = this.client.getService<LabService>('LabService');
-  }
 
   @Query(returns => [Lab])
   async getLabs(): Promise<Lab[]> {
@@ -46,20 +31,6 @@ export class LabResolver implements OnModuleInit {
   @Query(returns => Lab)
   async getLab(@Args('id') id: string): Promise<Lab> {
     return await this.labRepository.findOne(id);
-  }
-
-  @Query(returns => Lab)
-  transformLabs(): Observable<Promise<Lab>> {
-    return this.labService.findAllLabs(1).pipe(
-      map(async lab => {
-        const newLab = await this.labRepository.migrationCreateLab(lab);
-        await this.commandBus.execute(
-          new ChangeLabIdCommand(newLab.id, lab.id),
-        );
-        this.logger.verbose(newLab);
-        return newLab;
-      }),
-    );
   }
 
   @Mutation(returns => Lab)
@@ -81,3 +52,17 @@ export class LabResolver implements OnModuleInit {
     return await this.labRepository.findOne(reference.id);
   }
 }
+
+//   @Query(returns => Lab)
+//   transformLabs(): Observable<Promise<Lab>> {
+//     return this.labService.findAllLabs(1).pipe(
+//       map(async lab => {
+//         const newLab = await this.labRepository.migrationCreateLab(lab);
+//         await this.commandBus.execute(
+//           new ChangeLabIdCommand(newLab.id, lab.id),
+//         );
+//         this.logger.verbose(newLab);
+//         return newLab;
+//       }),
+//     );
+//   }

@@ -17,7 +17,8 @@ export class GetAllDocsOfActHandler
     const { actId } = query;
 
     try {
-      return (await this.actRepository.findOne(actId)).docs;
+      return (await this.actRepository.findOne(actId, { relations: ['docs'] }))
+        .docs;
     } catch (e) {
       this.logger.error(e);
     }

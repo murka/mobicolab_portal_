@@ -1,21 +1,21 @@
 import { UploadDocHandler } from './upload-doc.handler';
 import { DroppingDocHandler } from './dropping-doc.handler';
 import { NewDocHandler } from './new-doc.handler';
-import { RemoveDocHandler } from './removed-doc.handler';
-import { TitlingDocHandler } from "./titling-doc.handler";
+import { TitlingDocHandler } from './titling-doc.handler';
 import { SavingDocHandler } from './saving-doc.handler';
-import { DeletingDocHandler } from './deleting-doc.handler';
 import { DownloadingDocHandler } from './downloading-doc.handler';
-import { SavingAllDocsHandler } from './saving-all-docs.handler';
+import { RemoveDocHandler } from './remove-doc.handler';
+import { AddActHandler } from './add-act.handler';
+import { PushDocByTypeHandler } from './push-doc-by-type.handler';
 
 export const CommandHandlers = [
   UploadDocHandler,
   DroppingDocHandler,
   NewDocHandler,
-  RemoveDocHandler,
-  TitlingDocHandler, 
-  SavingDocHandler, 
-  DeletingDocHandler,
+  TitlingDocHandler,
+  SavingDocHandler,
   DownloadingDocHandler,
-  SavingAllDocsHandler
+  RemoveDocHandler,
+  AddActHandler,
+  PushDocByTypeHandler,
 ];

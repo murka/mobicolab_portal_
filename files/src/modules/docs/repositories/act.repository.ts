@@ -1,8 +1,38 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Act } from '../models/act.model';
-import { Logger } from '@nestjs/common';
+import { Logger, HttpException, HttpStatus } from '@nestjs/common';
 
 @EntityRepository(Act)
 export class ActRepository extends Repository<Act> {
   logger = new Logger(this.constructor.name);
+
+  async creteAct(id: string): Promise<void> {
+    this.logger.verbose('create-act');
+
+    try {
+      const act = this.create({ id });
+
+      await this.save(act);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async findAct(id: string): Promise<Act> {
+    this.logger.verbose('find-act');
+
+    try {
+      const act = await this.findOne(id, { relations: ['docs'] });
+
+      if (!act)
+        throw new HttpException(
+          { status: HttpStatus.NOT_FOUND, error: 'Act didn`t find' },
+          HttpStatus.NOT_FOUND,
+        );
+
+      return act;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
 }

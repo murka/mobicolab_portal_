@@ -13,36 +13,43 @@
         Добавить строку
       </button>
     </mat-action-list>
-    <fieldset *ngIf="controls">
-      <div fxFlex fxLayout="column" fxLayoutGap="10px" [formGroup]="form">
-        <div
-          formArrayName="application"
-          *ngFor="
-            let app of controls;
-            let i = index
-          "
-        >
-          <div [formGroupName]="i">
-            <div *ngFor="let field of fields" fxFlex>
-              <div [ngSwitch]="field.controlType">
-                <app-ff-select
-                  *ngSwitchCase="'SelectWAdr'"
-                  [form]="app"
-                  [key]="field.key"
-                ></app-ff-select>
-                <app-ff-date-time
-                  *ngSwitchCase="'datetime'"
-                  [form]="app"
-                  [controll]="field.key"
-                  [key]="field.key"
-                  [item]="app.value['datetime']"
-                ></app-ff-date-time>
+    <div *ngIf="controls.length !== 0">
+      <fieldset>
+        <div fxFlex fxLayout="column" fxLayoutGap="10px" [formGroup]="form">
+          <div
+            formArrayName="applications"
+            *ngFor="let app of controls; let i = index"
+          >
+            <div [formGroupName]="i">
+              <div *ngFor="let field of fields" fxFlex>
+                <div [ngSwitch]="field.controlType">
+                  <app-ff-select
+                    *ngSwitchCase="'SelectWAdr'"
+                    [control]="field.key"
+                    [label]="field.label"
+                    [form]="app"
+                    [key]="field.key"
+                    [populate]="field.populate"
+                    [editable]="field.editable"
+                    [deletable]="field.deletable"
+                  ></app-ff-select>
+                  <app-ff-date-time
+                    *ngSwitchCase="'datetime'"
+                    [form]="app"
+                    [controll]="field.key"
+                    [key]="field.key"
+                    [item]="app.value['datetime']"
+                  ></app-ff-date-time>
+                </div>
               </div>
+              <app-clear-button
+                type="button"
+                (click)="deleteField(i)"
+              ></app-clear-button>
             </div>
-            <app-clear-button type="button" (click)="deleteField(i)"></app-clear-button>
           </div>
         </div>
-      </div>
-    </fieldset>
+      </fieldset>
+    </div>
   </div>
 </mat-expansion-panel>

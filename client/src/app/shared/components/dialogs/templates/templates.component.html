@@ -7,6 +7,7 @@
       key="lab"
       [populate]="true"
       [editable]="true"
+      [disabledControl]="data.update"
     ></app-ff-select>
     <!-- <mat-form-field formControlName="typeOfSample" required>
       <mat-label>
@@ -14,6 +15,15 @@
       </mat-label>
       <mat-select> </mat-select>
     </mat-form-field> -->
+    <app-ff-select
+      control="typeOfSample"
+      [form]="form"
+      label="Тип отбираемой среды"
+      key="typeOfSample"
+      [populate]="true"
+      [editable]="true"
+      [disabledControl]="data.update"
+    ></app-ff-select>
     <mat-tab-group mat-dialog-content>
       <div *ngFor="let template of templateList">
         <mat-tab [label]="template.label" *ngIf="template" disableRipple="true">
@@ -33,10 +43,10 @@
       </div>
     </mat-tab-group>
     <mat-dialog-actions>
-      <button mat-raised-button>
+      <button type="submit" mat-raised-button [disabled]="!form.valid">
         Сохранить
       </button>
-      <button mat-raised-button>
+      <button type="button" mat-raised-button (click)="close()">
         Отмена
       </button>
     </mat-dialog-actions>

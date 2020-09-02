@@ -1,14 +1,16 @@
 import { Controller, Logger } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
-import { CommandBus } from '@nestjs/cqrs';
+import { QueryBus } from '@nestjs/cqrs';
+import { Act as ActModel } from './models/act.model';
 import {
-  ChangeCustomerIdCommand,
-  ChangeGeneralCustomerIdCommand,
-  ChangeLabIdCommand,
-} from './commands/impl/migrations.commands';
-import { GetActForFilesCommand } from './commands/impl/get-act-for-files.command';
-import { ActForFilesDto } from './models/dto/act-for-files.dto';
-import { ActsService } from './acts.service';
+  actId,
+  Act,
+  ActServiceControllerMethods,
+  ActServiceController,
+  ActToFile,
+} from 'src/models/build/act/act';
+import { GetActQuery } from './queries/impl/get-act.query';
+import { TypeOfSample } from '../type-of-sample/models/type-of-sample.model';
+import { GetTOSQuery } from '../type-of-sample/queries/impl/get-tos.query';
 
 export interface ChangeIdDto {
   newId: string;
@@ -16,56 +18,106 @@ export interface ChangeIdDto {
 }
 
 @Controller('acts')
-export class ActsController {
+@ActServiceControllerMethods()
+export class ActsController implements ActServiceController {
   logger = new Logger(this.constructor.name);
 
-  constructor(
-    private commandBus: CommandBus,
-    private readonly as: ActsService,
-  ) {}
+  constructor(private readonly qeueryBus: QueryBus) {}
 
-  @GrpcMethod('MigrationService', 'MigrationCustomer')
-  async migrationCustomer(data: ChangeIdDto): Promise<any> {
-    this.logger.verbose('migration-customer inside `grpcMethod`');
-
-    await this.commandBus.execute(new ChangeCustomerIdCommand(data));
-
-    return { respon: 'success' };
-  }
-
-  @GrpcMethod('MigrationService')
-  async migrationGeneralCustomer(data: ChangeIdDto): Promise<any> {
-    this.logger.verbose('migration-gcustomer inside `grpcMethod`');
-
-    await this.commandBus.execute(new ChangeGeneralCustomerIdCommand(data));
-
-    return { respon: 'success' };
-  }
-
-  @GrpcMethod('MigrationService')
-  async migrationLab(data: ChangeIdDto): Promise<any> {
-    this.logger.verbose('migration-lab indsede `grpcMethod`');
-
-    await this.commandBus.execute(new ChangeLabIdCommand(data));
-
-    return { respon: 'success' };
-  }
-
-  @GrpcMethod('ActDocService')
-  async findLabels(data: { id: string }): Promise<ActForFilesDto> {
-    this.logger.verbose('find-act-by-id.grpc-method');
-    
-    return await this.commandBus.execute(new GetActForFilesCommand(data.id));
-  }
-
-  @GrpcMethod('ActDocService')
-  async addReferenceToAct(actId: string, docId: string): Promise<void> {
-    this.logger.verbose('add-reference-to-act');
+  async getAct(data: actId): Promise<Act> {
+    this.logger.verbose('get-act.grpc-method');
 
     try {
-      await this.as.addDocToAct(actId, docId);
-    } catch (e) {
-      this.logger.error(e);
+      const act: ActModel = await this.qeueryBus.execute(
+        new GetActQuery(data.id),
+      );
+
+      const tos: TypeOfSample = await this.qeueryBus.execute(
+        new GetTOSQuery(act.typeOfSample.id),
+      );
+
+      return {
+        ...act,
+        datetime: {
+          date: act.datetime.date.toISOString(),
+          time: act.datetime.time,
+        },
+        customer: act.customer.id,
+        generalCustomer: act.generalCustomer.id,
+        obName: act.objectName,
+        lab: act.lab.id,
+        typeOfSample: {
+          habitan: tos.habitan.id,
+          htypes: tos.htype.id,
+        },
+        applications: [
+          ...act.applications.map(app => {
+            return {
+              ...app,
+              datetime: {
+                ...app.datetime,
+                date: app.datetime.date.toISOString(),
+              },
+            };
+          }),
+        ],
+      } as Act;
+    } catch (error) {
+      this.logger.error(error.message);
+    }
+  }
+
+  async getActToFile(data: actId): Promise<ActToFile> {
+    this.logger.verbose('get-act-to-file.method');
+
+    try {
+      const act: ActModel = await this.qeueryBus.execute(
+        new GetActQuery(data.id),
+      );
+
+      const date = act.datetime.date.toISOString;
+
+      const newact = {
+        ...act,
+        datetime: {
+          date: act.datetime.date.toISOString(),
+          time: act.datetime.time,
+        },
+        customer: act.customer.id,
+        generalCustomer: act.generalCustomer.id,
+        lab: act.lab.id,
+      } as ActToFile;
+
+      return newact;
+    } catch (error) {
+      this.logger.error(error.message);
     }
   }
 }
+
+//   @GrpcMethod('MigrationService', 'MigrationCustomer')
+//   async migrationCustomer(data: ChangeIdDto): Promise<any> {
+//     this.logger.verbose('migration-customer inside `grpcMethod`');
+
+//     await this.commandBus.execute(new ChangeCustomerIdCommand(data));
+
+//     return { respon: 'success' };
+//   }
+
+//   @GrpcMethod('MigrationService')
+//   async migrationGeneralCustomer(data: ChangeIdDto): Promise<any> {
+//     this.logger.verbose('migration-gcustomer inside `grpcMethod`');
+
+//     await this.commandBus.execute(new ChangeGeneralCustomerIdCommand(data));
+
+//     return { respon: 'success' };
+//   }
+
+//   @GrpcMethod('MigrationService')
+//   async migrationLab(data: ChangeIdDto): Promise<any> {
+//     this.logger.verbose('migration-lab indsede `grpcMethod`');
+
+//     await this.commandBus.execute(new ChangeLabIdCommand(data));
+
+//     return { respon: 'success' };
+//   }

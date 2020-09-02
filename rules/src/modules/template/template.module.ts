@@ -5,6 +5,7 @@ import { LabTypeOfSampleTemplateModel } from './models/lab-type-of-sample.model'
 import { LabTypeTemplateRepository } from './template.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { QueryHandlers } from './queries/handlers';
+import { CommandHandlers } from './commands/hadlers/idnex';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { QueryHandlers } from './queries/handlers';
       LabTypeTemplateRepository,
     ]),
   ],
-  providers: [TemplateResolver, ...QueryHandlers],
+  providers: [TemplateResolver, ...QueryHandlers, ...CommandHandlers],
 })
 export class TemplateModule {}

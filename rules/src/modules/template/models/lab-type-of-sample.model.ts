@@ -13,6 +13,6 @@ export class LabTypeOfSampleTemplateModel {
   @Field(type => String)
   typeOfSampleId: string;
   @Column()
-  @Field(type => String)
+  @Field(type => String, { nullable: true })
   path: string;
 }

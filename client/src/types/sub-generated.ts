@@ -17,38 +17,27 @@ export type Scalars = {
 export type Doc = {
   __typename?: 'Doc';
   id: Scalars['ID'];
-  events?: Maybe<Array<Maybe<DocEvent>>>;
   title?: Maybe<Scalars['String']>;
   ydUrl?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  downloadable: Scalars['Boolean'];
+  downloadable?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
-};
-
-export type DocEvent = {
-  __typename?: 'DocEvent';
-  id: Scalars['ID'];
-  doc?: Maybe<Doc>;
-  event?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-};
-
-export type DocSubscriptionsPayload = {
-  __typename?: 'DocSubscriptionsPayload';
-  data: Doc;
-  mutation: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  first: Doc;
+  getDocs: Array<Doc>;
+};
+
+
+export type QueryGetDocsArgs = {
+  id: Scalars['String'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
-  changeDocs: DocSubscriptionsPayload;
+  changeDocs: Doc;
 };
 
 
@@ -64,26 +53,31 @@ export type ChangeDocsSubscriptionVariables = Exact<{
 export type ChangeDocsSubscription = (
   { __typename?: 'Subscription' }
   & { changeDocs: (
-    { __typename?: 'DocSubscriptionsPayload' }
-    & Pick<DocSubscriptionsPayload, 'mutation'>
-    & { data: (
-      { __typename?: 'Doc' }
-      & Pick<Doc, 'id' | 'name' | 'ydUrl' | 'title' | 'downloadable'>
-    ) }
+    { __typename?: 'Doc' }
+    & Pick<Doc, 'id' | 'name' | 'ydUrl' | 'title'>
   ) }
+);
+
+export type GetAllDocsQueryVariables = Exact<{
+  actId: Scalars['String'];
+}>;
+
+
+export type GetAllDocsQuery = (
+  { __typename?: 'Query' }
+  & { getDocs: Array<(
+    { __typename?: 'Doc' }
+    & Pick<Doc, 'id' | 'name' | 'ydUrl' | 'title'>
+  )> }
 );
 
 export const ChangeDocsDocument = gql`
     subscription changeDocs($actId: String!) {
   changeDocs(actId: $actId) {
-    mutation
-    data {
-      id
-      name
-      ydUrl
-      title
-      downloadable
-    }
+    id
+    name
+    ydUrl
+    title
   }
 }
     `;
@@ -93,5 +87,23 @@ export const ChangeDocsDocument = gql`
   })
   export class ChangeDocsGQL extends Apollo.Subscription<ChangeDocsSubscription, ChangeDocsSubscriptionVariables> {
     document = ChangeDocsDocument;
+    
+  }
+export const GetAllDocsDocument = gql`
+    query getAllDocs($actId: String!) {
+  getDocs(id: $actId) {
+    id
+    name
+    ydUrl
+    title
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllDocsGQL extends Apollo.Query<GetAllDocsQuery, GetAllDocsQueryVariables> {
+    document = GetAllDocsDocument;
     
   }

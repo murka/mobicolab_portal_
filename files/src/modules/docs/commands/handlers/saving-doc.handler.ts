@@ -1,32 +1,38 @@
-import { CommandHandler, ICommandHandler, EventBus } from '@nestjs/cqrs';
+import {
+  CommandHandler,
+  ICommandHandler,
+  CommandBus,
+  EventBus,
+} from '@nestjs/cqrs';
 import { SavingDocCommand } from '../impl/saving-doc.command';
 import { Logger } from '@nestjs/common';
-import { SavedDocEvent } from '../../events/impl/saved-doc.event';
 import { DocsService } from '../../docs.service';
-import { DocRepository } from '../../repositories/doc.repository';
+import { UploadDocCommand } from '../impl/upload-doc.command';
+import { SavedDocEvent } from '../../events/impl/saved-doc.event';
 
 @CommandHandler(SavingDocCommand)
 export class SavingDocHandler implements ICommandHandler<SavingDocCommand> {
   logger = new Logger(this.constructor.name);
 
   constructor(
-    private eventBus: EventBus,
     private readonly ds: DocsService,
-    private readonly docRepository: DocRepository,
+    private readonly commandBus: CommandBus,
   ) {}
 
   async execute(command: SavingDocCommand) {
     this.logger.verbose('saving-doc.command');
-    const { docId, actId } = command;
+    const { actId, docId, file } = command;
 
     try {
-      this.eventBus.publish(new SavedDocEvent(docId));
+      const doc = await this.ds.getDoc(docId);
 
-      // const doc = await this.prisma.doc.findOne({ where: { id: docId } });
+      const act = await this.ds.getAct(actId);
 
-      const doc = await this.docRepository.findOne(docId);
+      doc.act = act;
 
-      await this.ds.publishDoc(doc.id, actId, 'UPDATED');
+      await this.ds.saveDoc(doc);
+
+      this.commandBus.execute(new UploadDocCommand(actId, doc, file));
 
       return doc;
     } catch (e) {

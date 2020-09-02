@@ -1,33 +1,41 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AddActCommand } from '../impl/add-act.command';
-import { Logger } from '@nestjs/common';
+import { Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { LabRepository, ActRepository } from '../../lab.repository';
 
 @CommandHandler(AddActCommand)
 export class AddActHandler implements ICommandHandler<AddActCommand> {
-    logger = new Logger(this.constructor.name)
+  logger = new Logger(this.constructor.name);
 
-    constructor(
-        private readonly labRepository: LabRepository,
-        // private readonly actRepository: ActRepository
-        ) 
-        {}
+  constructor(
+    private readonly labRepository: LabRepository,
+    private readonly actRepository: ActRepository,
+  ) {}
 
-    async execute(command: AddActCommand) {
-        this.logger.verbose('add-act.command')
+  async execute(command: AddActCommand): Promise<void> {
+    this.logger.verbose('add-act.command');
 
-        const { data } = command
+    const { data } = command;
 
-        try{
-            // const newAct = this.actRepository.create({ id: data.actId })
+    try {
+      const newAct = this.actRepository.create({ id: data.actId });
 
-            // const lab = await this.labRepository.findOne(data.labId)
+      const lab = await this.labRepository.findOne(data.labId);
 
-            // newAct.lab = lab
+      if (!lab)
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'Lab didn`t find',
+          },
+          HttpStatus.NOT_FOUND,
+        );
 
-            // await this.actRepository.save(newAct)
-        } catch(e) {
-            this.logger.error(e)
-        }
+      newAct.lab = lab;
+
+      await this.actRepository.save(newAct);
+    } catch (e) {
+      this.logger.error(e);
     }
+  }
 }

@@ -1,3 +1,4 @@
-import { GetActsOfTypeOfSampleQuery } from '../impl/get-acts-of-type-of-sample.query';
+import { GetAllApplicationHandler } from './get-all-applications.handler';
+import { GetActHandler } from './get-act.handler';
 
-export const QueryHandlers = [GetActsOfTypeOfSampleQuery];
+export const QueryHandlers = [GetAllApplicationHandler, GetActHandler];
