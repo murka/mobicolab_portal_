@@ -1,0 +1,14 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+package files;
+
+service FilesService {
+    rpc PushNewDoc(NewDoc) returns (google.protobuf.Empty);
+    rpc PushNewPdf(NewDoc) returns (google.protobuf.Empty);
+}
+
+message NewDoc {
+    string actId = 1;
+    bytes file = 2;
+}

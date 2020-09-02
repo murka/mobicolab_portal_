@@ -1,0 +1,23 @@
+{
+    "name": "proto",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "compile:customer": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build customer/*.proto --ts_proto_out=../files/src/models/build customer/*.proto --ts_proto_out=../customers/src/models/build customer/*.proto --ts_proto_opt=nestJs=true",
+        "compile:act": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build act/*.proto --ts_proto_out=../acts/src/models/build act/*.proto --ts_proto_out=../files/src/models/build act/*.proto --ts_proto_opt=nestJs=true",
+        "compile:files": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build files/*.proto --ts_proto_out=../files/src/models/build files/*.proto --ts_proto_out=../api-gateway/src/models/build --ts_proto_out=../api-subscriptions/src/models/build files/*.proto --ts_proto_opt=nestJs=true",
+        "compile:gcustomer": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build general-customer/*.proto --ts_proto_out=../files/src/models/build general-customer/*.proto --ts_proto_out=../general-customers/src/models/build general-customer/*.proto --ts_proto_opt=nestJs=true",
+        "compile:lab": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build lab/*.proto --ts_proto_out=../files/src/models/build lab/*.proto --ts_proto_out=../labs/src/models/build lab/*.proto --ts_proto_opt=nestJs=true",
+        "compile:api": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../api-gateway/src/models/build api-gateway/*.proto  --ts_proto_opt=nestJs=true",
+        "compile:client": "./node_modules/protoc/protoc/bin/protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:../client/src/app/shared/protos/build --ts_out=service=grpc-web:../client/src/app/shared/protos/build -I ./api-gateway ./api-gateway/*.proto"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "ts-proto": "^1.12.0",
+        "protoc": "^1.0.4",
+        "ts-protoc-gen": "^0.12.0"
+    }
+}

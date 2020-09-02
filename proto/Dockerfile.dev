@@ -1,0 +1,18 @@
+FROM node:alpine
+
+WORKDIR /app
+
+RUN npm install -g npm
+
+RUN npm install -g typescript
+
+RUN npm install -g ts-node
+
+RUN npm install -g ts-node-dev
+
+RUN npm install -g ts-proto
+
+RUN apk -U --no-cache add protobuf protobuf-dev
+
+# ncu -u
+RUN npm install -g npm-check-updates

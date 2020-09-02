@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package general_customer;
+
+service GeneralCustomerService {
+    rpc FindAllGeneralCustomers (Id) returns (stream GeneralCustomer);
+}
+
+message Id {
+    int32 id = 1;
+}
+
+message GeneralCustomer {
+    string id = 1;
+    string fullname = 2;
+    string label = 3;
+    Address address = 4;
+    string tel = 5;
+    string email = 6;
+}
+
+message Address {
+    string zip = 1;
+    string country = 2;
+    string region = 3;
+    string city = 4;
+    string street = 5;
+    string building = 6;
+    string room = 7;
+}

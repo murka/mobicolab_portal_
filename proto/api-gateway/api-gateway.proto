@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api_gateway_service;
+
+import "google/protobuf/empty.proto";
+
+service ApiGatewayService {
+    rpc SavingDoc (SavingData) returns (google.protobuf.Empty);
+    rpc downloadDoc (docId) returns (File);
+}
+
+message SavingData {
+    string actId = 1;
+    string docId = 2;
+    bytes doc = 3;
+}
+
+message docId {
+    string id = 1;
+}
+
+message File {
+    bytes doc = 1;
+    string name = 2;
+}
