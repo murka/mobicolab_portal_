@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { ProcessHTTPMsgService } from "../process-httpmsg.service";
 import { TemplatePreviewClient } from "src/app/shared/protos/template-preview_pb_service";
 import { TemplateList, Null } from "src/app/shared/protos/template-preview_pb";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +15,7 @@ export class TemplatePreviewControlService {
     private http: HttpClient,
     private processHTTPMsgService: ProcessHTTPMsgService
   ) {
-    this.client = new TemplatePreviewClient("http://192.168.1.6:8080");
+    this.client = new TemplatePreviewClient(environment.ENVOI);
   }
 
   async getAllTemplates(): Promise<TemplateList.AsObject> {

@@ -5,7 +5,7 @@ import { ApolloModule, Apollo } from "apollo-angular";
 import { HttpLink, HttpLinkModule } from "apollo-angular-link-http";
 import { createUploadLink } from "apollo-upload-client";
 import { WebSocketLink } from "apollo-link-ws";
-import { environment } from "src/environments/environment";
+import { environment } from "../../../environments/environment";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { onError } from "apollo-link-error";

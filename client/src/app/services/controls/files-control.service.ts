@@ -17,7 +17,7 @@ import {
 import { ProcessHTTPMsgService } from "../process-httpmsg.service";
 import { map, catchError, concatMap } from "rxjs/operators";
 import { ItemFile } from "src/app/acts/act-details/docs/docs.component";
-import { log } from "console";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -31,7 +31,7 @@ export class FilesControlService {
     private readonly titlingDoc: TitlingDocGQL,
     private readonly deleteDoc: RemoveDocGQL
   ) {
-    this.client = new ApiGatewayServiceClient("http://192.168.1.6:8080");
+    this.client = new ApiGatewayServiceClient(environment.ENVOI);
   }
 
   downloadFile(id: string): Promise<DocFile.AsObject> {

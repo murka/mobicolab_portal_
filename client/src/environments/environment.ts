@@ -10,6 +10,7 @@ export const environment = {
   GQL_URI_SUB: "http://192.168.1.6:3060/graphql",
   WS_URI_FILES: "ws://192.168.1.6:3060/graphql",
   URI: "http://192.168.64.8/api",
+  ENVOI: "http://192.168.1.6:8080",
 };
 
 /*

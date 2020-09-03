@@ -13,7 +13,7 @@ RUN npm install -g @angular/cli
 # add app
 COPY . .
 
-RUN ng build --prod
+RUN npm run build
 
 FROM nginx
 EXPOSE 4200

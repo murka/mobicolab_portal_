@@ -15,7 +15,7 @@ import {
 import { MatStepper } from "@angular/material/stepper";
 import { saveAs } from "file-saver";
 import { ActivatedRoute, Params } from "@angular/router";
-import { environment } from "src/environments/environment";
+import { environment } from "../../../../environments/environment";
 import { ActModel } from "src/app/shared/models/act.model";
 
 @Component({

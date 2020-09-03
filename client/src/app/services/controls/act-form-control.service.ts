@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ProcessHTTPMsgService } from "../process-httpmsg.service";
 import { Observable } from "rxjs";
-import { environment } from "src/environments/environment";
+import { environment } from "../../../environments/environment";
 import { catchError, map } from "rxjs/operators";
 import { CustomerModel } from "src/app/shared/models/customer.model";
 import { GCustomerModel } from "src/app/shared/models/gcustomer.model";
