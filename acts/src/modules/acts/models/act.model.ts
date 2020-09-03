@@ -13,11 +13,16 @@ import { DateAndTime } from './date-time.model';
 import { Application } from './application.model';
 import { ActEvent } from './act-event.model';
 import { Doc } from '../../files/models/doc.model';
-import { ActStatus } from './act-status.model';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { ActCreatedEvent } from '../events/impl/act-created.event';
 import { ActUpdatedEvent } from '../events/impl/act-updated.event';
 import { TypeOfSample } from 'src/modules/type-of-sample/models/type-of-sample.model';
+
+enum ActStatus {
+  CREATED = 'CREATED',
+  REGISTERED = 'REGISTERED',
+  PROTOCOL = 'PROTOCOL',
+  FULL = 'FULL',
+}
 
 @Entity()
 @ObjectType()
