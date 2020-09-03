@@ -10,6 +10,7 @@ docker build -t mark600/mobicolab_portal_api_subscriptions -f ./api-subscription
 docker build -t mark600/mobicolab_portal_api_templater -f ./templater/Dockerfile ./templater
 docker build -t mark600/mobicolab_portal_api_tos -f ./type-of-sample/Dockerfile ./type-of-sample
 docker build -t mark600/mobicolab_portal_api_server -f ./server/Dockerfile ./server
+docker build -t mark600/mobicolab_portal_api_rules -f ./rules/Dockerfile ./rules
 docker push mark600/mobicolab_portal_api_acts
 docker push mark600/mobicolab_portal_api_gateway
 docker push mark600/mobicolab_portal_api_bridge
@@ -22,4 +23,5 @@ docker push mark600/mobicolab_portal_api_subscriptions
 docker push mark600/mobicolab_portal_api_templater
 docker push mark600/mobicolab_portal_api_tos
 docker push mark600/mobicolab_portal_api_server
+docker push mark600/mobicolab_portal_api_rules
 # kubectl aplly -f k8s
