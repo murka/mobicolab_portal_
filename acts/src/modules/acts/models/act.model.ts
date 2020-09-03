@@ -17,7 +17,7 @@ import { AggregateRoot } from '@nestjs/cqrs';
 import { ActUpdatedEvent } from '../events/impl/act-updated.event';
 import { TypeOfSample } from 'src/modules/type-of-sample/models/type-of-sample.model';
 
-enum ActStatus {
+export enum ActStatus {
   CREATED = 'CREATED',
   REGISTERED = 'REGISTERED',
   PROTOCOL = 'PROTOCOL',

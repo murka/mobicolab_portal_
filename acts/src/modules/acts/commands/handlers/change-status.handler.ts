@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { ActsService } from '../../acts.service';
 import { ChangeStatusCommand } from '../impl/change-status.command';
-import { ActStatus } from '../../models/act-status.model';
+import { ActStatus } from '../../models/act.model';
 
 @CommandHandler(ChangeStatusCommand)
 export class ChangeStatusHandler
