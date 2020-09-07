@@ -20,9 +20,9 @@ static_resources:
                     - name: local_service
                       domains: ["*"]
                       routes:
-                        - match: { prefix: "/" }
+                        - match: { prefix: "/grpc" }
                           route:
-                            cluster: echo_service
+                            cluster: echo_grpc
                             max_grpc_timeout: 0s
                         - match: { prefix: "/api" }
                           route:
@@ -33,7 +33,9 @@ static_resources:
                         - match: { prefix: "/sub" }
                           route:
                               cluster: echo_sub
-
+                        - match: { prefix: "/o-api" }
+                          route:
+                            cluster: echo_o_api
                       cors:
                         allow_origin_string_match:
                           - prefix: "*"
@@ -64,7 +66,7 @@ static_resources:
                       routes:
                         - match: { prefix: "/" }
                           route:
-                            cluster: web_service
+                            cluster: echo_web
                       # cors:
                       #   allow_origin_string_match:
                       #     - prefix: "*"
@@ -79,7 +81,7 @@ static_resources:
                   - name: envoy.filters.http.router
                     typed_config: {}
   clusters:
-    - name: echo_service
+    - name: echo_grpc
       connect_timeout: 5.25s
       type: logical_dns
       http2_protocol_options: {}
@@ -88,7 +90,7 @@ static_resources:
         socket_address:
           address: api_gateway
           port_value: 50020
-    - name: web_service
+    - name: echo_web
       connect_timeout: 0.25s
       type: strict_dns
       lb_policy: round_robin
@@ -96,3 +98,35 @@ static_resources:
         socket_address:
           address: web
           port_value: 4200
+    - name: echo_api
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        socket_address:
+          address: api_gateway
+          port_value: 2000
+    - name: echo_ws
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        socket_address:
+          address: api_subscriptions
+          port_value: 3060
+    - name: echo_sub
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        socket_address:
+          address: api_subscriptions
+          port_value: 3060
+    - name: echo_o_api
+      connect_timeout: 0.25s
+      type: strict_dns
+      lb_policy: round_robin
+      hosts:
+        socket_address:
+          address: server
+          port_value: 3000
