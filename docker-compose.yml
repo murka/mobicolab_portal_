@@ -70,7 +70,10 @@ services:
     image: envoyproxy/envoy-alpine:v1.15.0
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
+    environment:
+      - "ENVOY_UID=0"
     ports:
+      - "80:80"
       - "8080:8080"
       - "8081:8081"
     networks:
