@@ -6445,6 +6445,11 @@
         "signature": "2c7dca525f4e2e5f2b357dacb58ab6c8777995e6d505ef652bcbbf9789ac558f",
         "affectsGlobalScope": false
       },
+      "../node_modules/@types/http-errors/index.d.ts": {
+        "version": "85e7ed2eea56d4ecaf94420c82f541dd30ed657f4b82efc34f6377c774db7fc8",
+        "signature": "85e7ed2eea56d4ecaf94420c82f541dd30ed657f4b82efc34f6377c774db7fc8",
+        "affectsGlobalScope": false
+      },
       "../node_modules/@types/istanbul-lib-coverage/index.d.ts": {
         "version": "de18acda71730bac52f4b256ce7511bb56cc21f6f114c59c46782eff2f632857",
         "signature": "de18acda71730bac52f4b256ce7511bb56cc21f6f114c59c46782eff2f632857",
@@ -12300,6 +12305,13 @@
         "../node_modules/@types/node/util.d.ts"
       ],
       "../node_modules/@types/http-assert/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
+      "../node_modules/@types/http-errors/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -24171,6 +24183,13 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@types/http-errors/index.d.ts": [
+        "../node_modules/@types/graceful-fs/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@types/istanbul-lib-coverage/index.d.ts": [
         "../node_modules/@types/graceful-fs/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
@@ -30446,6 +30465,7 @@
       "../node_modules/@types/graphql-upload/node_modules/graphql/validation/validate.d.ts",
       "../node_modules/@types/graphql-upload/node_modules/graphql/version.d.ts",
       "../node_modules/@types/http-assert/index.d.ts",
+      "../node_modules/@types/http-errors/index.d.ts",
       "../node_modules/@types/istanbul-lib-coverage/index.d.ts",
       "../node_modules/@types/istanbul-lib-report/index.d.ts",
       "../node_modules/@types/istanbul-reports/index.d.ts",

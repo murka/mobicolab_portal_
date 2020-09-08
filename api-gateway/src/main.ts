@@ -5,7 +5,7 @@ import { Logger } from '@nestjs/common';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { grpcServiceOptions } from './options/grpc-service.options';
-import { KafkaClientOptions } from './options/kakfa-client.options';
+import { KafkaClientOptions } from './options/kakfa-client.options'
 
 const configService = new ConfigService();
 

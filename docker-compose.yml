@@ -6,9 +6,9 @@ services:
       - 2888:2888
       - 3888:3888
       - 2181:2181
-    volumes:
-      - ./db_data/zookeeper/data:/zookeeper/data
-      - ./db_data/zookeeper/txns:/zookeeper/txns
+    # volumes:
+      # - ./db_data/zookeeper/data:/zookeeper/data
+      # - ./db_data/zookeeper/txns:/zookeeper/txns
     networks:
       - zookeeper
 
@@ -21,26 +21,44 @@ services:
       CONFIG_STORAGE_TOPIC: lab-connect-configs
       OFFSET_STORAGE_TOPIC: lab-connect-offsets
       STATUS_STORAGE_TOPIC: my_source_connect_statuses
-      BOOTSTRAP_SERVERS: ${HOST_IP}:9092
-    volumes:
-      - ./db_data/kafka/connect_lab/:/kafka/logs
+      BOOTSTRAP_SERVERS: ${HOST_IP}:19092,${HOST_IP}:29092
+    # volumes:
+    #   - ./db_data/kafka/connect_lab/:/kafka/logs
     networks:
       - zookeeper
     depends_on:
       - zookeeper
 
-  kafka:
-    image: debezium/kafka:latest
-    ports:
-      - 9092:9092
+  kafka-1:
+    image: wurstmeister/kafka:latest
     environment:
-      ZOOKEEPER_CONNECT: zookeeper:2181
-      ADVERTISED_HOST_NAME: ${HOST_IP}
-    volumes:
-      - ./db_data/kafka/kafka:/kafka/data
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENERS: INSIDE://kafka-1:9092,OUTSIDE://:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-1:9092,OUTSIDE://${HOST_IP}:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    # volumes:
+    #   - /volume1/docker/kafka/kf-1:/var/lib/kafka/data
+    ports:
+      - "9092"
     networks:
       - zookeeper
-    depends_on:
+
+  kafka-2:
+    image: wurstmeister/kafka:latest
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_LISTENERS: INSIDE://kafka-2:9092,OUTSIDE://:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-2:9092,OUTSIDE://${HOST_IP}:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    # volumes:
+      # - /volume1/docker/kafka/kf-2:/var/lib/kafka/data
+    ports:
+      - "29092:9092"
+    networks:
       - zookeeper
 
   pgadmin:
@@ -74,6 +92,10 @@ services:
       - "ENVOY_UID=0"
     ports:
       - "80:80"
+      - "3060:3060"
+      - "4060:4060"
+      - "2000:2000"
+      - "3000:3000"
       - "8080:8080"
       - "8081:8081"
     networks:
@@ -103,6 +125,7 @@ services:
       - "./proto:/proto"
     networks:
       - files
+      - zookeeper
       - test
     environment:
       TYPEORM_PORT: 5432
@@ -111,7 +134,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3010:3010"
       - "50051:50051"
@@ -130,6 +154,7 @@ services:
       - "./proto:/proto"
     networks:
       - files
+      - zookeeper
       - test
     environment:
       TYPEORM_PORT: 5432
@@ -138,9 +163,10 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
-      - "3060:3060"
+      - "3060"
     depends_on:
       - db_files
 
@@ -167,6 +193,7 @@ services:
       - "/app/node_modules"
       - ./proto:/proto
     networks:
+      - zookeeper
       - acts
       - test
     environment:
@@ -176,7 +203,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3020:3020"
     depends_on:
@@ -206,6 +234,7 @@ services:
       - "/app/node_modules"
       - "./proto:/proto"
     networks:
+      - zookeeper
       - customers
       - test
     environment:
@@ -215,7 +244,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3030:3030"
     depends_on:
@@ -246,6 +276,7 @@ services:
       - "./proto:/proto"
     networks:
       - test
+      - zookeeper
       - gcustomers
     environment:
       TYPEORM_PORT: 5432
@@ -254,7 +285,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3040:3040"
     depends_on:
@@ -285,6 +317,7 @@ services:
       - "./proto:/proto"
     networks:
       - labs
+      - zookeeper
       - test
     environment:
       TYPEORM_PORT: 5432
@@ -293,7 +326,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3050:3050"
     depends_on:
@@ -323,6 +357,7 @@ services:
       - ./proto:/proto
     networks:
       - tos
+      - zookeeper
       - test
     environment:
       TYPEORM_PORT: 5432
@@ -331,7 +366,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3090:3090"
     depends_on:
@@ -361,6 +397,7 @@ services:
       - "/app/node_modules"
     networks:
       - rules
+      - zookeeper
       - test
     environment:
       TYPEORM_PORT: 5432
@@ -369,7 +406,8 @@ services:
       TYPEORM_PASSWORD: mobicolab
       TYPEORM_DATABASE: postgres
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     ports:
       - "3070:3070"
     depends_on:
@@ -390,6 +428,7 @@ services:
       - "./proto:/proto"
     networks:
       - test
+      - zookeeper
     ports:
       - "3080:3080"
     depends_on:
@@ -415,15 +454,15 @@ services:
       - test
       - db_mongo
     ports:
-      - "3000:3000"
+      - "3000"
     depends_on:
       - db_mongo
     command: ["npm", "run", "dev"]
 
   web:
     build:
-      context: "./client"
-      dockerfile: "Dockerfile.dev"
+      context: ./client
+      dockerfile: "Dockerfile"
     volumes:
       - "./client:/app"
       # - "/app/node_modules"
@@ -441,16 +480,18 @@ services:
     restart: always
     environment:
       KAFKA_HOST: ${HOST_IP}
-      KAFKA_PORT1: 9092
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
     volumes:
       - "./api-gateway:/app"
       - "/app/node_modules"
       - "./proto:/proto"
     networks:
       - test
+      - zookeeper
     ports:
-      - "2000:2000"
-      - "50020:50020"
+      - "50020"
+      - "2000"
     depends_on:
       - api_files
       - api_customers
