@@ -6,10 +6,6 @@ export class CreateHabitan {
       createHabitan(label: $data) {
         id
         label
-        htypes {
-          id
-          label
-        }
       }
     }
   `;

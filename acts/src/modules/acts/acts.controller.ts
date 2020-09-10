@@ -86,6 +86,8 @@ export class ActsController implements ActServiceController {
         customer: act.customer.id,
         generalCustomer: act.generalCustomer.id,
         lab: act.lab.id,
+        habitan: act.typeOfSample.habitan.id,
+        htype: act.typeOfSample.htype.id,
       } as ActToFile;
 
       return newact;

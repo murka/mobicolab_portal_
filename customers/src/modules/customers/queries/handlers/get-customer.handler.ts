@@ -16,9 +16,7 @@ export class GetCustomerHandler implements IQueryHandler<GetCustomerQuery> {
     const { id } = query;
 
     try {
-      //   const customer = await this.customerRepository.findOne(id);
-
-      const customer = (await this.customerRepository.find())[0];
+      const customer = await this.customerRepository.findOne(id);
 
       return customer;
     } catch (error) {

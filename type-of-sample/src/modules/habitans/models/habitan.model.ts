@@ -14,7 +14,7 @@ export class Habitan {
   @Field()
   @Column()
   label: string;
-  @Field(type => [HType])
+  @Field(type => [HType], { nullable: 'itemsAndList' })
   @OneToMany(
     type => HType,
     htypes => htypes.habitan,
@@ -22,6 +22,7 @@ export class Habitan {
       cascade: true,
       onUpdate: 'CASCADE',
       eager: true,
+      nullable: true,
     },
   )
   htypes: HType[];
@@ -34,6 +35,7 @@ export class Habitan {
   @OneToMany(
     type => Act,
     acts => acts.habitan,
+    { nullable: true },
   )
   acts: Act[];
 }

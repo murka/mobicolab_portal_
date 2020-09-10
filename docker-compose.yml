@@ -7,15 +7,15 @@ services:
       - 3888:3888
       - 2181:2181
     # volumes:
-      # - ./db_data/zookeeper/data:/zookeeper/data
-      # - ./db_data/zookeeper/txns:/zookeeper/txns
+    # - ./db_data/zookeeper/data:/zookeeper/data
+    # - ./db_data/zookeeper/txns:/zookeeper/txns
     networks:
       - zookeeper
 
   connect:
     image: debezium/connect:1.2
     ports:
-      - 8583:8083
+      - "8083"
     environment:
       GROUP_ID: 3
       CONFIG_STORAGE_TOPIC: lab-connect-configs
@@ -55,7 +55,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
     # volumes:
-      # - /volume1/docker/kafka/kf-2:/var/lib/kafka/data
+    # - /volume1/docker/kafka/kf-2:/var/lib/kafka/data
     ports:
       - "29092:9092"
     networks:
@@ -96,7 +96,7 @@ services:
       - "4060:4060"
       - "2000:2000"
       - "3000:3000"
-      - "8080:8080"
+      - "2050:2050"
       - "8081:8081"
     networks:
       - test

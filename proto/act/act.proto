@@ -19,7 +19,9 @@ message ActToFile {
     string customer = 2;
     string general_customer = 3;
     string lab = 4;
-    DateTime datetime = 5;
+    string htype = 5;
+    string habitan = 6;
+    DateTime datetime = 7;
 }
 
 message Act {

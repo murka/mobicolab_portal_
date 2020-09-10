@@ -41,7 +41,7 @@ export class HabitanResolver {
 
   @Mutation(of => Habitan)
   async createHabitan(@Args('label') label: string): Promise<Habitan> {
-    this.logger.verbose('create-habitan.method');
+    this.logger.verbose(`create-habitan.method ${label}`);
 
     try {
       return await this.commandBus.execute(new CreateHabitanCommand(label));
@@ -59,19 +59,6 @@ export class HabitanResolver {
 
     try {
       return await this.commandBus.execute(new UpdateHabitanCommand(id, label));
-    } catch (error) {
-      this.logger.error(error);
-    }
-  }
-
-  @ResolveField()
-  async htypes(@Parent() habitan: Habitan): Promise<HType[]> {
-    this.logger.verbose('resolve-fielde-htypes.method');
-
-    const { id } = habitan;
-
-    try {
-      return await this.queryBus.execute(new GetHabitansTypesByParentQuery(id));
     } catch (error) {
       this.logger.error(error);
     }

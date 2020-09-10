@@ -17,7 +17,7 @@ export class HabitanRepository extends Repository<Habitan> {
     this.logger.verbose('get-all-habitan.method');
 
     try {
-      const habitans = await this.find();
+      const habitans = await this.find({ relations: ['htypes'] });
 
       return habitans;
     } catch (error) {
@@ -29,7 +29,7 @@ export class HabitanRepository extends Repository<Habitan> {
     this.logger.verbose('get-habitan-by-id');
 
     try {
-      const habitan = await this.findOne(id);
+      const habitan = await this.findOne(id, { relations: ['htypes'] });
 
       if (!habitan)
         throw new HttpException(

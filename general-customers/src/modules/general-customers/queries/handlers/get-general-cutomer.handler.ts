@@ -17,7 +17,7 @@ export class GetGeneralCustomerHandler
     const { gcustomerId } = query;
 
     try {
-      return (await this.gcutomerRepository.find())[0];
+      return await this.gcutomerRepository.findOne(gcustomerId);
     } catch (error) {
       this.logger.error(error.message);
     }

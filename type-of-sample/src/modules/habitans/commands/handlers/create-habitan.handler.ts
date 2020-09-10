@@ -24,6 +24,8 @@ export class CreateHabitanHandler
     try {
       const habitan = await this.habitanService.createHabitan(label);
 
+      this.logger.verbose(habitan);
+
       this.eventBus.publish(new HabitanCreatedEvent(habitan));
 
       return habitan;

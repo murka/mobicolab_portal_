@@ -11,7 +11,8 @@
         "compile:gcustomer": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build general-customer/*.proto --ts_proto_out=../files/src/models/build general-customer/*.proto --ts_proto_out=../general-customers/src/models/build general-customer/*.proto --ts_proto_opt=nestJs=true",
         "compile:lab": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build lab/*.proto --ts_proto_out=../files/src/models/build lab/*.proto --ts_proto_out=../labs/src/models/build lab/*.proto --ts_proto_opt=nestJs=true",
         "compile:api": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../api-gateway/src/models/build api-gateway/*.proto  --ts_proto_opt=nestJs=true",
-        "compile:client": "./node_modules/protoc/protoc/bin/protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:../client/src/app/shared/protos/build --ts_out=service=grpc-web:../client/src/app/shared/protos/build -I ./api-gateway ./api-gateway/*.proto"
+        "compile:client": "./node_modules/protoc/protoc/bin/protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:../client/src/app/shared/protos/build --ts_out=service=grpc-web:../client/src/app/shared/protos/build -I ./api-gateway ./api-gateway/*.proto",
+        "compile:tos": "./node_modules/protoc/protoc/bin/protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=../templater/src/models/build tos/*.proto --ts_proto_out=../type-of-sample/src/models/build tos/*.proto --ts_proto_opt=nestJs=true"
     },
     "author": "",
     "license": "ISC",

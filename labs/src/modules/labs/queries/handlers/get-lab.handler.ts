@@ -16,7 +16,7 @@ export class GetLabHandler implements IQueryHandler<GetLabQuery> {
     const { labId } = query;
 
     try {
-      return (await this.labRepository.find())[0];
+      return await this.labRepository.findOne(labId);
     } catch (error) {
       this.logger.error(error.message);
     }
