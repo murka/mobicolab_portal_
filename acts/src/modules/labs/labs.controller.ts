@@ -25,4 +25,19 @@ export class LabsController {
       this.logger.error(error);
     }
   }
+
+  @EventPattern('outbox.event.Lab.CREATED')
+  async handleUpdatedLab(@Payload() message: any): Promise<any> {
+    this.logger.verbose('handle-updated-lab');
+
+    const {
+      value: { payload: id },
+    } = message;
+
+    try {
+      this.labService.labUpdated(id);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
 }

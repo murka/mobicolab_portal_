@@ -27,7 +27,7 @@ export type Doc = {
 
 export type Query = {
   __typename?: 'Query';
-  getDocs: Array<Doc>;
+  getDocs?: Maybe<Array<Doc>>;
 };
 
 
@@ -65,10 +65,10 @@ export type GetAllDocsQueryVariables = Exact<{
 
 export type GetAllDocsQuery = (
   { __typename?: 'Query' }
-  & { getDocs: Array<(
+  & { getDocs?: Maybe<Array<(
     { __typename?: 'Doc' }
     & Pick<Doc, 'id' | 'name' | 'ydUrl' | 'title'>
-  )> }
+  )>> }
 );
 
 export const ChangeDocsDocument = gql`

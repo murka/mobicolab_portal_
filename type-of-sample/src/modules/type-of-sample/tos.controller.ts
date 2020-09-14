@@ -7,7 +7,7 @@ import {
   TOSServiceController,
   Ids,
   Tos,
-} from 'src/models/build/tos/tos';
+} from '../../models/build/tos/tos';
 import { ActService } from './act.service';
 
 @Controller('tos')

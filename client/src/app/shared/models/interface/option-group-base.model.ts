@@ -7,11 +7,13 @@ export class OptionGroupBaseModel {
 
   constructor(options: Habitan) {
     this.label = options.label;
-    this.htypes = [
-      ...options.htypes.map(
-        (item) => new ItemsGroupModel({ ...item, buttonController: false })
-      ),
-    ];
+    options.htypes
+      ? (this.htypes = [
+          ...options.htypes.map(
+            (item) => new ItemsGroupModel({ ...item, buttonController: false })
+          ),
+        ])
+      : (this.htypes = []);
     this.key = options.id;
   }
 }

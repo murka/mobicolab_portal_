@@ -61,4 +61,22 @@ export class CustomersService {
       this.logger.error(error);
     }
   }
+
+  async customerUpdated(id: string): Promise<void> {
+    this.logger.verbose(`customer-updated ${id}`);
+
+    try {
+      const customer = await this.customerRepository.findOne(id);
+
+      if (customer) {
+        return;
+      } else {
+        const customer = this.customerRepository.create({ id: id });
+
+        await this.customerRepository.save(customer);
+      }
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
 }

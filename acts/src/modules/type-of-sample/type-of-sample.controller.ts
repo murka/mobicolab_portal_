@@ -23,6 +23,21 @@ export class TypeOfSampleController {
     }
   }
 
+  @EventPattern('outbox.event.Habitan.UPDATED')
+  async handleUpdatedHabitan(@Payload() message: any): Promise<void> {
+    this.logger.verbose('handle-updated-habitan');
+
+    const {
+      value: { payload: id },
+    } = message;
+
+    try {
+      this.tosService.habitanUpdated(id);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
+
   @EventPattern('outbox.event.HType.CREATED')
   async handleNewHType(@Payload() message: any): Promise<void> {
     this.logger.verbose(`handle-new-htype ${JSON.stringify(message, null, 2)}`);
@@ -33,6 +48,21 @@ export class TypeOfSampleController {
       this.tosService.htypeCreated(value.payload);
     } catch (error) {
       this.logger.error(error);
+    }
+  }
+
+  @EventPattern('outbox.event.HType.UPDATED')
+  async handleUpdatedHType(@Payload() message: any): Promise<void> {
+    this.logger.verbose('handle-updated-htype');
+
+    const {
+      value: { payload: id },
+    } = message;
+
+    try {
+      this.tosService.htypeUpdated(id);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
     }
   }
 }

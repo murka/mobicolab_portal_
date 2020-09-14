@@ -48,4 +48,22 @@ export class GeneralCustomersService {
       this.logger.error(error);
     }
   }
+
+  async generalCustomerUpdated(id: string): Promise<void> {
+    this.logger.verbose('general-customer-updated');
+
+    try {
+      const gc = await this.generalCustomerRepositroy.findOne(id);
+
+      if (gc) {
+        return;
+      } else {
+        const gc = this.generalCustomerRepositroy.create({ id: id });
+
+        await this.generalCustomerRepositroy.save(gc);
+      }
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
 }
