@@ -111,11 +111,47 @@ export class TypeOfSampleService {
     this.habitanRepository.save(habitan);
   }
 
+  async habitanUpdated(id: string): Promise<void> {
+    this.logger.verbose('habitan-updated');
+
+    try {
+      const habitan = await this.habitanRepository.findOne(id);
+
+      if (habitan) {
+        return;
+      } else {
+        const habitan = this.habitanRepository.create({ id: id });
+
+        this.habitanRepository.save(habitan);
+      }
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
+
   htypeCreated(id: string) {
     this.logger.verbose('htype-created');
 
     const htype = this.htypeRepository.create({ id: id });
 
     this.htypeRepository.save(htype);
+  }
+
+  async htypeUpdated(id: string): Promise<void> {
+    this.logger.verbose('htype-updated');
+
+    try {
+      const htype = await this.htypeRepository.findOne(id);
+
+      if (htype) {
+        return;
+      } else {
+        const htype = this.htypeRepository.create({ id: id });
+
+        await this.htypeRepository.save(htype);
+      }
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
   }
 }

@@ -41,7 +41,7 @@ services:
     # volumes:
     #   - /volume1/docker/kafka/kf-1:/var/lib/kafka/data
     ports:
-      - "9092"
+      - "19092:9092"
     networks:
       - zookeeper
 
@@ -166,7 +166,7 @@ services:
       KAFKA_PORT1: 19092
       KAFKA_PORT2: 29092
     ports:
-      - "3060"
+      - "3060:3060"
     depends_on:
       - db_files
 
@@ -454,7 +454,7 @@ services:
       - test
       - db_mongo
     ports:
-      - "3000"
+      - "3000:3000"
     depends_on:
       - db_mongo
     command: ["npm", "run", "dev"]
@@ -491,7 +491,7 @@ services:
       - zookeeper
     ports:
       - "50020"
-      - "2000"
+      - "2000:2000"
     depends_on:
       - api_files
       - api_customers

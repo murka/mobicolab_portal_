@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package tos_service;
+
+service TOSService {
+    rpc GetTOS (Ids) returns (Tos);
+}
+
+message Ids {
+    string habitanId = 1;
+    string htypeId = 2;
+}
+
+message Tos {
+    string habitan = 1;
+    string htype = 2;
+}

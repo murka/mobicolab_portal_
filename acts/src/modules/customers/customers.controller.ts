@@ -22,4 +22,19 @@ export class CustomersController {
       this.logger.error(error);
     }
   }
+
+  @EventPattern('outbox.event.Customer.UPDATED')
+  async handleUpdateCustomer(@Payload() message: any): Promise<void> {
+    this.logger.verbose('handle-update-customer');
+
+    const {
+      value: { payload: id },
+    } = message;
+
+    try {
+      this.customerService.customerUpdated(id);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
 }

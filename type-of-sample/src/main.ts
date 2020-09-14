@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { KafkaClientOptions } from './options/kafka.client.options';
 import { MicroserviceOptions } from '@nestjs/microservices';
+import { grpcServiceOptions } from './options/grpc-service.options';
 
 const configService = new ConfigService();
 
@@ -15,6 +16,8 @@ async function bootstrap() {
   const kafkaService = app.get(KafkaClientOptions);
 
   app.connectMicroservice<MicroserviceOptions>(kafkaService.kafkaClientOptions);
+
+  app.connectMicroservice<MicroserviceOptions>(grpcServiceOptions);
 
   await app.startAllMicroservicesAsync();
 

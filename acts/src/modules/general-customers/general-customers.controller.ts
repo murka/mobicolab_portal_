@@ -22,4 +22,19 @@ export class GeneralCustomersController {
       this.logger.error(error);
     }
   }
+
+  @EventPattern('outbox.event.GeneralCustomer.UPDATED')
+  async handleUpdatedGeneralCustomer(@Payload() message: any): Promise<void> {
+    this.logger.verbose(`handle-new-gcustomer`);
+
+    const {
+      value: { payload: id },
+    } = message;
+
+    try {
+      this.gcustomerService.generalCustomerUpdated(id);
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
 }

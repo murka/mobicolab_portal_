@@ -46,4 +46,22 @@ export class LabsService {
       this.logger.error(error);
     }
   }
+
+  async labUpdated(id: string): Promise<void> {
+    this.logger.verbose('lab-updated');
+
+    try {
+      const lab = await this.labRepositroy.findOne(id);
+
+      if (lab) {
+        return;
+      } else {
+        const lab = this.labRepositroy.create({ id: id });
+
+        await this.labRepositroy.save(lab);
+      }
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
+  }
 }

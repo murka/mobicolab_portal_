@@ -3,8 +3,8 @@ import { ClientOptions, Transport } from '@nestjs/microservices';
 export const grpcTOSClient: ClientOptions = {
   transport: Transport.GRPC,
   options: {
-    url: 'api_labs:50055',
-    package: 'lab_service',
-    protoPath: '/proto/lab/lab.proto',
+    url: 'api_tos:50059',
+    package: 'tos_service',
+    protoPath: '/proto/tos/tos.proto',
   },
 };
