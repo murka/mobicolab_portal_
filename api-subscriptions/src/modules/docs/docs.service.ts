@@ -2,7 +2,7 @@ import { Injectable, Logger, Inject, OnModuleInit } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { Client, ClientGrpc } from '@nestjs/microservices';
 import { grpcFilesClientOptions } from 'src/options/grpc-files.client.options';
-import { FilesServiceClient } from 'src/models/build/files/files';
+import { FilesServiceClient, DocList, Doc as DocBuild } from 'src/models/build/files/files';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Doc } from './models/doc.model';
@@ -38,12 +38,13 @@ export class DocsService implements OnModuleInit {
     }
   }
 
-  getDocs(actId: string): Observable<Doc[]> {
+  getDocs(actId: string): Observable<DocBuild[]> {
     this.logger.verbose('get-docs');
 
     try {
       return this.grpcFilesService.getDocs({ id: actId }).pipe(
-        map(data => {
+        map((data: DocList) => {
+          this.logger.log(data)
           return data.item;
         }),
       );

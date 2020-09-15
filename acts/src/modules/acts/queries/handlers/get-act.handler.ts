@@ -16,7 +16,7 @@ export class GetActHandler implements IQueryHandler<GetActQuery> {
     const { actId } = query;
 
     try {
-      return await this.actRepository.findOne(actId);
+      return await this.actRepository.findActById(actId)
     } catch (error) {
       this.logger.error(error.message);
     }

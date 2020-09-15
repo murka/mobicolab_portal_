@@ -9,13 +9,13 @@ import { CommandHandlers } from './commands/handler';
 import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
+  controllers: [TypeOfSampleController],
   imports: [
     CqrsModule,
     forwardRef(() => HtypesModule),
     TypeOrmModule.forFeature([Act, ActRepository]),
   ],
   providers: [ActService, ...CommandHandlers],
-  controllers: [TypeOfSampleController],
   exports: [ActService],
 })
 export class TypeOfSampleModule {}

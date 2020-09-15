@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package tos_service;
 
-service TOSService {
-    rpc GetTOS (Ids) returns (Tos);
+service TosService {
+    rpc GetTos (Ids) returns (Tos);
 }
 
 message Ids {

@@ -12,8 +12,6 @@ export interface ActToFile {
   customer: string;
   generalCustomer: string;
   lab: string;
-  htype: string;
-  habitan: string;
   datetime: DateTime | undefined;
 }
 

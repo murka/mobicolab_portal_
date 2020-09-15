@@ -6,14 +6,16 @@ import { HtypesModule } from './modules/htypes/htypes.module';
 import { HabitansModule } from './modules/habitans/habitans.module';
 import { KafkaClientOptions } from './options/kafka.client.options';
 import { ClientProxyFactory } from '@nestjs/microservices';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
+    CqrsModule,
+    TypeOfSampleModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     DatabaseModule,
-    TypeOfSampleModule,
     HtypesModule,
     HabitansModule,
   ],

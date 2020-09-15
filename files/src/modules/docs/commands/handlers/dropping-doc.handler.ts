@@ -19,27 +19,31 @@ export class DroppingDocHandler implements ICommandHandler<DroppingDocCommand> {
   async execute(command: DroppingDocCommand): Promise<Doc> {
     this.logger.verbose('dorpping-doc.handler');
 
-    const { file, actId, name, title, mimtype } = command;
+    const { actId, name, file, mimtype, title } = command;
 
     try {
       this.logger.verbose('dropping-doc.command');
 
       const doc = this.docRepositroy.create();
 
+      const newname = await this.docService.createName(
+        actId,
+        title,
+        name,
+        mimtype,
+      );
+
       if (file) {
-        doc.name = await this.docService.createName(
-          actId,
-          title,
-          name,
-          mimtype,
-        );
+        doc.name = newname
         doc.title = title;
+        const act = await this.docService.getAct(actId)
+        doc.act = act
       }
 
-      await this.docRepositroy.save(doc);
+      const newdoc = await this.docRepositroy.save(doc);
 
       if (file) {
-        this.commandBus.execute(new UploadDocCommand(actId, doc, file));
+        this.commandBus.execute(new UploadDocCommand(actId, newdoc, file));
       }
 
       return doc;
