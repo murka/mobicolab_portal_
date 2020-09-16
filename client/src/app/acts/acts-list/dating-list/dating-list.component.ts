@@ -33,7 +33,7 @@ export class DatingListComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.createDatesArray(this.customer.acts);
+    this.createDatesArray([...this.customer.acts.filter((d) => d !== null)]);
   }
 
   createDatesArray(
