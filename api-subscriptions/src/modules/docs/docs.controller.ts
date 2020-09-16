@@ -8,7 +8,9 @@ export class DocsController {
 
   constructor(private readonly ds: DocsService) {}
 
-  @EventPattern('outbox.event.Doc.SAVED')
+  @EventPattern('outbox.event.DOC.ACT')
+  @EventPattern('outboc.event.DOC.PROTOCOL')
+  @EventPattern('outboc.event.DOC.FINAL_PROTOCOL')
   async handlerNewDoc(@Payload() message: any): Promise<void> {
     this.logger.verbose('handle-new-doc');
 

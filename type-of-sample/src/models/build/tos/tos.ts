@@ -13,32 +13,32 @@ export interface Tos {
   htype: string;
 }
 
-export interface TOSServiceController {
+export interface TosServiceController {
 
-  getTOS(request: Ids): Promise<Tos> | Observable<Tos> | Tos;
-
-}
-
-export interface TOSServiceClient {
-
-  getTOS(request: Ids): Observable<Tos>;
+  getTos(request: Ids): Promise<Tos> | Observable<Tos> | Tos;
 
 }
 
-export function TOSServiceControllerMethods() {
+export interface TosServiceClient {
+
+  getTos(request: Ids): Observable<Tos>;
+
+}
+
+export function TosServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['getTOS'];
+    const grpcMethods: string[] = ['getTos'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod('TOSService', method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod('TosService', method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod('TOSService', method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod('TosService', method)(constructor.prototype[method], method, descriptor);
     }
   }
 }
 
 export const TOS_SERVICE_PACKAGE_NAME = 'tos_service'
-export const T_OS_SERVICE_NAME = 'TOSService';
+export const TOS_SERVICE_NAME = 'TosService';

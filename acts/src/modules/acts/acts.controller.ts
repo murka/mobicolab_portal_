@@ -68,17 +68,15 @@ export class ActsController implements ActServiceController {
   }
 
   async getActToFile(data: actId): Promise<ActToFile> {
-    this.logger.verbose('get-act-to-file.method');
+    this.logger.verbose(`get-act-to-file.method ${data.id}`);
 
     try {
       const act: ActModel = await this.qeueryBus.execute(
         new GetActQuery(data.id),
       );
 
-      const date = act.datetime.date.toISOString;
-
       const newact = {
-        ...act,
+        name: act.name,
         datetime: {
           date: act.datetime.date.toISOString(),
           time: act.datetime.time,
@@ -86,9 +84,9 @@ export class ActsController implements ActServiceController {
         customer: act.customer.id,
         generalCustomer: act.generalCustomer.id,
         lab: act.lab.id,
-        habitan: act.typeOfSample.habitan.id,
-        htype: act.typeOfSample.htype.id,
       } as ActToFile;
+
+      this.logger.log(newact)
 
       return newact;
     } catch (error) {

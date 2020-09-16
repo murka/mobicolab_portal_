@@ -1,18 +1,18 @@
 import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
+import { EventPattern, Payload, GrpcMethod } from '@nestjs/microservices';
 import { CommandBus } from '@nestjs/cqrs';
 import { AddActCommand } from './commands/impl/add-act.command';
 import {
-  TOSServiceControllerMethods,
-  TOSServiceController,
   Ids,
   Tos,
+  TosServiceControllerMethods,
+  TosServiceController,
 } from '../../models/build/tos/tos';
 import { ActService } from './act.service';
 
 @Controller('tos')
-@TOSServiceControllerMethods()
-export class TypeOfSampleController implements TOSServiceController {
+@TosServiceControllerMethods()
+export class TypeOfSampleController implements TosServiceController {
   logger = new Logger(this.constructor.name);
 
   constructor(
@@ -36,7 +36,8 @@ export class TypeOfSampleController implements TOSServiceController {
     }
   }
 
-  async getTOS(data: Ids): Promise<Tos> {
+  // @GrpcMethod(T_OS_SERVICE_NAME, 'GetTOS')
+  async getTos(data: Ids): Promise<Tos> {
     this.logger.verbose('get-tos.grpc');
 
     try {

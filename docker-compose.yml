@@ -15,7 +15,7 @@ services:
   connect:
     image: debezium/connect:1.2
     ports:
-      - "8083"
+      - "8583:8083"
     environment:
       GROUP_ID: 3
       CONFIG_STORAGE_TOPIC: lab-connect-configs
@@ -92,10 +92,10 @@ services:
       - "ENVOY_UID=0"
     ports:
       - "80:80"
-      - "3060:3060"
+      # - "3060:3060"
       - "4060:4060"
-      - "2000:2000"
-      - "3000:3000"
+      # - "2000:2000"
+      # - "3000:3000"
       - "2050:2050"
       - "8081:8081"
     networks:
@@ -371,8 +371,8 @@ services:
     ports:
       - "3090:3090"
     depends_on:
-      - db_labs
-      - api_files
+      - db_tos
+      # - api_files
 
   db_rules:
     image: debezium/postgres:latest
@@ -462,7 +462,7 @@ services:
   web:
     build:
       context: ./client
-      dockerfile: "Dockerfile"
+      dockerfile: "Dockerfile.dev"
     volumes:
       - "./client:/app"
       # - "/app/node_modules"

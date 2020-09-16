@@ -104,7 +104,7 @@ export class DocsController implements FilesServiceController {
   }
 
   async pushDoc(data: data): Promise<void> {
-    this.logger.verbose('push-doc.method');
+    this.logger.verbose(`push-doc.method ${data.actId}, ${data.mimtype}, ${data.name}, ${data.title}`);
 
     const file = Buffer.from(data.doc);
 

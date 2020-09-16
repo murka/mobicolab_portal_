@@ -32,16 +32,24 @@ export class NewActHandler implements ICommandHandler<NewActCommand> {
     try {
       const customer = await this.as.getCusomer(newActData.customer);
 
+      this.logger.verbose(customer);
+
       const generalCustomer = await this.as.getGeneralCustomer(
         newActData.generalCustomer,
       );
 
+      this.logger.verbose(generalCustomer);
+
       const lab = await this.as.getLab(newActData.lab);
+
+      this.logger.verbose(lab);
 
       const { tos, habitan, htype } = await this.as.getTOSByReletaions(
         newActData.typeOfSample.habitan,
         newActData.typeOfSample.htype,
       );
+
+      this.logger.verbose(tos);
 
       let applications: Application[] = [];
 
@@ -81,7 +89,7 @@ export class NewActHandler implements ICommandHandler<NewActCommand> {
 
       return newAct;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error(JSON.stringify(e));
     }
   }
 }

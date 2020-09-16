@@ -13,16 +13,16 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  const kafkaService = app.get(KafkaClientOptions);
-
-  app.connectMicroservice<MicroserviceOptions>(kafkaService.kafkaClientOptions);
-
-  app.connectMicroservice<MicroserviceOptions>(grpcServiceOptions);
-
-  await app.startAllMicroservicesAsync();
-
   app.enableCors();
 
+  const kafkaService = app.get(KafkaClientOptions);
+  
+  app.connectMicroservice<MicroserviceOptions>(kafkaService.kafkaClientOptions);
+  
+  app.connectMicroservice<MicroserviceOptions>(grpcServiceOptions);
+  
+  await app.startAllMicroservicesAsync();
+  
   const port = configService.get('PORT');
 
   await app.listen(port);

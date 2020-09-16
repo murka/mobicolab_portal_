@@ -15,7 +15,7 @@ import {
 import { grpcLabClient } from 'src/options/grpc-lab-client';
 import { LabServiceClient, Lab } from 'src/models/build/lab/lab';
 import { grpcTOSClient } from 'src/options/grpc-tos-client';
-import { TOSServiceClient, Tos } from 'src/models/build/tos/tos';
+import { TosServiceClient, Tos, TOS_SERVICE_NAME } from 'src/models/build/tos/tos';
 
 @Injectable()
 export class ActService implements OnModuleInit {
@@ -44,7 +44,7 @@ export class ActService implements OnModuleInit {
 
   private grpcLabService: LabServiceClient;
 
-  private grpcTosService: TOSServiceClient;
+  private grpcTosService: TosServiceClient;
 
   constructor() {}
 
@@ -61,8 +61,8 @@ export class ActService implements OnModuleInit {
     this.grpcLabService = this.labClient.getService<LabServiceClient>(
       'LabService',
     );
-    this.grpcTosService = this.tosClient.getService<TOSServiceClient>(
-      'TOSService',
+    this.grpcTosService = this.tosClient.getService<TosServiceClient>(
+      TOS_SERVICE_NAME,
     );
   }
 
@@ -107,7 +107,7 @@ export class ActService implements OnModuleInit {
 
     try {
       return await this.grpcTosService
-        .getTOS({ htypeId, habitanId })
+        .getTos({ htypeId, habitanId })
         .toPromise();
     } catch (error) {
       this.logger.error(JSON.stringify(error));

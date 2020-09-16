@@ -167,6 +167,9 @@ export class DocsService implements OnModuleInit {
     const act = await this.grpcActService
       .getActToFile({ id: actId })
       .toPromise();
+
+      console.log(act);
+      
     const name = act.name;
     const date = new Date(act.datetime.date);
     const year = date.getFullYear();
@@ -265,11 +268,11 @@ export class DocsService implements OnModuleInit {
         newname = await getName(version);
 
         return newname;
+      } else {
+        newname = await getName(1);
+        return newname;
       }
 
-      newname = await getName(1);
-
-      return newname;
     } catch (error) {
       logger.error(error.message);
     }

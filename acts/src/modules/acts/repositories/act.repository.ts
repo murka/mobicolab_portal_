@@ -11,7 +11,7 @@ export class ActRepository extends Repository<Act> {
     this.logger.verbose('find-act-by-id');
 
     try {
-      const act = this.findOne(id);
+      const act = this.findOne(id, { relations: ['customer', 'generalCustomer', 'lab', 'typeOfSample'] });
 
       if (!act)
         throw new HttpException(
