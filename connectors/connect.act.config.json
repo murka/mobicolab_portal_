@@ -1,0 +1,22 @@
+{
+    "name": "act-outbox-connector",
+    "config": {
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "database.hostname": "db_acts",
+        "database.port": "5432",
+        "database.user": "mobicolab",
+        "database.password": "mobicolab",
+        "database.dbname": "postgres",
+        "database.server.name": "act-outbox",
+        "schema.whitelist": "public",
+        "table.whitelist": "public.act_event",
+        "tombstones.on.delete": "false",
+        "transforms": "outbox",
+        "transforms.outbox.event.key": "event_key",
+        "transforms.outbox.route.by.field": "aggregateType",
+        "transforms.outbox.route.topic.replacement": "outbox.event.ACT.${routedByValue}",
+        "transforms.outbox.table.field.event.payload": "payload",
+        "transforms.outbox.table.field.event.type": "event_type",
+        "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter"
+    }
+}
