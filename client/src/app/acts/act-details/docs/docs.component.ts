@@ -250,7 +250,7 @@ export class DocsComponent implements OnInit, OnDestroy {
           const newDoc = payload;
           let newAllDocs;
 
-          newAllDocs = [...prev.getDocs, newDoc];
+          newAllDocs = [newDoc, ...prev.getDocs];
 
           return {
             ...prev,
