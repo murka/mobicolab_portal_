@@ -73,6 +73,15 @@ export class CreatorService implements OnModuleInit {
         environmentalEngineer: data.act.environmentalEngineer,
         representative: data.act.representative,
         passedSample: data.act.passedSample,
+        applications: [
+          ...data.act.applications.map(app => {
+            return {
+              place: app.place,
+              date: app.datetime.date,
+              time: app.datetime.time,
+            };
+          }),
+        ],
       });
 
       doc.render();
