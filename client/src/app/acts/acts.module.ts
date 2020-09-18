@@ -6,7 +6,7 @@ registerLocaleData(localeRu, "ru-ru");
 
 import { ActsRoutingModule } from "./acts-routing.module";
 import { SharedModule } from "../shared/shared.module";
-import { RulesModule } from './rules/rules.module'
+import { RulesModule } from "./rules/rules.module";
 
 import { ActsComponent } from "./acts.component";
 import { ActsListComponent } from "./acts-list/acts-list.component";
@@ -33,9 +33,9 @@ import { FfDateTimeComponent } from "./act-form/ff-date-time/ff-date-time.compon
 import { FfTimeComponent } from "./act-form/ff-date-time/ff-time/ff-time.component";
 import { EditActOptionsComponent } from "./act-form/edit-act-options/edit-act-options.component";
 import { ActApplitcationComponent } from "./act-form/act-applitcation/act-applitcation.component";
-import { ActsTableComponent } from "./acts-list/list-items/acts-table/acts-table.component";
+import { ActsTableComponent } from "./acts-list/acts-table/acts-table.component";
 import { DocsComponent } from "./act-details/docs/docs.component";
-import { DetailsPdfComponent } from './act-details/details-pdf/details-pdf.component';
+import { DetailsPdfComponent } from "./act-details/details-pdf/details-pdf.component";
 
 @NgModule({
   declarations: [
@@ -68,9 +68,8 @@ import { DetailsPdfComponent } from './act-details/details-pdf/details-pdf.compo
     ActsRoutingModule,
     MatCheckboxModule,
     MatExpansionModule,
-    RulesModule
+    RulesModule,
   ],
   providers: [DatePipe, { provide: LOCALE_ID, useValue: "ru-ru" }],
 })
-export class ActsModule {
-}
+export class ActsModule {}
