@@ -9,11 +9,8 @@ import { GeneralCustomersService } from '../general-customers/general-customers.
 import { LabsService } from '../labs/labs.service';
 import { Habitan } from '../type-of-sample/models/habitan.model';
 import { TypeOfSampleService } from '../type-of-sample/type-of-sample.service';
-import { async } from 'rxjs';
-import { stringify } from 'querystring';
 import { TypeOfSample } from '../type-of-sample/models/type-of-sample.model';
 import { HType } from '../type-of-sample/models/htype.model';
-import { strict } from 'assert';
 
 @Injectable()
 export class ActsService {

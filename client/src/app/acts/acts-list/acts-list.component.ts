@@ -17,7 +17,7 @@ export class ActsListComponent implements OnInit {
   customers: GetCustomersWithActsQuery;
   _filteredActs: ActModel[];
   statuses: StatusBaseModel[];
-  viewController: string
+  viewController: string;
 
   set toggleStatus(status: StatusBaseModel) {
     if (status) {
@@ -45,7 +45,7 @@ export class ActsListComponent implements OnInit {
     this.afds
       .getActiveCustomer()
       .subscribe((customers) => (this.customers = customers));
-    this.viewController = 'table'
+    this.viewController = "table";
   }
 
   filterActs(stat: string): ActModel[] {

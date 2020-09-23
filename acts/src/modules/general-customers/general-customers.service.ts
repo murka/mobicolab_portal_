@@ -15,7 +15,15 @@ export class GeneralCustomersService {
     this.logger.verbose('find-gcustomer.method');
 
     try {
-      return await this.generalCustomerRepositroy.findOne(id);
+      const gs = await this.generalCustomerRepositroy.findOne(id);
+
+      if (!gs) {
+        const newgs = this.generalCustomerRepositroy.create({ id: id });
+
+        return this.generalCustomerRepositroy.save(newgs);
+      }
+
+      return gs;
     } catch (error) {
       this.logger.error(error);
     }

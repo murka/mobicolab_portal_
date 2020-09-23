@@ -10,10 +10,20 @@ export class DataTableService {
 
   getColumns() {
     return [
+      new ColumnModel(true, "Номер", "name"),
       new ColumnModel(true, "Заказчик", "customer"),
       new ColumnModel(true, "Генеральный заказчик", "generalCustomer"),
       new ColumnModel(true, "Лаборатория", "lab"),
       new ColumnModel(true, "Дата отбора", "date"),
+    ];
+  }
+
+  getFileters() {
+    return [
+      new ColumnModel(true, "Заказчик", "customer"),
+      new ColumnModel(true, "Генеральный заказчик", "generalCustomer"),
+      new ColumnModel(true, "Лаборатория", "lab"),
+      //   new ColumnModel(true, "Дата отбора", "dateti"),
     ];
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { ReactiveFormsModule } from "@angular/forms";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import {
   MatDialogModule,
@@ -34,6 +35,8 @@ import {
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { MatListModule } from "@angular/material/list";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatSortModule } from "@angular/material/sort";
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
@@ -103,6 +106,7 @@ import { PdfViewComponent } from "./components/dialogs/templates/pdf-view/pdf-vi
   ],
   exports: [
     CommonModule,
+    DragDropModule,
     HttpClientModule,
     MatButtonToggleModule,
     MatRadioModule,
@@ -119,6 +123,8 @@ import { PdfViewComponent } from "./components/dialogs/templates/pdf-view/pdf-vi
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
+    MatPaginatorModule,
+    MatSortModule,
     MatBottomSheetModule,
     MatDatepickerModule,
     MatMomentDateModule,
