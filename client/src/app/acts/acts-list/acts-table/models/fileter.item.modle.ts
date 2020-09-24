@@ -1,5 +1,3 @@
-import { ColumnModel } from "./column.model";
-
 export class FilterItem {
   constructor(
     public label: string,

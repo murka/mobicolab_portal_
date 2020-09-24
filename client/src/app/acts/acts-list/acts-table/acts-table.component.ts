@@ -161,7 +161,7 @@ export class ActsTableComponent implements OnInit {
       : true;
 
     if (event && !filter.isActive && alone) {
-      const activeCheckbox = this.disablingActiveCheckboxes(filter);
+      const activeCheckbox = this.toggleActiveCheckboxes(filter);
 
       const filteringData = this.newfilteringData(
         key,
@@ -174,9 +174,11 @@ export class ActsTableComponent implements OnInit {
       this.data = [...filteringData];
 
       filter.isActive = true;
+
+      this.disablingNoActiveCheckboxesAndFilteringData(filteringData);
     }
     if (event && !filter.isActive && !alone) {
-      const activeCheckbox = this.disablingActiveCheckboxes(filter);
+      const activeCheckbox = this.toggleActiveCheckboxes(filter);
 
       const filteringData = this.newfilteringData(
         key,
@@ -189,12 +191,38 @@ export class ActsTableComponent implements OnInit {
       this.data = [...filteringData];
 
       filter.isActive = true;
+
+      this.disablingNoActiveCheckboxesAndFilteringData(filteringData);
     }
-    if (event && filter.isActive && !alone) {
+    if (!event && filter.isActive && !alone) {
+      filter.isActive = false;
+
+      const filteringData = this.filteringAllData(this._data);
+
+      this.data = [...filteringData];
+
+      this.disablingNoActiveCheckboxesAndFilteringData(filteringData);
     }
+
+    if (!event && filter.isActive && alone) {
+      filter.isActive = false;
+
+      this.data = [...this._data];
+
+      this.filterOptions.forEach((filter) => {
+        filter.items
+          .filter((it) => it.disabled)
+          .forEach((it) => (it.disabled = false));
+        this.set_FilteredData(filter.key, this.data);
+      });
+    }
+
+    this.dataSource = new MatTableDataSource([
+      ...this.data.map((d) => new DataSourceModel(d)),
+    ]);
   }
 
-  disablingActiveCheckboxes(filter: FilterItem): string[] {
+  toggleActiveCheckboxes(filter: FilterItem): string[] {
     let activeCheckbox: string[] = [];
     filter.items.forEach((item) => {
       if (!item.isChecked) {
@@ -206,23 +234,41 @@ export class ActsTableComponent implements OnInit {
     return activeCheckbox;
   }
 
-  disablingNoActiveCheckboxes(key: string, data: GetAllActsQuery["getActs"]) {
-    const noActiveFilters = this.getNotActiveFilters(key);
+  disablingNoActiveCheckboxesAndFilteringData(
+    data: GetAllActsQuery["getActs"]
+  ) {
+    const noActiveFilters = this.getNotActiveFilters();
 
-    let filteredData: GetAllActsQuery["getActs"] = [];
-
-    noActiveFilters.forEach((filter) => {
+    noActiveFilters.forEach((filter, i) => {
+      let filteredData: GetAllActsQuery["getActs"] = [];
       data.forEach((d) => {
-        if (filter.items.map((v, i) => v.id).includes(d[key].id)) {
+        if (filter.items.map((v) => v.id).includes(d[filter.key].id)) {
           filteredData.push(d);
-        } else {
         }
       });
+
+      const uniqueOptionsItems = [
+        ...new Set(filteredData.map((data) => data[filter.key].id)),
+      ];
+
+      let activeCheckbox: string[] = [];
+      filter.items.forEach((item) => {
+        if (!uniqueOptionsItems.includes(item.id)) {
+          item.disabled = true;
+        } else {
+          activeCheckbox.push(item.id);
+          item.disabled = false;
+        }
+      });
+      this.set_FilteredData(
+        filter.key,
+        this.newfilteringData(filter.key, activeCheckbox, this._data)
+      );
     });
   }
 
-  getNotActiveFilters(key: string): FilterItem[] {
-    return this.filterOptions.filter((f) => f.isActive! && f.key !== key);
+  getNotActiveFilters(): FilterItem[] {
+    return this.filterOptions.filter((f) => !f.isActive);
   }
 
   set_FilteredData(key: string, data: GetAllActsQuery["getActs"]) {
@@ -252,131 +298,10 @@ export class ActsTableComponent implements OnInit {
     ];
   }
 
-  updateFilter(event: boolean, options: FilterItem["items"], key: string) {
-    const filter = this.filterOptions.find((d) => d.key === key);
-
-    let filteredData = this.filteringData(key, options, this._data);
-
-    if (!filter.isActive) {
-      const arrFD = this._filteredData.find((fd) => {
-        if (Object.keys(fd)[0] === key) return fd;
-      });
-      if (!arrFD) {
-        const ob: { [key: string]: GetAllActsQuery["getActs"] } = {};
-        ob[`${key}`] = filteredData;
-        this._filteredData.push(ob);
-      }
-    }
-
-    filter.isActive = filter.items.find((item) => item.isChecked)
-      ? true
-      : false;
-
-    const alone: boolean = this.filterOptions.find(
-      (fd) => fd.key !== key && fd.isActive
-    )
-      ? false
-      : true;
-
-    const disabledToggler = (condition: boolean) =>
-      filter.items.forEach((item) => {
-        if (!item.isChecked) {
-          item.disabled = condition;
-        } else item.disabled = !condition;
-      });
-
-    if (event && !alone) {
-      this.setFilteredData(key, filteredData);
-
-      this.data = this.filteringAllData(key, filteredData);
-
-      console.log("1");
-    } else if (event && alone) {
-      console.log("2");
-
-      disabledToggler(true);
-
-      this.setFilteredData(key, filteredData);
-
-      this.data = filteredData;
-    } else if (!event && !filter.isActive && !alone) {
-      console.log("3");
-
-      this.setFilteredData(key, this._data);
-      this.checkedOptionsDisabled();
-
-      this.data = this.filteringAllData(key, this._data);
-    } else if (!event && !filter.isActive && alone) {
-      console.log("4");
-
-      disabledToggler(false);
-
-      this.setFilteredData(key, this._data);
-
-      this.data = [...this._data];
-    } else {
-      console.log("5");
-
-      this.data = this.filteringData(key, options, this.data);
-      this.setFilteredData(key, filteredData);
-    }
-
-    this.dataSource = new MatTableDataSource([
-      ...this.data.map((d) => new DataSourceModel(d)),
-    ]);
-  }
-
-  checkedOptionsDisabled(
-    filterOptions: FilterItem[],
-    data: GetAllActsQuery["getActs"]
-  ): void {
-    filterOptions.forEach((v) => {
-      v.items.forEach((item) => {
-        if (!data.map((d) => d[v.key].id).includes(item.id)) {
-          item.disabled = true;
-        } else {
-          item.disabled = false;
-        }
-      });
-      this.setFilteredData;
-    });
-  }
-
-  setFilteredData(key: string, data: GetAllActsQuery["getActs"]): void {
-    this._filteredData.find((fd) => {
-      if (Object.keys(fd)[0] === key) return fd;
-    })[`${key}`] = [...data];
-  }
-
-  filteringData(
-    key: string,
-    options: FilterItem["items"],
-    data: GetAllActsQuery["getActs"]
-  ): GetAllActsQuery["getActs"] {
-    return [
-      ...data.filter((data) => {
-        if (
-          options
-            .map((d) => {
-              if (d.isChecked) {
-                return d.id;
-              }
-            })
-            .includes(data[key].id)
-        ) {
-          return data;
-        }
-      }),
-    ];
-  }
-
   filteringAllData(
-    key: string,
     data: GetAllActsQuery["getActs"]
   ): GetAllActsQuery["getActs"] {
-    const activeFilters = this.filterOptions.filter(
-      (f) => f.isActive && f.key !== key
-    );
+    const activeFilters = this.filterOptions.filter((f) => f.isActive);
 
     const getFileteredData = (): GetAllActsQuery["getActs"] => {
       let filData: GetAllActsQuery["getActs"] = [...data];
