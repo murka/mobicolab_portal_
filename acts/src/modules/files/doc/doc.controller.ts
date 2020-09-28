@@ -37,12 +37,13 @@ export class DocController {
     const {
       value: { payload: docId },
       key: { payload: actId },
-    } = message
+    } = message;
 
     try {
-      
+      await this.docService.addDocHandler(docId, actId);
+      await this.commandBus.execute(new ChangeStatusCommand(actId, 'ACT_PDF'));
     } catch (error) {
-      this.logger.error(JSON.stringify(error))
+      this.logger.error(JSON.stringify(error));
     }
   }
 

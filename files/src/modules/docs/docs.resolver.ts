@@ -41,11 +41,18 @@ export class DocsResolver {
   async droppDoc(
     @Args('actId') actId: string,
     @Args('name') name: string,
+    @Args('mimetype') mimetype: string,
   ): Promise<Doc> {
     this.logger.verbose(`mutation dropp-doc`);
 
+    this.logger.verbose(name);
+
+    this.logger.verbose(mimetype);
+
     try {
-      return await this.commandBus.execute(new DroppingDocCommand(actId, name));
+      return await this.commandBus.execute(
+        new DroppingDocCommand(actId, name, null, mimetype),
+      );
     } catch (error) {
       this.logger.error(error);
     }

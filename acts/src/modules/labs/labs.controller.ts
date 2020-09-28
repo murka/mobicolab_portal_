@@ -26,7 +26,7 @@ export class LabsController {
     }
   }
 
-  @EventPattern('outbox.event.Lab.CREATED')
+  @EventPattern('outbox.event.Lab.UPDATED')
   async handleUpdatedLab(@Payload() message: any): Promise<any> {
     this.logger.verbose('handle-updated-lab');
 

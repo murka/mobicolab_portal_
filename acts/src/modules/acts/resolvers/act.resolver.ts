@@ -6,6 +6,7 @@ import {
   ResolveField,
   Parent,
   Mutation,
+  Directive,
 } from '@nestjs/graphql';
 import { Act } from '../models/act.model';
 import { Customer } from '../../customers/models/customer.model';
@@ -106,9 +107,15 @@ export class ActResolver implements OnModuleInit {
   async docs(@Parent() act: Act) {
     this.logger.verbose('resolve-doc-reference.method');
 
+    this.logger.log('files');
+
+    this.logger.log(act.docs);
+
     if (act.docs.length < 1) return [];
 
     const docIds = await this.as.getDocIds(act.id);
+
+    this.logger.log(docIds);
 
     return docIds.map(id => {
       return { __typename: 'Doc', id: id };

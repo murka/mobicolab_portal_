@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 
 export class DroppDoc {
   document = gql`
-    mutation DroppDoc($actId: String!, $name: String!) {
-      droppDoc(actId: $actId, name: $name) {
+    mutation DroppDoc($actId: String!, $name: String!, $mimetype: String!) {
+      droppDoc(actId: $actId, name: $name, mimetype: $mimetype) {
         id
       }
     }

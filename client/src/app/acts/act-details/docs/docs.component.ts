@@ -65,6 +65,7 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   options = [
     { label: "Акт", type: "ACT" },
+    { label: "Акт ПДФ", type: "ACT_PDF" },
     { label: "Протокол", type: "PROTOCOL" },
     {
       label: "Итоговый протокол",
@@ -171,7 +172,7 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   droppMutation(el: File) {
     this.subscriptions$.add(
-      this.fcs.postDroppDoc(this.act.id, el.name).subscribe((doc) => {
+      this.fcs.postDroppDoc(this.act.id, el.name, el.type).subscribe((doc) => {
         this.addFormArray(doc.id);
         this.files.push(new ItemFile(doc.id, el));
       })

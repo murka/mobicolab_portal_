@@ -30,7 +30,7 @@ export class ActsTableComponent implements OnInit {
   filterOptions: FilterItem[];
   data: GetAllActsQuery["getActs"];
   _data: GetAllActsQuery["getActs"];
-  filteredData: GetAllActsQuery['getActs']
+  filteredData: GetAllActsQuery["getActs"];
   _filteredData: { [key: string]: GetAllActsQuery["getActs"] }[] = [];
 
   rangeFilter: FormGroup = new FormGroup({
@@ -47,7 +47,7 @@ export class ActsTableComponent implements OnInit {
     this.acs.getActs().subscribe((data: GetAllActsQuery["getActs"]) => {
       this._data = data;
       this.data = this._data;
-      this.filteredData = this.data
+      this.filteredData = this.data;
       this.initDataSource(this._data);
       this.filterOptions = this.initFileterOptions(data);
     });
@@ -145,8 +145,8 @@ export class ActsTableComponent implements OnInit {
       let keyItems: Item[] = [];
 
       switch (d.controlType) {
-        case 'Date':
-          keyItems = []
+        case "Date":
+          keyItems = [];
           break;
         default:
           data.forEach((data) => {
@@ -166,30 +166,37 @@ export class ActsTableComponent implements OnInit {
         ),
       ];
 
-      let controlType: string
+      let controlType: string;
 
-      if (d.controlType === 'Date') {
-        controlType = "Date"
+      if (d.controlType === "Date") {
+        controlType = "Date";
       } else {
-        controlType = 'Consumer'
+        controlType = "Consumer";
       }
 
-      return new FilterItem(d.label, d.key, true, controlType, false, uniqueItems);
+      return new FilterItem(
+        d.label,
+        d.key,
+        true,
+        controlType,
+        false,
+        uniqueItems
+      );
     });
   }
 
   removeFilter(option: FilterItem) {
     switch (option.controlType) {
-      case 'Date':
-        this.rangeFilter.reset()
-        option.isActive = false
+      case "Date":
+        this.rangeFilter.reset();
+        option.isActive = false;
         break;
       default:
-        option.items.forEach(item => {
-          item.isChecked = false
-        })
-    
-        this.updateFilter(false, option.key)
+        option.items.forEach((item) => {
+          item.isChecked = false;
+        });
+
+        this.updateFilter(false, option.key);
     }
   }
 
@@ -209,7 +216,7 @@ export class ActsTableComponent implements OnInit {
 
       this.set_FilteredData(key, filteredData);
 
-      this.filteredData = filteredData
+      this.filteredData = filteredData;
 
       this.initDataSource([...this.filteredData]);
 
@@ -220,9 +227,13 @@ export class ActsTableComponent implements OnInit {
     if (event && !filter.isActive && !alone) {
       const activeCheckbox = this.toggleActiveCheckboxes(filter);
 
-      const filteredData = this.filteringData(key, activeCheckbox, this.filteredData);
+      const filteredData = this.filteringData(
+        key,
+        activeCheckbox,
+        this.filteredData
+      );
 
-      this.filteredData = filteredData
+      this.filteredData = filteredData;
 
       this.set_FilteredData(key, filteredData);
 
@@ -237,7 +248,7 @@ export class ActsTableComponent implements OnInit {
 
       const filteringData = this.filteringAllData(this.data);
 
-      this.filteredData = filteringData
+      this.filteredData = filteringData;
 
       this.initDataSource([...this.filteredData]);
 
@@ -265,7 +276,7 @@ export class ActsTableComponent implements OnInit {
     return activeCheckbox;
   }
 
-  checkActivefilter 
+  checkActivefilter;
 
   disablingNoActiveCheckboxesAndFilteringData(
     data: GetAllActsQuery["getActs"],
@@ -275,44 +286,47 @@ export class ActsTableComponent implements OnInit {
       ? this.filterOptions
       : this.getNotActiveFilters();
 
-    noActiveFilters.filter(v => v.controlType !== 'Date').forEach((filter, i) => {
-      let filteredData: GetAllActsQuery["getActs"] = [];
-      data.forEach((d) => {
-        if (filter.items.map((v) => v.id).includes(d[filter.key].id)) {
-          filteredData.push(d);
-        }
-      });
-
-      const uniqueOptionsItems = [
-        ...new Set(filteredData.map((data) => data[filter.key].id)),
-      ];
-
-      let activeCheckbox: string[] = [];
-      filter.items.forEach((item) => {
-        if (!uniqueOptionsItems.includes(item.id)) {
-          if (item.isChecked) {
-            item.isChecked = false;
+    noActiveFilters
+      .filter((v) => v.controlType !== "Date")
+      .forEach((filter, i) => {
+        let filteredData: GetAllActsQuery["getActs"] = [];
+        data.forEach((d) => {
+          if (filter.items.map((v) => v.id).includes(d[filter.key].id)) {
+            filteredData.push(d);
           }
-          item.disabled = true;
-        } else {
-          activeCheckbox.push(item.id);
-          item.disabled = false;
+        });
+
+        const uniqueOptionsItems = [
+          ...new Set(filteredData.map((data) => data[filter.key].id)),
+        ];
+
+        let activeCheckbox: string[] = [];
+        filter.items.forEach((item) => {
+          if (!uniqueOptionsItems.includes(item.id)) {
+            if (item.isChecked) {
+              item.isChecked = false;
+            }
+            item.disabled = true;
+          } else {
+            activeCheckbox.push(item.id);
+            item.disabled = false;
+          }
+        });
+        this.set_FilteredData(
+          filter.key,
+          this.filteringData(filter.key, activeCheckbox, this.data)
+        );
+
+        if (filter.items.every((item) => !item.isChecked)) {
+          filter.isActive = false;
         }
       });
-      this.set_FilteredData(
-        filter.key,
-        this.filteringData(filter.key, activeCheckbox, this.data)
-      );
-
-        if (filter.items.every(item => !item.isChecked)) {
-          filter.isActive = false
-        }
-
-    });
   }
 
   getNotActiveFilters(): FilterItem[] {
-    return this.filterOptions.filter((f) => !f.isActive && f.controlType !== "Date");
+    return this.filterOptions.filter(
+      (f) => !f.isActive && f.controlType !== "Date"
+    );
   }
 
   set_FilteredData(key: string, data: GetAllActsQuery["getActs"]) {
@@ -345,8 +359,9 @@ export class ActsTableComponent implements OnInit {
   filteringAllData(
     data: GetAllActsQuery["getActs"]
   ): GetAllActsQuery["getActs"] {
-
-    const activeFilters = this.filterOptions.filter((f) => f.isActive && f.controlType !== "Date");
+    const activeFilters = this.filterOptions.filter(
+      (f) => f.isActive && f.controlType !== "Date"
+    );
 
     const getFileteredData = (): GetAllActsQuery["getActs"] => {
       let filData: GetAllActsQuery["getActs"] = [...data];
@@ -378,7 +393,6 @@ export class ActsTableComponent implements OnInit {
   }
 
   filteringDate() {
-
     let startValue: Moment = this.rangeFilter.controls["start"].value;
     let endValue: Moment = this.rangeFilter.controls["end"].value;
 
@@ -394,9 +408,8 @@ export class ActsTableComponent implements OnInit {
     }
 
     if (end) {
+      this.filterOptions.find((v) => v.key === "date").isActive = true;
 
-      this.filterOptions.find(v => v.key === 'date').isActive = true
-      
       this.data = [
         ...this._data.filter((data) => {
           const d = new Date(data.datetime.date).valueOf();

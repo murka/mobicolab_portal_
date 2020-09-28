@@ -22,6 +22,12 @@ export class getAllActs {
           date
           time
         }
+        docs {
+          id
+          title
+          ydUrl
+          name
+        }
       }
     }
   `;
