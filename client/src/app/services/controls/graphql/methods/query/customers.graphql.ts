@@ -36,6 +36,7 @@ export class getCustomersWithActs {
             date
           }
           lab {
+            id
             label
           }
         }

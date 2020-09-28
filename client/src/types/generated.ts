@@ -379,6 +379,7 @@ export type MutationUpdateGeneralCustomerArgs = {
 
 
 export type MutationDroppDocArgs = {
+  mimetype: Scalars['String'];
   name: Scalars['String'];
   actId: Scalars['String'];
 };
@@ -714,6 +715,7 @@ export type PatchCustomerThroughOptionMutation = (
 export type DroppDocMutationVariables = Exact<{
   actId: Scalars['String'];
   name: Scalars['String'];
+  mimetype: Scalars['String'];
 }>;
 
 
@@ -921,7 +923,10 @@ export type GetAllActsQuery = (
     ), datetime: (
       { __typename?: 'DateAndTime' }
       & Pick<DateAndTime, 'date' | 'time'>
-    ) }
+    ), docs?: Maybe<Array<(
+      { __typename?: 'Doc' }
+      & Pick<Doc, 'id' | 'title' | 'ydUrl' | 'name'>
+    )>> }
   )>>> }
 );
 
@@ -965,7 +970,7 @@ export type GetCustomersWithActsQuery = (
         & Pick<DateAndTime, 'date'>
       ), lab: (
         { __typename?: 'Lab' }
-        & Pick<Lab, 'label'>
+        & Pick<Lab, 'id' | 'label'>
       ) }
     )> }
   )> }
@@ -1343,8 +1348,8 @@ export const PatchCustomerThroughOptionDocument = gql`
     
   }
 export const DroppDocDocument = gql`
-    mutation DroppDoc($actId: String!, $name: String!) {
-  droppDoc(actId: $actId, name: $name) {
+    mutation DroppDoc($actId: String!, $name: String!, $mimetype: String!) {
+  droppDoc(actId: $actId, name: $name, mimetype: $mimetype) {
     id
   }
 }
@@ -1583,6 +1588,12 @@ export const GetAllActsDocument = gql`
       date
       time
     }
+    docs {
+      id
+      title
+      ydUrl
+      name
+    }
   }
 }
     `;
@@ -1637,6 +1648,7 @@ export const GetCustomersWithActsDocument = gql`
         date
       }
       lab {
+        id
         label
       }
     }

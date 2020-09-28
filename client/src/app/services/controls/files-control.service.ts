@@ -96,10 +96,11 @@ export class FilesControlService {
 
   postDroppDoc(
     actId: string,
-    name: string
+    name: string,
+    mimetype: string
   ): Observable<DroppDocMutation["droppDoc"]> {
     return this.droppDoc
-      .mutate({ actId, name })
+      .mutate({ actId, name, mimetype })
       .pipe(map(({ data }) => data.droppDoc))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }

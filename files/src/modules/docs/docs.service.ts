@@ -168,8 +168,8 @@ export class DocsService implements OnModuleInit {
       .getActToFile({ id: actId })
       .toPromise();
 
-      console.log(act);
-      
+    console.log(act);
+
     const name = act.name;
     const date = new Date(act.datetime.date);
     const year = date.getFullYear();
@@ -253,8 +253,13 @@ export class DocsService implements OnModuleInit {
       let newname: string;
 
       const getName = async (version: number) => {
+        logger.log(name);
         const nameArr = name.split('.');
+
         nameArr.splice(-1, 1);
+
+        logger.log(mimtype);
+
         const typeArr = mimtype.split('/');
         const splittype = typeArr[typeArr.length - 1];
 
@@ -272,7 +277,6 @@ export class DocsService implements OnModuleInit {
         newname = await getName(1);
         return newname;
       }
-
     } catch (error) {
       logger.error(error.message);
     }
