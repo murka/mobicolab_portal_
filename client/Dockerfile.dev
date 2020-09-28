@@ -4,14 +4,15 @@ WORKDIR /app
 
 COPY package.json /app
 
-RUN npm install --save typescript@3.8.3
+RUN npm cache clean --force
 
-RUN npm install -g @angular/cli@9.1.0
+RUN npm install --no-package-lock
 
-RUN npm install
+RUN npm install --save typescript@3.8.3 --no-package-lock
+
+RUN npm install -g @angular/cli@9.1.0 --no-package-lock
+
 
 COPY . /app
-
-VOLUME [ "./:/app" ]
 
 CMD ["npm", "run", "start:dev"]

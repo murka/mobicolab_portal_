@@ -191,7 +191,7 @@ export type Habitan = {
   __typename?: 'Habitan';
   id: Scalars['ID'];
   label: Scalars['String'];
-  htypes: Array<HType>;
+  htypes?: Maybe<Array<Maybe<HType>>>;
   type_of_samples: Array<TypeOfSample>;
   acts: Array<Act>;
 };
@@ -853,10 +853,6 @@ export type CreateHabitanMutation = (
   & { createHabitan: (
     { __typename?: 'Habitan' }
     & Pick<Habitan, 'id' | 'label'>
-    & { htypes: Array<(
-      { __typename?: 'HType' }
-      & Pick<HType, 'id'>
-    )> }
   ) }
 );
 
@@ -884,10 +880,10 @@ export type UpdateHabitanMutation = (
   & { updateHabitan: (
     { __typename?: 'Habitan' }
     & Pick<Habitan, 'id' | 'label'>
-    & { htypes: Array<(
+    & { htypes?: Maybe<Array<Maybe<(
       { __typename?: 'HType' }
       & Pick<HType, 'id' | 'label'>
-    )> }
+    )>>> }
   ) }
 );
 
@@ -903,6 +899,30 @@ export type UpdateHTypeMutation = (
     { __typename?: 'HType' }
     & Pick<HType, 'id' | 'label'>
   ) }
+);
+
+export type GetAllActsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllActsQuery = (
+  { __typename?: 'Query' }
+  & { getActs?: Maybe<Array<Maybe<(
+    { __typename?: 'Act' }
+    & Pick<Act, 'id' | 'name'>
+    & { customer: (
+      { __typename?: 'Customer' }
+      & Pick<Customer, 'id' | 'label'>
+    ), generalCustomer: (
+      { __typename?: 'GeneralCustomer' }
+      & Pick<GeneralCustomer, 'id' | 'label'>
+    ), lab: (
+      { __typename?: 'Lab' }
+      & Pick<Lab, 'id' | 'label'>
+    ), datetime: (
+      { __typename?: 'DateAndTime' }
+      & Pick<DateAndTime, 'date' | 'time'>
+    ) }
+  )>>> }
 );
 
 export type GetCustomersForOptionQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1083,10 +1103,10 @@ export type GetHabitansOptionQuery = (
   & { getAllHabitans: Array<(
     { __typename?: 'Habitan' }
     & Pick<Habitan, 'id' | 'label'>
-    & { htypes: Array<(
+    & { htypes?: Maybe<Array<Maybe<(
       { __typename?: 'HType' }
       & Pick<HType, 'id' | 'label'>
-    )> }
+    )>>> }
   )> }
 );
 
@@ -1479,9 +1499,6 @@ export const CreateHabitanDocument = gql`
   createHabitan(label: $data) {
     id
     label
-    htypes {
-      id
-    }
   }
 }
     `;
@@ -1543,6 +1560,38 @@ export const UpdateHTypeDocument = gql`
   })
   export class UpdateHTypeGQL extends Apollo.Mutation<UpdateHTypeMutation, UpdateHTypeMutationVariables> {
     document = UpdateHTypeDocument;
+    
+  }
+export const GetAllActsDocument = gql`
+    query getAllActs {
+  getActs {
+    id
+    name
+    customer {
+      id
+      label
+    }
+    generalCustomer {
+      id
+      label
+    }
+    lab {
+      id
+      label
+    }
+    datetime {
+      date
+      time
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetAllActsGQL extends Apollo.Query<GetAllActsQuery, GetAllActsQueryVariables> {
+    document = GetAllActsDocument;
     
   }
 export const GetCustomersForOptionDocument = gql`

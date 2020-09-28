@@ -16,8 +16,9 @@ import {
   GetWholeActGQL,
   GetWholeActQuery,
   PatchActMutation,
+  GetAllActsGQL,
+  GetAllActsQuery,
 } from "../../../types/generated";
-import { Apollo } from "apollo-angular";
 import { LabModel } from "src/app/shared/models/lab.model";
 
 @Injectable({
@@ -25,7 +26,6 @@ import { LabModel } from "src/app/shared/models/lab.model";
 })
 export class ActControlService {
   constructor(
-    private apollo: Apollo,
     private http: HttpClient,
     private processHTTPMsgService: ProcessHTTPMsgService,
     private getActForItemQuery: GetActForItemGQL,
@@ -33,7 +33,8 @@ export class ActControlService {
     private getActForDetailsQuery: GetActForDetailsGQL,
     private createAct: PostActGQL,
     private getWholeAct: GetWholeActGQL,
-    private updateAct: PatchActGQL
+    private updateAct: PatchActGQL,
+    private getAllActs: GetAllActsGQL
   ) {}
 
   getActsForItem(): Observable<ActModel[] | any> {
@@ -70,9 +71,10 @@ export class ActControlService {
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 
-  getActs(): Observable<ActModel[]> {
-    return this.http
-      .get<ActModel[]>(environment.baseURL + "acts")
+  getActs(): Observable<GetAllActsQuery["getActs"]> {
+    return this.getAllActs
+      .watch()
+      .valueChanges.pipe(map(({ data }) => data.getActs))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 

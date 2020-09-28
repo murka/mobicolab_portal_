@@ -30,6 +30,22 @@ export class DocController {
     }
   }
 
+  @EventPattern('outbox.event.DOC.ACT_PDF')
+  async handlerNewDocActPdf(@Payload() message: any): Promise<void> {
+    this.logger.verbose('handle-new-doc-act-pdf')
+
+    const {
+      value: { payload: docId },
+      key: { payload: actId },
+    } = message
+
+    try {
+      
+    } catch (error) {
+      this.logger.error(JSON.stringify(error))
+    }
+  }
+
   @EventPattern('outbox.event.DOC.PROTOCOL')
   async handlerNewDocProto(@Payload() message: any): Promise<void> {
     this.logger.verbose('handle-new-doc-proto');

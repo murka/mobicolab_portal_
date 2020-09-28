@@ -13,7 +13,14 @@ export class LabsService {
     this.logger.verbose('find-lab.method');
 
     try {
-      return this.labRepositroy.findOne(id);
+      let lab = await this.labRepositroy.findOne(id);
+
+      if (!lab) {
+        const newLab = this.labRepositroy.create({ id: id });
+
+        lab = await this.labRepositroy.save(newLab);
+      }
+      return lab;
     } catch (error) {
       this.logger.error(error);
     }

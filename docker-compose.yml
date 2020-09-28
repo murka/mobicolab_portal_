@@ -470,8 +470,8 @@ services:
       - "4200:4200"
     networks:
       - test
-    depends_on:
-      - api_files
+    # depends_on:
+    # - api_files
 
   api_gateway:
     build:
