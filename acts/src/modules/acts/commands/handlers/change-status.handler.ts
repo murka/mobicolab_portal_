@@ -21,10 +21,18 @@ export class ChangeStatusHandler
 
       switch (status) {
         case 'ACT':
-          act.status = ActStatus.REGISTERED;
+          if (act.status !== ActStatus.REGISTERED && act.status !== ActStatus.PROTOCOL && ActStatus.FULL) {
+            act.status = ActStatus.CREATED;
+          }
           break;
+        case 'ACT_PDF':
+          if (act.status !== ActStatus.PROTOCOL && act.status !== ActStatus.FULL) {
+            act.status = ActStatus.REGISTERED
+          }
         case 'PROTOCOL':
-          act.status = ActStatus.PROTOCOL;
+          if (act.status !== ActStatus.PROTOCOL) {
+            act.status = ActStatus.PROTOCOL;
+          }
           break;
         case 'FINAL_PROTOCOL':
           act.status = ActStatus.FULL;

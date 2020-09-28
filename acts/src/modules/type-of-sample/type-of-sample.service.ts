@@ -46,9 +46,19 @@ export class TypeOfSampleService {
     this.logger.verbose('get-tos');
 
     try {
-      const habitan = await this.findHabitan(habitnaId);
+      let habitan = await this.findHabitan(habitnaId);
 
-      const htype = await this.findHType(htypeId);
+      if (!habitan) {
+        const newHabitan = this.habitanRepository.create({ id: habitnaId });
+        habitan = await this.habitanRepository.save(newHabitan);
+      }
+
+      let htype = await this.findHType(htypeId);
+
+      if (!htype) {
+        const newHtype = this.htypeRepository.create({ id: htypeId });
+        htype = await this.htypeRepository.save(newHtype);
+      }
 
       let tos = await this.tosRepository.findOne({
         where: { habitan: { id: habitan.id }, htype: { id: htype.id } },

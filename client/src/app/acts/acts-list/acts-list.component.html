@@ -1,6 +1,11 @@
 <div fxFlex fxLayout="column" fxLayoutGap="10px">
   <mat-toolbar fxLayout="row" fxLayoutGap="10px">
-    <h2><span class="fa fa-list"></span>Акты</h2>
+    <h2>Акты</h2>
+    <span fxFlex class="flex-spacer"></span>
+    <mat-button-toggle-group appearance="legacy" [(value)]="viewController">
+      <mat-button-toggle value="table">Table</mat-button-toggle>
+      <mat-button-toggle value="list">List</mat-button-toggle>
+    </mat-button-toggle-group>
     <span fxFlex class="flex-spacer"></span>
     <a
       class="background-primary text-floral-white"
@@ -29,8 +34,11 @@
     </mat-form-field>
   </mat-expansion-panel> -->
   <!-- <app-customers [acts]="_filteredActs"></app-customers> -->
-  <div *ngIf="customers">
+  <div *ngIf="customers && viewController === 'list'">
     <app-customers [customers]="customers"></app-customers>
+  </div>
+  <div *ngIf="viewController === 'table'">
+    <app-acts-table></app-acts-table>
   </div>
 
   <!-- <mat-expansion-panel>

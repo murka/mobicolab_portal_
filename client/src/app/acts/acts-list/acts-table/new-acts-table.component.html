@@ -1,0 +1,105 @@
+<div class="container">
+  <section class="rawMenu">
+    <section>
+      <mat-checkbox
+        [checked]="allColumnActive"
+        [indeterminate]="someActive()"
+        (change)="setAll($event.checked)"
+      >
+        Все
+      </mat-checkbox>
+      <div cdkDropList (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let column of columnsToDisplay" cdkDrag class="drag">
+          <mat-icon>drag_indicator</mat-icon>
+          <mat-checkbox
+            [(ngModel)]="column.isActive"
+            (ngModelChange)="updateAllComponent()"
+          >
+            {{ column.label }}
+          </mat-checkbox>
+        </div>
+      </div>
+    </section>
+    <section class="rawFileters" *ngIf="filterOptions">
+      <div>
+        <mat-chip-list #filtersChipList aria-label="Отфильтровано по...">
+          <mat-chip
+            *ngFor="let option of filterOptions | filterOptions"
+            [selectable]="true"
+            [removable]=option.removable
+            (removed)=removeFilter(option)
+          >
+            {{ option.label }}
+            <mat-icon matChipRemove *ngIf="option.removable">cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+      <div *ngFor="let option of filterOptions" class="fileterItem" [ngSwitch]="option.controlType">
+        <p>{{ option.label }}</p>
+        <div *ngSwitchCase="'Consumer'">
+        <div *ngFor="let item of option.items">
+          <mat-checkbox
+            [(ngModel)]="item.isChecked"
+            (ngModelChange)="updateFilter($event, option.key)"
+            [disabled]="item.disabled"
+          >
+            {{ item.lable }}
+          </mat-checkbox>
+        </div>
+        </div>
+        <div *ngSwitchCase="'Date'">
+          <mat-form-field appearance="fill">
+            <mat-lable>Введите дату</mat-lable>
+            <mat-date-range-input [rangePicker]="picker" [formGroup]="rangeFilter">
+              <input matStartDate formControlName="start" placeholder="От" />
+              <input matEndDate formControlName="end" placeholder="До" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+          [aria-label]="checkboxLabel()"
+        >
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+          [aria-label]="checkboxLabel(row)"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container
+      [matColumnDef]="column.key"
+      *ngFor="let column of columnsToDisplay"
+    >
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ column.label }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element ? element[column.key] : null }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>

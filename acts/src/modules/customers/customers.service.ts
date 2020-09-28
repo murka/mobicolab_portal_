@@ -15,11 +15,10 @@ export class CustomersService {
     try {
       const customer = await this.customerRepository.findOne(id);
 
-      if (!customer)
-        throw new HttpException(
-          { status: HttpStatus.NOT_FOUND, error: 'customer didn`t find' },
-          HttpStatus.NOT_FOUND,
-        );
+      if (!customer) {
+        const newcustomer = this.customerRepository.create({ id: id });
+        return this.customerRepository.save(newcustomer);
+      }
       return customer;
     } catch (error) {
       this.logger.error(error);

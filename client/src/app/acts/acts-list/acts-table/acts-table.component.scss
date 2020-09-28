@@ -1,0 +1,28 @@
+.drag {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex-flow: column;
+}
+
+.rawMenu {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+}
+
+.rawFileters {
+  display: flex;
+  flex-flow: row;
+}
+
+.fileterItem {
+  display: flex;
+  flex-flow: column;
+}
