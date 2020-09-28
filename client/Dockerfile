@@ -7,8 +7,8 @@ WORKDIR '/app'
 # install and cache app dependencies
 COPY ./package.json ./
 RUN npm install
-RUN npm install --save typescript@3.8.3
-RUN npm install -g @angular/cli@9.1.0
+RUN npm install --save typescript@3.92
+RUN npm install -g @angular/cli
 
 # add app
 COPY . .
