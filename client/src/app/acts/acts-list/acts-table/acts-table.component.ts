@@ -345,6 +345,7 @@ export class ActsTableComponent implements OnInit {
   filteringAllData(
     data: GetAllActsQuery["getActs"]
   ): GetAllActsQuery["getActs"] {
+
     const activeFilters = this.filterOptions.filter((f) => f.isActive && f.controlType !== "Date");
 
     const getFileteredData = (): GetAllActsQuery["getActs"] => {
