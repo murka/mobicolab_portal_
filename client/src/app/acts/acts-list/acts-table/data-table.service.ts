@@ -10,6 +10,7 @@ export class DataTableService {
 
   getColumns() {
     return [
+<<<<<<< HEAD
       new ColumnModel(true, "Номер", "name", "String"),
       new ColumnModel(true, "Заказчик", "customer", "Consumer"),
       new ColumnModel(
@@ -20,15 +21,29 @@ export class DataTableService {
       ),
       new ColumnModel(true, "Лаборатория", "lab", "Consumer"),
       new ColumnModel(true, "Дата отбора", "date", "Date"),
+=======
+      new ColumnModel(true, "Номер", "name"),
+      new ColumnModel(true, "Заказчик", "customer"),
+      new ColumnModel(true, "Генеральный заказчик", "generalCustomer"),
+      new ColumnModel(true, "Лаборатория", "lab"),
+      new ColumnModel(true, "Дата отбора", "date"),
+>>>>>>> filtering
     ];
   }
 
   getFileters() {
     return [
+<<<<<<< HEAD
       new ColumnModel(true, "Заказчик", "customer", null),
       new ColumnModel(true, "Генеральный заказчик", "generalCustomer", null),
       new ColumnModel(true, "Лаборатория", "lab", null),
       new ColumnModel(true, "Дата отбора", "date", 'Date'),
+=======
+      new ColumnModel(true, "Заказчик", "customer"),
+      new ColumnModel(true, "Генеральный заказчик", "generalCustomer"),
+      new ColumnModel(true, "Лаборатория", "lab"),
+      //   new ColumnModel(true, "Дата отбора", "dateti"),
+>>>>>>> filtering
     ];
   }
 }

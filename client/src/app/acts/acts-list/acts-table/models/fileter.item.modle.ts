@@ -2,8 +2,11 @@ export class FilterItem {
   constructor(
     public label: string,
     public key: string,
+<<<<<<< HEAD
     public removable: boolean,
     public controlType: string,
+=======
+>>>>>>> filtering
     public isActive: boolean,
     public items: Item[]
   ) {}
