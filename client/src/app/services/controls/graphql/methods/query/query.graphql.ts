@@ -44,14 +44,3 @@ export class getActForDetails {
     }
   `;
 }
-
-export class getWholeAct {
-  document = gql`
-    query getWholeAct($data: String!) {
-      getAct(id: $data) {
-        ...WholeAct
-      }
-    }
-    ${WholeAct.document}
-  `;
-}

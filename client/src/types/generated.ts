@@ -930,6 +930,19 @@ export type GetAllActsQuery = (
   )>>> }
 );
 
+export type GetWholeActQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetWholeActQuery = (
+  { __typename?: 'Query' }
+  & { getAct: (
+    { __typename?: 'Act' }
+    & WholeActFragment
+  ) }
+);
+
 export type GetCustomersForOptionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1070,19 +1083,6 @@ export type GetActForDetailsQuery = (
       { __typename?: 'Lab' }
       & Pick<Lab, 'id'>
     ) }
-  ) }
-);
-
-export type GetWholeActQueryVariables = Exact<{
-  data: Scalars['String'];
-}>;
-
-
-export type GetWholeActQuery = (
-  { __typename?: 'Query' }
-  & { getAct: (
-    { __typename?: 'Act' }
-    & WholeActFragment
   ) }
 );
 
@@ -1605,6 +1605,21 @@ export const GetAllActsDocument = gql`
     document = GetAllActsDocument;
     
   }
+export const GetWholeActDocument = gql`
+    query getWholeAct($id: String!) {
+  getAct(id: $id) {
+    ...WholeAct
+  }
+}
+    ${WholeActFragmentDoc}`;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetWholeActGQL extends Apollo.Query<GetWholeActQuery, GetWholeActQueryVariables> {
+    document = GetWholeActDocument;
+    
+  }
 export const GetCustomersForOptionDocument = gql`
     query getCustomersForOption {
   getCustomers {
@@ -1782,21 +1797,6 @@ export const GetActForDetailsDocument = gql`
   })
   export class GetActForDetailsGQL extends Apollo.Query<GetActForDetailsQuery, GetActForDetailsQueryVariables> {
     document = GetActForDetailsDocument;
-    
-  }
-export const GetWholeActDocument = gql`
-    query getWholeAct($data: String!) {
-  getAct(id: $data) {
-    ...WholeAct
-  }
-}
-    ${WholeActFragmentDoc}`;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class GetWholeActGQL extends Apollo.Query<GetWholeActQuery, GetWholeActQueryVariables> {
-    document = GetWholeActDocument;
     
   }
 export const GetGeneratePathDocument = gql`

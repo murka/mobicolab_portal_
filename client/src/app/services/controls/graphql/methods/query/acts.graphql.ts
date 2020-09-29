@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { WholeAct } from "../fragments/act.graphql";
 
 export class getAllActs {
   document = gql`
@@ -30,5 +31,16 @@ export class getAllActs {
         }
       }
     }
+  `;
+}
+
+export class getWholeAct {
+  document = gql`
+    query getWholeAct($id: String!) {
+      getAct(id: $id) {
+        ...WholeAct
+      }
+    }
+    ${WholeAct}
   `;
 }

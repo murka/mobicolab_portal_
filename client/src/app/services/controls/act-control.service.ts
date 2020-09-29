@@ -79,11 +79,8 @@ export class ActControlService {
   }
 
   getAct(id: string): Observable<GetWholeActQuery["getAct"]> {
-    // return this.http
-    //   .get<ActModel>(environment.baseURL + "acts/" + id)
-    //   .pipe(catchError(this.processHTTPMsgService.handleError));
     return this.getWholeAct
-      .watch({ data: id })
+      .watch({ id: id })
       .valueChanges.pipe(map(({ data }) => data.getAct))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }

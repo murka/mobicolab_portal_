@@ -31,10 +31,6 @@ export class DataTableService {
       new ColumnModel(true, "Генеральный заказчик", "generalCustomer", null),
       new ColumnModel(true, "Лаборатория", "lab", null),
       new ColumnModel(true, "Дата отбора", "date", "Date"),
-      new ColumnModel(true, "Заказчик", "customer", null),
-      new ColumnModel(true, "Генеральный заказчик", "generalCustomer", null),
-      new ColumnModel(true, "Лаборатория", "lab", null),
-      new ColumnModel(true, "Дата отбора", "date", 'Date'),
     ];
   }
 }

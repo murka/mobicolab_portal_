@@ -37,6 +37,7 @@ import { ActsTableComponent } from "./acts-list/acts-table/acts-table.component"
 import { DocsComponent } from "./act-details/docs/docs.component";
 import { DetailsPdfComponent } from "./act-details/details-pdf/details-pdf.component";
 import { FilterOptionsPipe } from "./acts-list/acts-table/pipes/filter-options.pipe";
+import { RowDetailComponent } from './acts-list/acts-table/row-detail/row-detail.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { FilterOptionsPipe } from "./acts-list/acts-table/pipes/filter-options.p
     DocsComponent,
     DetailsPdfComponent,
     FilterOptionsPipe,
+    RowDetailComponent,
   ],
   imports: [
     SharedModule,
