@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class Init1601282659217 implements MigrationInterface {
-    name = 'Init1601282659217'
+export class Init1601370923603 implements MigrationInterface {
+    name = 'Init1601370923603'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "customer_event_event_type_enum" AS ENUM('CREATED', 'UPDATED', 'DELETED')`);

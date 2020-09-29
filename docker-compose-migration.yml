@@ -1,0 +1,345 @@
+version: "3.7"
+services:
+  zookeeper:
+    image: debezium/zookeeper:latest
+    ports:
+      - 2888:2888
+      - 3888:3888
+      - 2181:2181
+    # volumes:
+    # - ./db_data/zookeeper/data:/zookeeper/data
+    # - ./db_data/zookeeper/txns:/zookeeper/txns
+    networks:
+      - zookeeper
+
+  kafka-1:
+    image: wurstmeister/kafka:latest
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENERS: INSIDE://kafka-1:9092,OUTSIDE://:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-1:9092,OUTSIDE://${HOST_IP}:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    # volumes:
+    #   - /volume1/docker/kafka/kf-1:/var/lib/kafka/data
+    ports:
+      - "19092:9092"
+    networks:
+      - zookeeper
+
+  kafka-2:
+    image: wurstmeister/kafka:latest
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_LISTENERS: INSIDE://kafka-2:9092,OUTSIDE://:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka-2:9092,OUTSIDE://${HOST_IP}:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    # volumes:
+    # - /volume1/docker/kafka/kf-2:/var/lib/kafka/data
+    ports:
+      - "29092:9092"
+    networks:
+      - zookeeper
+
+  db_files:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_files2:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6001:5432"
+    networks:
+      - files
+      - zookeeper
+  api_files:
+    build:
+      context: "./files"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./files:/app"
+      - "/app/node_modules"
+      - "./proto:/proto"
+    networks:
+      - files
+      - zookeeper
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_files
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3010:3010"
+      - "50051:50051"
+    depends_on:
+      - db_files
+      - kafka-1
+      - kafka-2
+
+  db_acts:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_acts2:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6002:5432"
+    networks:
+      - acts
+      - zookeeper
+  api_acts:
+    build:
+      context: "./acts"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./acts:/app"
+      - "/app/node_modules"
+      - ./proto:/proto
+    networks:
+      - zookeeper
+      - acts
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_acts
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3020:3020"
+    depends_on:
+      - db_acts
+      - api_files
+
+  db_customers:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_customers2:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6003:5432"
+    networks:
+      - customers
+      - zookeeper
+  api_customers:
+    build:
+      context: "./customers"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./customers:/app"
+      - "/app/node_modules"
+      - "./proto:/proto"
+    networks:
+      - zookeeper
+      - customers
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_customers
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3030:3030"
+    depends_on:
+      - db_customers
+      - api_general_customers
+
+  db_general_customers:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_general_customers:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6004:5432"
+    networks:
+      - gcustomers
+      - zookeeper
+  api_general_customers:
+    build:
+      context: "./general-customers"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./general-customers:/app"
+      - "/app/node_modules"
+      - "./proto:/proto"
+    networks:
+      - test
+      - zookeeper
+      - gcustomers
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_general_customers
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3040:3040"
+    depends_on:
+      - db_general_customers
+      - api_labs
+
+  db_labs:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_labs:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6005:5432"
+    networks:
+      - labs
+      - zookeeper
+  api_labs:
+    build:
+      context: "./labs"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./labs:/app"
+      - "/app/node_modules"
+      - "./proto:/proto"
+    networks:
+      - labs
+      - zookeeper
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_labs
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3050:3050"
+    depends_on:
+      - db_labs
+      - api_acts
+
+  db_tos:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_tos:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6009:5432"
+    networks:
+      - tos
+      - zookeeper
+  api_tos:
+    build:
+      context: "./type-of-sample"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./type-of-sample:/app"
+      - "/app/node_modules"
+      - ./proto:/proto
+    networks:
+      - tos
+      - zookeeper
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_tos
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3090:3090"
+    depends_on:
+      - db_tos
+      - api_labs
+
+  db_rules:
+    image: debezium/postgres:latest
+    volumes:
+      - ./db_data/db_migration/db_rules:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: mobicolab
+      POSTGRES_USER: mobicolab
+      POSTGRES_DB: postgres
+    ports:
+      - "6007:5432"
+    networks:
+      - rules
+      - zookeeper
+  api_rules:
+    build:
+      context: "./rules"
+      dockerfile: Dockerfile.dev
+    restart: always
+    volumes:
+      - "./rules:/app"
+      - "/app/node_modules"
+    networks:
+      - rules
+      - zookeeper
+      - test
+    environment:
+      TYPEORM_PORT: 5432
+      TYPEORM_HOST_DOCKER: db_rules
+      TYPEORM_USERNAME: mobicolab
+      TYPEORM_PASSWORD: mobicolab
+      TYPEORM_DATABASE: postgres
+      KAFKA_HOST: ${HOST_IP}
+      KAFKA_PORT1: 19092
+      KAFKA_PORT2: 29092
+    ports:
+      - "3070:3070"
+    depends_on:
+      - db_labs
+      - api_tos
+
+networks:
+  db_mongo:
+  test:
+  tos:
+  rules:
+  acts:
+  customers:
+  gcustomers:
+  labs:
+  files:
+  zookeeper:

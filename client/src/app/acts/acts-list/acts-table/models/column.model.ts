@@ -3,8 +3,6 @@ export class ColumnModel {
     public isActive: boolean,
     public label: string,
     public key: string,
-    public controlType: string,
-    public key: string,
     public controlType: string
   ) {}
 }
