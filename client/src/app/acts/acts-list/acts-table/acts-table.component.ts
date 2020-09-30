@@ -12,11 +12,28 @@ import { DataSourceModel } from "./models/datasource.model";
 import { FilterItem, Item } from "./models/fileter.item.modle";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Moment } from "moment";
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from "@angular/animations";
 
 @Component({
   selector: "app-acts-table",
   templateUrl: "./new-acts-table.component.html",
   styleUrls: ["./acts-table.component.scss"],
+  animations: [
+    trigger("detailExpand", [
+      state("collapsed", style({ height: "0px", minHeight: "0" })),
+      state("expanded", style({ height: "*" })),
+      transition(
+        "expanded <=> collapsed",
+        animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")
+      ),
+    ]),
+  ],
 })
 export class ActsTableComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -24,6 +41,7 @@ export class ActsTableComponent implements OnInit {
 
   displayedColumns: string[];
   columnsToDisplay: ColumnModel[];
+  expandedElement: DataSourceModel | null;
   allColumnActive: boolean = false;
   dataSource = new MatTableDataSource<DataSourceModel>([]);
   selection = new SelectionModel(true, []);

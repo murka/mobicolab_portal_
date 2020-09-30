@@ -11,6 +11,10 @@ table {
   flex-flow: column;
 }
 
+.panel {
+  margin-bottom: 5px;
+}
+
 .rawMenu {
   display: flex;
   flex-flow: row;
@@ -20,13 +24,54 @@ table {
 .rawFileters {
   display: flex;
   flex-flow: row;
+  justify-content: center;
 }
 
 .fileterItem {
   display: flex;
   flex-flow: column;
+  align-items: center;
+  justify-items: center;
+  margin-right: 5px;
+}
+
+.chip-filter-item {
+  margin-bottom: 5px;
+}
+
+.options-items {
+  justify-content: center;
 }
 
 .checkbox {
   align-items: center;
+}
+
+.chip-item {
+  margin-bottom: 5px;
+}
+
+.card-item {
+  margin-right: 10px;
+}
+
+tr.detail-row {
+  height: 0;
+}
+
+tr.element-row:not(.expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.element-row:not(.expanded-row):active {
+  background: #efefef;
+}
+
+.element-row td {
+  border-bottom-width: 0;
+}
+
+.element-detail {
+  overflow: hidden;
+  display: flex;
 }

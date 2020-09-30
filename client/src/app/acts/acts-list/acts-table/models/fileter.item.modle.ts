@@ -4,8 +4,6 @@ export class FilterItem {
     public key: string,
     public removable: boolean,
     public controlType: string,
-    public removable: boolean,
-    public controlType: string,
     public isActive: boolean,
     public items: Item[]
   ) {}

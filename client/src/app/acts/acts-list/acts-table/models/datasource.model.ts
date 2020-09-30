@@ -1,6 +1,7 @@
 import { GetAllActsQuery } from "src/types/generated";
 
 export class DataSourceModel {
+  public id: string;
   public name: string;
   public customer: string;
   public generalCustomer: string;
@@ -11,6 +12,7 @@ export class DataSourceModel {
   public protocol: GetAllActsQuery["getActs"][0]["docs"][0];
 
   constructor(options: GetAllActsQuery["getActs"][0]) {
+    this.id = options.id;
     this.name = options.name;
     this.customer = options.customer.label;
     this.generalCustomer = options.generalCustomer.label;

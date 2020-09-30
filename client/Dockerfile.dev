@@ -8,9 +8,9 @@ RUN npm cache clean --force
 
 RUN npm install --no-package-lock
 
-RUN npm install --save typescript@3.8.3 --no-package-lock
+RUN npm install --save typescript@3.9.2 --no-package-lock
 
-RUN npm install -g @angular/cli@9.1.0 --no-package-lock
+RUN npm install -g @angular/cli --no-package-lock
 
 
 COPY . /app
