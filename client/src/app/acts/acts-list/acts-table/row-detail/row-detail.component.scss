@@ -1,0 +1,23 @@
+.content {
+    flex: auto;
+    flex-flow: row wrap;
+    display: flex;
+}
+
+.content-label {
+    display: flex;
+    padding: 2px;
+}
+
+.content-value {
+    align-items: flex-end;
+    border: 1px solid black;
+    display: flex;
+    margin-left: 5px;
+    padding: 2px;
+    border-radius: 5%;
+}
+
+.card-content {
+    margin: 5px;
+}

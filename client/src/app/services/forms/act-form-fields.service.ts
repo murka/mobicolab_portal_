@@ -82,6 +82,7 @@ export class ActFormFieldsService {
           required: true,
           visible: true,
           key: "datetime",
+          label: 'Время отбора'
         }),
 
         new SelectWAdrAct({

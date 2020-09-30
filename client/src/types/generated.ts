@@ -553,18 +553,18 @@ export type WholeActFragment = (
   & Pick<Act, 'id' | 'name' | 'objectName' | 'place' | 'method' | 'toolType' | 'climaticEnvironmental' | 'planning' | 'normativeDocument' | 'sampleType' | 'sample' | 'preparation' | 'goal' | 'definedIndicators' | 'additions' | 'informationAboutSelection' | 'environmentalEngineer' | 'representative' | 'passedSample' | 'status'>
   & { customer: (
     { __typename?: 'Customer' }
-    & Pick<Customer, 'id'>
+    & Pick<Customer, 'id' | 'label'>
   ), generalCustomer: (
     { __typename?: 'GeneralCustomer' }
-    & Pick<GeneralCustomer, 'id'>
+    & Pick<GeneralCustomer, 'id' | 'label'>
   ), lab: (
     { __typename?: 'Lab' }
-    & Pick<Lab, 'id'>
+    & Pick<Lab, 'id' | 'label'>
   ), typeOfSample: (
     { __typename?: 'TypeOfSample' }
     & { habitan: (
       { __typename?: 'Habitan' }
-      & Pick<Habitan, 'id'>
+      & Pick<Habitan, 'id' | 'label'>
     ), htype: (
       { __typename?: 'HType' }
       & Pick<HType, 'id'>
@@ -1121,16 +1121,20 @@ export const WholeActFragmentDoc = gql`
   name
   customer {
     id
+    label
   }
   generalCustomer {
     id
+    label
   }
   lab {
     id
+    label
   }
   typeOfSample {
     habitan {
       id
+      label
     }
     htype {
       id

@@ -7,16 +7,20 @@ export const WholeAct = {
       name
       customer {
         id
+        label
       }
       generalCustomer {
         id
+        label
       }
       lab {
         id
+        label
       }
       typeOfSample {
         habitan {
           id
+          label
         }
         htype {
           id

@@ -1,7 +1,12 @@
-<mat-card>
+<mat-card class="card-content">
   <mat-card-content *ngIf="act">
-    <div *ngFor="let field of fields">
-      <div *ngIf="act[field.key]">{{ field.label }} {{ act[field.key] }}</div>
+    <div *ngFor="let item of content">
+      <div *ngIf="item.value" class="content">
+        <p class="content-label">{{ item.label }}:</p> 
+        <p class="content-value">{{ item.value }}</p>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
+
+
