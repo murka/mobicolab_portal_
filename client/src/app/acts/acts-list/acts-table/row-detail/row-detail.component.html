@@ -1,12 +1,43 @@
-<mat-card class="card-content">
-  <mat-card-content *ngIf="act">
-    <div *ngFor="let item of content">
-      <div *ngIf="item.value" class="content">
-        <p class="content-label">{{ item.label }}:</p> 
-        <p class="content-value">{{ item.value }}</p>
+<div class="details">
+  <mat-card class="card-content" *ngIf="act">
+    <mat-card-content>
+      <div *ngFor="let item of content">
+        <div *ngIf="item.value" class="content">
+          <p class="content-label">{{ item.label }}:</p>
+          <p class="content-value">{{ item.value }}</p>
+        </div>
       </div>
-    </div>
-  </mat-card-content>
-</mat-card>
-
-
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="card-content">
+    <mat-card-actions class="actions-list">
+      <div class="action-item" *ngIf="act">
+        <button mat-stroked-button [routerLink]="['../update/', act.id]">
+          Редактировать
+        </button>
+      </div>
+      <div class="action-item" *ngIf="act">
+        <button mat-stroked-button [routerLink]="['../copy/', act.id]">
+          Копировать
+        </button>
+      </div>
+      <div class="action-item">
+        <button
+          mat-stroked-button
+          [disabled]="!getneratePath"
+          (click)="createPdf()"
+        >
+          Создать Документ
+        </button>
+      </div>
+      <div class="action-item">
+        <button mat-stroked-button (click)="choiseTemplate()">
+          {{ !getneratePath ? "Выбрать шаблон ПДФ" : "Изменить шаблон ПДФ" }}
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+  <mat-card class="card-content" *ngIf="act">
+    <app-docs [actId]="act.id"></app-docs>
+  </mat-card>
+</div>

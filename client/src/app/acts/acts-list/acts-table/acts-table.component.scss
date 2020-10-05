@@ -75,3 +75,21 @@ tr.element-row:not(.expanded-row):active {
   overflow: hidden;
   display: flex;
 }
+
+.items-menu-filter {
+  margin: 5px;
+}
+
+.filter-menu {
+  display: flex;
+  flex-flow: row;
+}
+
+.button-filter-menu {
+  margin-right: 5px;
+}
+
+.action-menu {
+  align-self: flex-end;
+  margin-bottom: 5px;
+}

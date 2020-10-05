@@ -19,6 +19,9 @@ import {
   transition,
   trigger,
 } from "@angular/animations";
+import { saveAs } from "file-saver";
+import { FilesControlService } from "src/app/services/controls/files-control.service";
+import { FilesDataService } from "src/app/services/data/files-data.service";
 
 @Component({
   selector: "app-acts-table",
@@ -50,6 +53,9 @@ export class ActsTableComponent implements OnInit {
   _data: GetAllActsQuery["getActs"];
   filteredData: GetAllActsQuery["getActs"];
   _filteredData: { [key: string]: GetAllActsQuery["getActs"] }[] = [];
+  selectedWithActs: DataSourceModel[];
+  selectedWithActsPdf: DataSourceModel[];
+  selectedWithProtocols: DataSourceModel[];
 
   rangeFilter: FormGroup = new FormGroup({
     start: new FormControl(),
@@ -58,7 +64,9 @@ export class ActsTableComponent implements OnInit {
 
   constructor(
     private readonly dataTableService: DataTableService,
-    private readonly acs: ActControlService
+    private readonly acs: ActControlService,
+    private readonly fcs: FilesControlService,
+    private readonly fds: FilesDataService
   ) {}
 
   ngOnInit(): void {
@@ -73,6 +81,19 @@ export class ActsTableComponent implements OnInit {
     this.initDisplayedColumns();
     this.updateAllComponent();
     this.rangeFilter.valueChanges.subscribe(() => this.filteringDate());
+    this.selection.changed.subscribe((event) => {
+      this.selectedWithActs = (<DataSourceModel[]>event.source.selected).filter(
+        (v) => v.act
+      );
+      this.selectedWithActsPdf = (<DataSourceModel[]>(
+        event.source.selected
+      )).filter((v) => v.act_pdf);
+      this.selectedWithProtocols = (<DataSourceModel[]>(
+        event.source.selected
+      )).filter((v) => v.protocol);
+
+      console.log(this.selectedWithActs);
+    });
   }
 
   initDataSource(data: GetAllActsQuery["getActs"]) {
@@ -439,5 +460,37 @@ export class ActsTableComponent implements OnInit {
 
       this.initDataSource(this.data);
     }
+  }
+
+  downloadFile(docId: string) {
+    // this.subscriptions$.add(
+    this.fcs.downloadFile(docId).then((doc) => {
+      const arr = this.fds.convertDataURIToBinary(doc.doc);
+
+      const blob = new Blob([arr]);
+      saveAs(blob, doc.name);
+    });
+  }
+
+  downloadManyFiles(selector: string) {
+    let docArr = [];
+
+    switch (selector) {
+      case "act":
+        docArr = [...this.selectedWithActs.map((value) => value.act.id)];
+        break;
+      case "act_pdf":
+        docArr = [...this.selectedWithActsPdf.map((value) => value.act_pdf.id)];
+        break;
+      case "protocol":
+        docArr = [
+          ...this.selectedWithProtocols.map((value) => value.protocol.id),
+        ];
+        break;
+    }
+
+    docArr.forEach((id) => {
+      this.downloadFile(id);
+    });
   }
 }

@@ -1,5 +1,5 @@
 <div FxFlex="50" fxLayout="column">
-  <div *ngFor="let type of options">
+  <!-- <div *ngFor="let type of options">
     <mat-card *ngIf="doc[type.type]">
       <mat-card-content fxFlex="row" fxFill>
         <mat-card-actions fxFlex>
@@ -22,9 +22,9 @@
         <div fxFlex="row" fxFlexAlign="end center"></div>
       </mat-card-content>
     </mat-card>
-  </div>
+  </div> -->
   <mat-card
-    class="uploadfilecontainer background-pale"
+    class="uploadfilecontainer background-pale cards-item"
     (click)="fileInput.click()"
     appDragDrop
     (onFileDrop)="droppFiles($event)"
@@ -42,59 +42,62 @@
       />
     </mat-card-content>
   </mat-card>
-  <mat-card *ngIf="files.length > 0">
-    <mat-card fxLayoutGap="10px" *ngFor="let file of files; let i = index">
-      <mat-card-content>
-        <div>
-          <h4 fxFlex>{{ file.file.name }}</h4>
-          <form [formGroup]="form">
-            <mat-form-field [formGroupName]="i">
-              <mat-label>Тип файла</mat-label>
-              <mat-select
-                formControlName="status"
-                #opt
-                (selectionChange)="
-                  opt.value
-                    ? titlingDoc(
-                        file.id,
-                        file.file.name,
-                        opt.value.type,
-                        file.file.type
-                      )
-                    : null
-                "
-              >
-                <mat-option></mat-option>
-                <mat-option *ngFor="let option of options" [value]="option">
-                  {{ option.label }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </form>
-        </div>
-      </mat-card-content>
-      <mat-card-actions
-        ><button
-          [disabled]="!opt.value"
-          mat-raised-button
-          (click)="savingFile(file.id, file.file, opt.value, i)"
-        >
-          Загрузить
-        </button>
-        <button mat-raised-button (click)="removeFile(file.id, i)">
-          Удалить
-        </button>
-      </mat-card-actions>
-    </mat-card>
-    <mat-card-actions *ngIf="files.length > 1">
-      <button
-        [disabled]="!uploadControl"
-        mat-raised-button
-        (click)="savingAllFiles()"
+
+  <mat-card
+    fxLayoutGap="10px"
+    *ngFor="let file of files; let i = index"
+    class="cards-item"
+  >
+    <mat-card-content>
+      <div>
+        <h4 fxFlex>{{ file.file.name }}</h4>
+        <form [formGroup]="form">
+          <mat-form-field [formGroupName]="i">
+            <mat-label>Тип файла</mat-label>
+            <mat-select
+              formControlName="status"
+              #opt
+              (selectionChange)="
+                opt.value
+                  ? titlingDoc(
+                      file.id,
+                      file.file.name,
+                      opt.value.type,
+                      file.file.type
+                    )
+                  : null
+              "
+            >
+              <mat-option></mat-option>
+              <mat-option *ngFor="let option of options" [value]="option">
+                {{ option.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </div>
+    </mat-card-content>
+    <mat-card-actions
+      ><button
+        [disabled]="!opt.value"
+        mat-stroked-button
+        (click)="savingFile(file.id, file.file, opt.value, i)"
       >
-        Загрузить Все
+        Загрузить
       </button>
-      <button mat-raised-button (click)="removeAllFiles()">Очистить</button>
+      <button mat-stroked-button (click)="removeFile(file.id, i)">
+        Удалить
+      </button>
     </mat-card-actions>
   </mat-card>
+  <mat-card-actions *ngIf="files.length > 1">
+    <button
+      [disabled]="!uploadControl"
+      mat-stroked-button
+      (click)="savingAllFiles()"
+    >
+      Загрузить Все
+    </button>
+    <button mat-stroked-button (click)="removeAllFiles()">Очистить</button>
+  </mat-card-actions>
 </div>

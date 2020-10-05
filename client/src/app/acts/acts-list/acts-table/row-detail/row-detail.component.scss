@@ -1,23 +1,37 @@
 .content {
-    flex: auto;
-    flex-flow: row wrap;
-    display: flex;
+  flex: auto;
+  flex-flow: row wrap;
+  display: flex;
 }
 
 .content-label {
-    display: flex;
-    padding: 2px;
+  display: flex;
+  padding: 2px;
 }
 
 .content-value {
-    align-items: flex-end;
-    border: 1px solid black;
-    display: flex;
-    margin-left: 5px;
-    padding: 2px;
-    border-radius: 5%;
+  align-items: flex-end;
+  border: 1px solid black;
+  display: flex;
+  margin-left: 5px;
+  padding: 2px;
+  border-radius: 5%;
 }
 
 .card-content {
-    margin: 5px;
+  margin: 5px;
+}
+
+.details {
+  display: flex;
+  flex-flow: row;
+}
+
+.actions-list {
+  display: flex;
+  flex-flow: column;
+}
+
+.action-item {
+  margin-top: 5px;
 }

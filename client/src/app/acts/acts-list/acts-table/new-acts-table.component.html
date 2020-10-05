@@ -1,26 +1,33 @@
 <div class="container">
-  <mat-expansion-panel class="panel">
+  <mat-expansion-panel
+    class="panel"
+    [hideToggle]="true"
+    (click)="$event.stopPropagation()"
+  >
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Фильтры
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="rawMenu">
-      <mat-card class="card-item">
-        <mat-card-header>
-          <mat-card-title>
-            Столбцы
-          </mat-card-title>
+        <button
+          mat-stroked-button
+          [matMenuTriggerFor]="columnMenu"
+          class="button-filter-menu"
+          (click)="$event.stopPropagation()"
+        >
+          Таблица
+        </button>
+        <mat-menu #columnMenu>
           <mat-checkbox
             [checked]="allColumnActive"
             [indeterminate]="someActive()"
             (change)="setAll($event.checked)"
+            class="items-menu-filter"
           >
             Все
           </mat-checkbox>
-        </mat-card-header>
-        <mat-card-content>
-          <div cdkDropList (cdkDropListDropped)="drop($event)">
+          <div
+            cdkDropList
+            (cdkDropListDropped)="drop($event)"
+            class="items-menu-filter"
+          >
             <mat-chip-list
               *ngFor="let column of columnsToDisplay"
               cdkDrag
@@ -38,76 +45,96 @@
               </mat-chip>
             </mat-chip-list>
           </div>
-        </mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>
-            Фильтры
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <section class="rawFileters" *ngIf="filterOptions">
-            <div
-              *ngFor="let option of filterOptions"
-              class="fileterItem"
-              [ngSwitch]="option.controlType"
-            >
-              <mat-chip
-                class="chip-filter-item"
-                [selectable]="true"
-                [removable]="option.isActive"
-                (removed)="removeFilter(option)"
-              >
-                {{ option.label }}
-                <mat-icon matChipRemove *ngIf="option.isActive"
-                  >cancel</mat-icon
+        </mat-menu>
+        <button mat-stroked-button>Фильтры</button>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="rawMenu">
+      <section class="rawFileters" *ngIf="filterOptions">
+        <div
+          *ngFor="let option of filterOptions"
+          class="fileterItem"
+          [ngSwitch]="option.controlType"
+        >
+          <mat-chip
+            class="chip-filter-item"
+            [selectable]="true"
+            [removable]="option.isActive"
+            (removed)="removeFilter(option)"
+          >
+            {{ option.label }}
+            <mat-icon matChipRemove *ngIf="option.isActive">cancel</mat-icon>
+          </mat-chip>
+          <div class="options-items">
+            <div *ngSwitchCase="'Consumer'">
+              <div *ngFor="let item of option.items">
+                <mat-checkbox
+                  [(ngModel)]="item.isChecked"
+                  (ngModelChange)="updateFilter($event, option.key)"
+                  [disabled]="item.disabled"
                 >
-              </mat-chip>
-              <div class="options-items">
-                <div *ngSwitchCase="'Consumer'">
-                  <div *ngFor="let item of option.items">
-                    <mat-checkbox
-                      [(ngModel)]="item.isChecked"
-                      (ngModelChange)="updateFilter($event, option.key)"
-                      [disabled]="item.disabled"
-                    >
-                      {{ item.lable }}
-                    </mat-checkbox>
-                  </div>
-                </div>
-                <div *ngSwitchCase="'Date'">
-                  <mat-form-field appearance="fill">
-                    <mat-lable>Введите дату</mat-lable>
-                    <mat-date-range-input
-                      [rangePicker]="picker"
-                      [formGroup]="rangeFilter"
-                    >
-                      <input
-                        matStartDate
-                        formControlName="start"
-                        placeholder="От"
-                      />
-                      <input
-                        matEndDate
-                        formControlName="end"
-                        placeholder="До"
-                      />
-                    </mat-date-range-input>
-                    <mat-datepicker-toggle
-                      matSuffix
-                      [for]="picker"
-                    ></mat-datepicker-toggle>
-                    <mat-date-range-picker #picker></mat-date-range-picker>
-                  </mat-form-field>
-                </div>
+                  {{ item.lable }}
+                </mat-checkbox>
               </div>
             </div>
-          </section>
-        </mat-card-content>
-      </mat-card>
+            <div *ngSwitchCase="'Date'">
+              <mat-form-field appearance="fill">
+                <mat-lable>Введите дату</mat-lable>
+                <mat-date-range-input
+                  [rangePicker]="picker"
+                  [formGroup]="rangeFilter"
+                >
+                  <input
+                    matStartDate
+                    formControlName="start"
+                    placeholder="От"
+                  />
+                  <input matEndDate formControlName="end" placeholder="До" />
+                </mat-date-range-input>
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </mat-expansion-panel>
+
+  <div class="action-menu" *ngIf="selection.selected.length">
+    <button mat-stroked-button color="primary" [matMenuTriggerFor]="actionMenu">
+      Действия ({{ this.selection.selected.length }})
+    </button>
+    <mat-menu #actionMenu xPosition="before">
+      <button mat-menu-item [matMenuTriggerFor]="downloadMenu">Скачать</button>
+    </mat-menu>
+    <mat-menu #downloadMenu xPosition="before">
+      <button
+        mat-menu-item
+        [disabled]="selectedWithActs.length < 1"
+        (click)="downloadManyFiles('act')"
+      >
+        Акт ({{ selectedWithActs.length }})
+      </button>
+      <button
+        mat-menu-item
+        [disabled]="selectedWithActsPdf.length < 1"
+        (click)="downloadManyFiles('act_pdf')"
+      >
+        Акт ПДФ ({{ selectedWithActsPdf.length }})
+      </button>
+      <button
+        mat-menu-item
+        [disabled]="selectedWithProtocols.length < 1"
+        (click)="downloadManyFiles('protocol')"
+      >
+        Протокол ({{ selectedWithProtocols.length }})
+      </button>
+    </mat-menu>
+  </div>
 
   <table
     mat-table
@@ -147,17 +174,35 @@
       </th>
       <td mat-cell *matCellDef="let element" [ngSwitch]="column.controlType">
         <div *ngSwitchCase="'ACT'">
-          <button mat-icon-button *ngIf="element[column.key]">
+          <button
+            mat-icon-button
+            *ngIf="element[column.key]"
+            (click)="
+              $event.stopPropagation() || downloadFile(element[column.key].id)
+            "
+          >
             <mat-icon>cloud_download</mat-icon>
           </button>
         </div>
         <div *ngSwitchCase="'ACT_PDF'">
-          <button mat-icon-button *ngIf="element[column.key]">
+          <button
+            mat-icon-button
+            *ngIf="element[column.key]"
+            (click)="
+              $event.stopPropagation() || downloadFile(element[column.key].id)
+            "
+          >
             <mat-icon>cloud_download</mat-icon>
           </button>
         </div>
         <div *ngSwitchCase="'PROTOCOL'">
-          <button mat-icon-button *ngIf="element[column.key]">
+          <button
+            mat-icon-button
+            *ngIf="element[column.key]"
+            (click)="
+              $event.stopPropagation() || downloadFile(element[column.key].id)
+            "
+          >
             <mat-icon>cloud_download</mat-icon>
           </button>
         </div>

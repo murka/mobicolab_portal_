@@ -6,7 +6,6 @@ import {
   OnDestroy,
   HostListener,
 } from "@angular/core";
-import { ActModel } from "src/app/shared/models/act.model";
 import { FormBuilder, FormArray } from "@angular/forms";
 import { saveAs } from "file-saver";
 import { map, filter, switchMap } from "rxjs/operators";
@@ -42,7 +41,7 @@ class GroupItem {
 export class DocsComponent implements OnInit, OnDestroy {
   @ViewChild("fileInput") fileInput: any;
   @ViewChild("opt") opt: MatSelect;
-  @Input() act: ActModel;
+  @Input() actId: string;
   @HostListener("window:beforeunload") deleteAllFiles() {
     this.removeAllFiles();
     this.uploadControl = false;
@@ -98,9 +97,9 @@ export class DocsComponent implements OnInit, OnDestroy {
     );
     this.docsQuery = this.apollo.use("filesWS").watchQuery({
       query: this.getAllDocs.document,
-      variables: { actId: this.act.id },
+      variables: { actId: this.actId },
     });
-    this.subscribeToNewDocs(this.act.id);
+    this.subscribeToNewDocs(this.actId);
     this.docs$ = this.docsQuery.valueChanges.pipe(
       filter(({ data }) => data.getDocs !== null),
       map(({ data }) => (<GetAllDocsQuery>data).getDocs)
@@ -172,7 +171,7 @@ export class DocsComponent implements OnInit, OnDestroy {
 
   droppMutation(el: File) {
     this.subscriptions$.add(
-      this.fcs.postDroppDoc(this.act.id, el.name, el.type).subscribe((doc) => {
+      this.fcs.postDroppDoc(this.actId, el.name, el.type).subscribe((doc) => {
         this.addFormArray(doc.id);
         this.files.push(new ItemFile(doc.id, el));
       })
@@ -182,7 +181,7 @@ export class DocsComponent implements OnInit, OnDestroy {
   titlingDoc(id: string, name: string, title: string, mimtype: string) {
     if (id) {
       this.subscriptions$.add(
-        this.fcs.postTitleDoc(this.act.id, id, name, title, mimtype).subscribe()
+        this.fcs.postTitleDoc(this.actId, id, name, title, mimtype).subscribe()
       );
     }
   }
@@ -190,7 +189,7 @@ export class DocsComponent implements OnInit, OnDestroy {
   savingFile(docId: string, file: File, type: string, i: number) {
     this.fileInput.nativeElement.value = "";
     this.subscription.unsubscribe();
-    this.fcs.savintDoc(this.act.id, file, docId).then(() => {
+    this.fcs.savintDoc(this.actId, file, docId).then(() => {
       this.files = [...this.files.filter((file) => file.id !== docId)];
       this.form.removeAt(i);
     });
@@ -202,7 +201,7 @@ export class DocsComponent implements OnInit, OnDestroy {
     this.form.reset;
     this.subscriptions$.add(
       this.fcs
-        .savinAllDoc(this.files, this.act.id)
+        .savinAllDoc(this.files, this.actId)
         .subscribe(() => (this.files = []))
     );
   }

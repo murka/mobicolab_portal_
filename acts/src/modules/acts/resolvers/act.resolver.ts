@@ -6,7 +6,6 @@ import {
   ResolveField,
   Parent,
   Mutation,
-  Directive,
 } from '@nestjs/graphql';
 import { Act } from '../models/act.model';
 import { Customer } from '../../customers/models/customer.model';
