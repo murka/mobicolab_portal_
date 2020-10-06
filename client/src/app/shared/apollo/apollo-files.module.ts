@@ -26,7 +26,7 @@ export class ApolloFilesModule {
       reconnect: true,
     });
 
-    const link = new WebSocketLink(client);
+    // const link = new WebSocketLink(client);
 
     const linkEr = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
@@ -41,7 +41,9 @@ export class ApolloFilesModule {
 
     const httpLinkWithErrorHandling = ApolloLink.from([linkEr, http]);
 
-    apollo.create({ link: link, cache: new InMemoryCache() }, "filesWS");
+    // apollo.create({
+    //     link: link,
+    //     cache: new InMemoryCache() }, "filesWS");
     apollo.create({ link: uploadLink, cache: new InMemoryCache() }, "sub");
     apollo.create({
       link: httpLinkWithErrorHandling,

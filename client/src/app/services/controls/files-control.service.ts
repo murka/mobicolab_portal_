@@ -13,6 +13,8 @@ import {
   TitlingDocMutation,
   RemoveDocGQL,
   RemoveDocMutation,
+  GetFileDownloadLinkGQL,
+  GetFileDownloadLinkQuery,
 } from "src/types/generated";
 import { ProcessHTTPMsgService } from "../process-httpmsg.service";
 import { map, catchError, concatMap } from "rxjs/operators";
@@ -29,7 +31,8 @@ export class FilesControlService {
     private processHTTPMsgService: ProcessHTTPMsgService,
     private readonly droppDoc: DroppDocGQL,
     private readonly titlingDoc: TitlingDocGQL,
-    private readonly deleteDoc: RemoveDocGQL
+    private readonly deleteDoc: RemoveDocGQL,
+    private readonly getFileDownloadLink: GetFileDownloadLinkGQL
   ) {
     this.client = new ApiGatewayServiceClient(environment.ENVOI);
   }
@@ -122,6 +125,15 @@ export class FilesControlService {
     return this.deleteDoc
       .mutate({ docId })
       .pipe(map(({ data }) => data.removeDoc))
+      .pipe(catchError(this.processHTTPMsgService.handleError));
+  }
+
+  fetchFileDownloadLink(
+    docId: string
+  ): Observable<GetFileDownloadLinkQuery["getFileDownloadLink"]> {
+    return this.getFileDownloadLink
+      .watch({ id: docId })
+      .valueChanges.pipe(map(({ data }) => data.getFileDownloadLink))
       .pipe(catchError(this.processHTTPMsgService.handleError));
   }
 }

@@ -22,13 +22,19 @@ export class ActRepository extends Repository<Act> {
     this.logger.verbose('find-act');
 
     try {
-      const act = await this.findOne(id, { relations: ['docs'] });
+      let act = await this.findOne(id, { relations: ['docs'] });
 
-      if (!act)
-        throw new HttpException(
-          { status: HttpStatus.NOT_FOUND, error: 'Act didn`t find' },
-          HttpStatus.NOT_FOUND,
-        );
+      if (!act) {
+        const newAct = this.create({ id: id });
+
+        await this.save(newAct);
+
+        act = await this.findOne(id, { relations: ['docs'] });
+      }
+      // throw new HttpException(
+      //   { status: HttpStatus.NOT_FOUND, error: 'Act didn`t find' },
+      //   HttpStatus.NOT_FOUND,
+      // );
 
       return act;
     } catch (error) {

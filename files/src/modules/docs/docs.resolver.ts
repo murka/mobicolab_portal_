@@ -16,6 +16,7 @@ import { GetAllDocsOfActQuery } from './queries/impl/get-all-docs-of-act.query';
 import { DocRepository } from './repositories/doc.repository';
 import { RemoveDocCommand } from './commands/impl/remove-doc.command';
 import { DocsService } from './docs.service';
+import { SynService } from './syn.service';
 
 @Resolver(of => Doc)
 export class DocsResolver {
@@ -26,6 +27,7 @@ export class DocsResolver {
     private readonly queyBus: QueryBus,
     private readonly docRepository: DocRepository,
     private readonly docService: DocsService,
+    private readonly synService: SynService,
   ) {}
 
   @Query(returns => [Doc])
@@ -35,6 +37,17 @@ export class DocsResolver {
     const docs = await this.docRepository.find();
 
     return docs;
+  }
+
+  @Query(returns => String, { nullable: true })
+  async getFileDownloadLink(@Args('docId') docId: string): Promise<void> {
+    this.logger.verbose(`get-file-download-link to doc: ${docId}`);
+
+    try {
+      this.synService.login();
+    } catch (error) {
+      this.logger.error(JSON.stringify(error));
+    }
   }
 
   @Mutation(returns => Doc)

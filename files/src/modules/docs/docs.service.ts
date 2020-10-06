@@ -281,4 +281,16 @@ export class DocsService implements OnModuleInit {
       logger.error(error.message);
     }
   }
+
+  async getFileDownloadLink(docId: string): Promise<string> {
+    logger.verbose('get-file-download-link');
+
+    try {
+      const doc = await this.docRepository.findDoc(docId);
+
+      return this.webDav.getFileDownloadLink(`${doc.ydUrl}${doc.name}`);
+    } catch (error) {
+      logger.error(JSON.stringify(error));
+    }
+  }
 }

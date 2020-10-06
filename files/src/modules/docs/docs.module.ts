@@ -19,6 +19,7 @@ import { Act } from './models/act.model';
 import { ActRepository } from './repositories/act.repository';
 import { DocEvent } from './models/doc-event.model';
 import { QueryHandlers } from './queries/handlers';
+import { SynService } from './syn.service';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { QueryHandlers } from './queries/handlers';
   controllers: [DocsController],
   providers: [
     DocsService,
+    SynService,
     DocsResolver,
     ...CommandHandlers,
     ...EventHandlers,

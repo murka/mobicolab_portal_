@@ -183,6 +183,16 @@
           >
             <mat-icon>cloud_download</mat-icon>
           </button>
+          <button
+            mat-icon-button
+            *ngIf="element[column.key]"
+            (click)="
+              $event.stopPropagation() ||
+                getFileDonwloadLink(element[column.key].id)
+            "
+          >
+            <mat-icon>link</mat-icon>
+          </button>
         </div>
         <div *ngSwitchCase="'ACT_PDF'">
           <button

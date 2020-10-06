@@ -493,4 +493,10 @@ export class ActsTableComponent implements OnInit {
       this.downloadFile(id);
     });
   }
+
+  getFileDonwloadLink(docId: string) {
+    this.fcs
+      .fetchFileDownloadLink(docId)
+      .subscribe((data) => console.log(data));
+  }
 }

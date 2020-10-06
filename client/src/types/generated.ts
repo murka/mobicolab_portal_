@@ -494,6 +494,7 @@ export type Query = {
   getGeneralCustomer: GeneralCustomer;
   transformGCustomers: GeneralCustomer;
   docs: Array<Doc>;
+  getFileDownloadLink: Scalars['String'];
   getCustomers: Array<Customer>;
   customer: Customer;
 };
@@ -522,6 +523,11 @@ export type QueryGetGeneralCustomerArgs = {
 
 export type QueryDocsArgs = {
   actId: Scalars['String'];
+};
+
+
+export type QueryGetFileDownloadLinkArgs = {
+  docId: Scalars['String'];
 };
 
 
@@ -987,6 +993,16 @@ export type GetCustomersWithActsQuery = (
       ) }
     )> }
   )> }
+);
+
+export type GetFileDownloadLinkQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetFileDownloadLinkQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'getFileDownloadLink'>
 );
 
 export type GetGeneralCustomersForOptionQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1680,6 +1696,19 @@ export const GetCustomersWithActsDocument = gql`
   })
   export class GetCustomersWithActsGQL extends Apollo.Query<GetCustomersWithActsQuery, GetCustomersWithActsQueryVariables> {
     document = GetCustomersWithActsDocument;
+    
+  }
+export const GetFileDownloadLinkDocument = gql`
+    query getFileDownloadLink($id: String!) {
+  getFileDownloadLink(docId: $id)
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetFileDownloadLinkGQL extends Apollo.Query<GetFileDownloadLinkQuery, GetFileDownloadLinkQueryVariables> {
+    document = GetFileDownloadLinkDocument;
     
   }
 export const GetGeneralCustomersForOptionDocument = gql`
