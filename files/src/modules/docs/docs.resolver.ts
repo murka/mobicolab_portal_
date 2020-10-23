@@ -44,7 +44,7 @@ export class DocsResolver {
     this.logger.verbose(`get-file-download-link to doc: ${docId}`);
 
     try {
-      this.synService.login();
+      this.synService.getListShare();
     } catch (error) {
       this.logger.error(JSON.stringify(error));
     }

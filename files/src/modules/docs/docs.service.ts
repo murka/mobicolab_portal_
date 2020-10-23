@@ -18,6 +18,7 @@ import { ReplaySubject, async } from 'rxjs';
 import { Doc as DocSub } from '../../models/build/files/files';
 import { ActRepository } from './repositories/act.repository';
 import { Act } from './models/act.model';
+import { SynService } from './syn.service';
 
 const logger = new Logger('docService');
 
@@ -46,6 +47,7 @@ export class DocsService implements OnModuleInit {
     @InjectWebDAV() private readonly webDav: WebDAV,
     private readonly docRepository: DocRepository,
     private readonly actRepository: ActRepository,
+    private readonly synService: SynService,
   ) {}
 
   onModuleInit() {
@@ -205,9 +207,10 @@ export class DocsService implements OnModuleInit {
     logger.verbose('upload-doc.evetn inside `docService`');
 
     try {
-      await this.webDav.putFileContents(`${path}${name}`, file, {
-        overwrite: true,
-      });
+      //   await this.webDav.putFileContents(`${path}${name}`, file, {
+      //     overwrite: true,
+      //   });
+      this.synService.uploadFile(file, path, name);
     } catch (error) {
       logger.error(error);
     }
